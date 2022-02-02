@@ -5,13 +5,19 @@ html lang="en"
         meta http-equiv="X-UA-Compatible" content="IE=edge"/
         meta name="viewport" content="width=device-width, initial-scale=1.0"/
         link rel="stylesheet" href="css/style.css"/
-        title Document
+        link src="favicon.ico" rel="icon" type="image/x-icon" /
+        title = " FTD #{@title}"
     body
 
         div#link_container
             a.links href="/" Back to homepage
             a.links href="/register" Registrera dig
             a.links href="/login" Logga in
+            a.links href="/teams" Football teams
+
+        footer 
+            div Copyright &copy; 2021 Langly
+            div All rights deserved
 
         ==yield
 

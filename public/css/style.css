@@ -9,7 +9,7 @@ body {
 footer {
     width: 99%;
     height: auto;
-    background-color: rgb(230, 113, 113);
+    background-color: rgb(247, 164, 164);
     color: white;
     display: flex;
     flex-direction: column;
@@ -24,4 +24,10 @@ footer {
       display: flex;
       align-items: center;
       justify-content: space-evenly;
+  }
+
+  #best_teams {
+      border: 3px black dotted;
+      width: 33%;
+      height: 100px;
   }

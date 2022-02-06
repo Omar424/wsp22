@@ -2,8 +2,9 @@
 
 h2 Register with an account
 p Choose a username and password and submit
+p Username and password at least 3 characters each!
 
 form action="/register" method="POST"
-    input type="text" name="username" placeholder="Username"    
-    input type="password" name="password" placeholder="Password"
-    button type="submit" value="Create Account" Click me
+    input type="text" name="reg_username" placeholder="Enter Username" minlength="3"
+    input type="password" name="reg_password" placeholder="Enter Password" minlength="3"
+    button type="submit" value="Create Account" Create account!

@@ -10,7 +10,6 @@ footer {
     width: 99%;
     height: auto;
     background-color: rgb(247, 164, 164);
-    color: white;
     display: flex;
     flex-direction: column;
     align-items: center;

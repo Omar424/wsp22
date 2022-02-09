@@ -6,11 +6,12 @@ h3 Köp kort i webbshopen för att lägga till de i din inventory
     div#card_container
         section.wrapper
             ul
-                li Namn: #{info[:name]}
-                li Klubb: #{info[:club]}
-                li Nation: #{info[:nation]}
-                li Längd: #{info[:height]}
-                img#player_image src="#{info[:picture]}"
+                p#rating #{info[:rating]}
+                p#position #{info[:position]}
+                img#nation src="#{info[:nation]}"
+                img#club src="#{info[:club]}"
+                p#name #{info[:name]}
+                img#face src="#{info[:picture]}"
                 
                 form action="/buy" method="post"
                     button type="submit" Köp kort!

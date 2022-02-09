@@ -39,8 +39,9 @@ get('/webshop') do
         name:element[0],
         club:element[1],
         nation:element[2],
-        height:element[3],
-        picture:element[4]
+        picture:element[3],
+        rating:element[4],
+        position:element[5]
     }
     end
 
@@ -62,7 +63,7 @@ post('/login') do
 end
 
 post('/buy') do
-    redirect('/successful_buy')
+    redirect('/')
 end
 
 post('/logout') do

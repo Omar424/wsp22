@@ -19,6 +19,34 @@ get('/register') do
     return slim(:register)
 end
 
+get('/login') do
+    slim(:login)
+end
+
+get('/inventory') do
+    return slim(:inventory)
+end
+
+get('/webshop') do
+
+    lines = File.readlines('cards_info.csv')
+
+    double_array = lines.map do |element|
+        element.split(",")
+    end
+    
+    array_with_hashes = double_array.map do |element| {
+        name:element[0],
+        club:element[1],
+        nation:element[2],
+        height:element[3],
+        picture:element[4]
+    }
+    end
+
+    return slim(:webshop, locals:{info:array_with_hashes})
+end
+
 post('/register') do
     connect_to_db('db/db.db')
     regusername = params["reg_username"]
@@ -26,19 +54,15 @@ post('/register') do
     redirect('/login')
 end
 
-get('/login') do
-    slim(:login)
-end
-
-get('/teams') do
-    return slim(:teams)
-end
-
 post('/login') do
     connect_to_db('db/db.db')
     loginuname = params["log_username"]
     loginpword = params["log_password"]
     redirect('/teams')
+end
+
+post('/buy') do
+    redirect('/successful_buy')
 end
 
 post('/logout') do

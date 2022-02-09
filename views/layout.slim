@@ -6,19 +6,19 @@ html lang="en"
         meta name="viewport" content="width=device-width, initial-scale=1.0"/
         link rel="stylesheet" href="css/style.css"/
         link src="favicon.ico" rel="icon" type="image/x-icon" /
-        title = " FTD #{@title}"
+        title = " FCW #{@title}"
     body
 
         div#link_container
-            form action="/logout" method="post"
-                input#logout type="submit" value="Logout"
-            a.links href="/" Homepage (FTD)
+            a.links href="/" Homepage (FCW)
             a.links href="/register" Registrera dig
             a.links href="/login" Logga in
-            a.links href="/teams" Football teams
+            a.links href="/webshop" Webbshop
+            a.links href="/inventory" Inventory
+            form#logout action="/logout" method="post"
+                input#logout type="submit" value="Logout"
 
-        footer 
-            div Copyright &copy; 2022
+        / footer Copyright &copy; 2022
 
         ==yield
 

@@ -2,6 +2,9 @@ h2 Login with your account or create one at /register
 p Enter username and password
 
 form action="/login" method="POST"
-    input type="text" name="log_username" placeholder="Enter Username"
-    input type="password" name="log_password" placeholder="Enter Password"
+    input type="text" name="username" placeholder="Enter Username"
+    input type="password" name="password" placeholder="Enter Password"
     button type="submit" value="Log in" Log in!
+
+    - if error
+        p.success #{sucess}

@@ -2,13 +2,13 @@ require 'sinatra'
 require 'slim'
 require 'sqlite3'
 require 'bcrypt'
-
+require_relative './model.rb'
 enable :sessions
 
-def connect_to_db(path)
-    db = SQLite3::Database.new(path)
-    db.results_as_hash = true
-    return db
+#get routes
+
+get('/error') do
+    slim(:error)
 end
 
 get('/') do
@@ -16,11 +16,20 @@ get('/') do
 end
 
 get('/register') do
-    return slim(:register)
+    return slim(:register, locals:{ error:"" })
 end
 
 get('/login') do
     slim(:login)
+end
+
+get('/cards') do
+    #ska visa användarens alla skapta bilder med hjälp av SQL query
+    slim(:"cards/index")
+end
+
+get('/cards/new') do
+    slim(:"cards/new")
 end
 
 get('/inventory') do
@@ -36,70 +45,74 @@ get('/inventory') do
 end
 
 get('/webshop') do
-
     lines = File.readlines('cards_info.csv')
 
     double_array = lines.map do |element|
         element.split(",")
     end
 
-    connect_to_db(path)
-    card = db.execute("SELECT * FROM cards"])
+    # connect_to_db(path)
+    # card = db.execute("SELECT * FROM cards where user_id =?, user")
     
     array_with_hashes = double_array.map do |element| {
         name:element[0],
         club:element[1],
-        nation:element[2],
-        picture:element[3],
-        rating:element[4],
-        position:element[5]
+        picture:element[2],
+        rating:element[3],
+        position:element[4]
     }
     end
 
     # return slim(:webshop, locals:{card: card})
-    return slim(:webshop, locals:{info:array_with_hashes})
+    return slim(:webshop, locals:{card:array_with_hashes})
+end
+
+get('/card/:id') do
+    db = db_connection(path)
+    card_id = params[:id]
+
+    card_data = db.execute("SELECT * FROM cards WHERE id=(?)", card_id).first
+
+    if card_data.nil?
+        session[:message] = "card does not exist"
+        redirect('/error')
+    end
+
+    slim(:"recipes/index", locals:{recipes_info:recipe_data})
+end
+
+#post routes
+
+post('/upload_card') do
+
+    image = params[:image]
+    name = params[:name]
+    club = params[:club]
+    position = params[:position]
+    rating = params[:rating]
+
+    #Skapa en sträng med join "./public/uploaded_pictures/cat.png"
+    path = File.join("./public/uploaded_pictures/",params[:file][:filename])
+
+    #Spara bilden (skriv innehållet i tempfile till destinationen path)
+    File.write(path,File.read(params[:file][:tempfile]))
+
+    card_data = db.execute("INSERT INTO card (image, name, club, position, rating) VALUES (?,?,?,?,?)", [image, name, club, positon, rating])
+
+    redirect('/cards/new', locals:{klart: "kortet finns nu i webbshoppen"})
 end
 
 post('/register') do
     username = params["username"]
     password = params["password"]
-    password_confirmation = params["password_confirmation"]
-    connect_to_db('db/db.db')
-    check_user = db.execute("SELECT * FROM users WHERE username = ?", [username])
-    
-    #Registeringskontroll
-    if check_user.empty?
-        if password == password_confirmation
-          hashed_password = BCrypt::Password.create(password)
-          db.execute("INSERT INTO users (username, password) VALUES (?, ?)", [username, hashed_password])
-          return slim(:login, locals: { error: "", sucess: "Logga in för att se dina todos" })
-        else
-          return slim(:register, locals: { error: "Passwords does not match" })
-        end
-    else
-        return slim(:register, locals: { error: "Username already exists" })
-    end
+    password_conf = params["password_conf"]
+    register_user(username, password, password_conf)
 end
 
 post('/login') do
     username = params["log_username"]
     password = params["log_password"]
-    connect_to_db('path')
-    user = db.execute("SELECT * FROM users WHERE username = ?", [username])
-
-    #Användarhantering med inloggning
-    if user.empty?
-        # Fel hantering, visar att användaren inte finns!
-        return slim(:login, locals: { error: "Användaren finns inte!", sucess: "" })   
-    elsif BCrypt::Password.new(user[0]["password"]) == password
-        session[:user_id] = user[0]["id"]
-        puts "User id: #{session[:user_id]}"
-        redirect('/teams')
-    else
-        # Fel hantering, visar att lösenordet inte matchar!
-        return slim(:login, locals: { error: "Fel lössenord!", sucess: "" })
-    end
-
+    login_user(username, password)
 end
 
 post('/buy') do

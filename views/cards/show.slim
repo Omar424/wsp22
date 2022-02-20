@@ -1,0 +1,29 @@
+h3 Dina kort
+
+div class="wrapper"
+    -my_cards.each do |card|
+        a class="container" href="/cards/#{card["card_id"]}"
+            img src="/img/cards_img/#{card["image"]}" alt=""
+            h3 = card["name"] 
+            p = card["description"]
+            h3 Price #{card["discounted_price"]}
+            p Is your item bought? #{card["bought"].capitalize}
+            p Location #{card["location"]}
+            -if card["public"] == "on"
+                p Public? Yes
+            -else
+                p Public? No
+
+
+- card.each do |card|
+    div#card_container
+        section.wrapper
+            ul
+                p#rating #{card[:rating]}
+                p#position #{card[:position]}
+                img#club src="#{card[:club]}"
+                p#name #{card[:name]}
+                img#face src="#{card[:picture]}"
+                
+                form action="/buy" method="post"
+                    button type="submit" Köp kort!

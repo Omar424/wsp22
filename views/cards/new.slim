@@ -1,0 +1,24 @@
+h1 Skapa anpassat kort för att lägga till i webbshoppen och din inventory
+
+form action="/upload_card" method="post" enctype="multipart/form-data"
+    p Ladda upp bild på spelare/kort
+    input type="file" name="image" accept='image/*'
+
+    h3 Namn (Mellan 3 och 16 bokstäver)
+    input type="text" name="name" minlength="3" maxlength="16"
+
+    h3 Klubb (Mellan 3 och 16 bokstäver)
+    input type="text" name="club" minlength="3" maxlength="16"
+
+    h3 Position
+    select type="text" name="position" placeholder="Position"
+        option value=""
+        option value="Anfallare" Anfallare
+        option value="Mittfältare" Mittfältare
+        option value="Försvarare" Försvarare
+    
+    h3 Betyg (Hur bra är spelaren från skala 50-99)
+    input type="number" name="rating" min="50" max="99" placeholder="50-99"
+
+    h3 Skapa spelare
+    input type="submit" value="Skapa"

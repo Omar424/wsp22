@@ -1,11 +1,17 @@
 - @title = "Register"
-
-h2 Register with an account
-p Choose a username and password and submit
-p Username and password at least 3 characters each!
+br
+h3 Choose a username and password and create your account!
 
 form action="/register" method="POST"
-    input type="text" name="username" placeholder="Enter Username" minlength="3"
-    input type="password" name="password" placeholder="Enter Password" minlength="3"
-    input type="password" name="password_conf" placeholder="Confirm Password" minlength="3"
-    button type="submit" value="Create Account" Create account!
+    
+    p Välj ett användarnamn (Mellan 3 och 12 bokstäver)
+    input.input_styling type="text" name="username" placeholder="Enter Username" minlength="3" maxlength="12" required=""
+  
+    p Välj ett lösenord (Mellan 3 och 12 bokstäver)
+    input.input_styling type="password" name="password" placeholder="Enter Password" minlength="3" maxlength="12" required=""
+    
+    p Bekräfta lösenord
+    input.input_styling type="password" name="password_conf" placeholder="Confirm Password" minlength="3" maxlength="12" required=""
+    
+    p Skapa konto 
+    button.input_styling type="submit" value="Create Account" Create account!

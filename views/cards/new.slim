@@ -1,24 +1,27 @@
 h1 Skapa anpassat kort för att lägga till i webbshoppen och din inventory
 
 form action="/upload_card" method="post" enctype="multipart/form-data"
-    p Ladda upp bild på spelare/kort
-    input type="file" name="image" accept='image/*'
+    h3 Vad ska din spelare heta? (Mellan 3 och 16 bokstäver)
+    input.input_styling type="text" name="name" placeholder="Namn" minlength="3" maxlength="16" 
 
-    h3 Namn (Mellan 3 och 16 bokstäver)
-    input type="text" name="name" minlength="3" maxlength="16"
-
-    h3 Klubb (Mellan 3 och 16 bokstäver)
-    input type="text" name="club" minlength="3" maxlength="16"
-
-    h3 Position
-    select type="text" name="position" placeholder="Position"
-        option value=""
+    h3 Är din spelare anfallare, mittfältare eller försvarare?
+    select.input_styling required="" type="text" name="position" placeholder="Position"
+        option disabled="" hidden="" selected="" value="" Choose position
         option value="Anfallare" Anfallare
         option value="Mittfältare" Mittfältare
         option value="Försvarare" Försvarare
+
+    h3 Vad heter klubben där din spelare ska spela? (Mellan 3 och 16 bokstäver)
+    input.input_styling type="text" name="club" placeholder="Klubbnamn" minlength="3" maxlength="16"
     
-    h3 Betyg (Hur bra är spelaren från skala 50-99)
-    input type="number" name="rating" min="50" max="99" placeholder="50-99"
+    h3 Hur bra är spelaren från skala 50-99
+    input.input_styling#choose_rating type="number" name="rating" placeholder="50-99" min="50" max="99" 
+
+    h3 Vad är spelarens bästa attribut?
+    input.input_styling type="text" name="key_stats" placeholder="Ex. Snabb, Teknisk, Fysisk, Bra skott"
+
+    h3 Hur ser din spelare ut? (Ladda upp bild på spelare/kort)
+    input#upload_image type="file" name="image" accept='image/*'
 
     h3 Skapa spelare
-    input type="submit" value="Skapa"
+    input.input_styling type="submit" value="Skapa custom spelare!"

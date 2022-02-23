@@ -41,3 +41,9 @@ def login_user(username, password)
         return slim(:login, locals: { error: "Fel lössenord!", sucess: "" })
     end
 end
+
+def create_player(name, position, club, key_stats, rating, image)
+    connect_to_db('db/db.db')
+    db.execute("INSERT INTO cards (name, position, club, rating, key_stats, image) VALUES (?,?,?,?,?,?)", [name, position, club, rating, key_stats, image])
+    return slim(:"cards/new", locals: {create_done:"Spelare skapad, finns i webshop och din inventory"})
+end

@@ -19,6 +19,14 @@ html lang="en"
             form#logout action="/logout" method="post"
                 input#logout type="submit" value="Logout"
 
+
+            / -if session[:loggedin_user] != nil
+            /     h2.spanish_bigger Logged in as #{session[:loggedin_user]}
+            /     form#logout action="/logout" method="post"
+            /         input#logout type="submit" value="Logout"
+            / -else
+            /     h2.spanish_bigger Currently not logged in
+                
         / footer Copyright &copy; 2022
 
         ==yield

@@ -16,11 +16,11 @@ get('/') do
 end
 
 get('/register') do
-    return slim(:register, locals:{ error:"" })
+    return slim(:"user/register", locals:{ error:"" })
 end
 
 get('/login') do
-    slim(:login)
+    slim(:"user/login")
 end
 
 get('/cards') do
@@ -83,25 +83,6 @@ end
 
 #post routes
 
-post('/upload_card') do
-
-    image = params[:image]
-    name = params[:name]
-    club = params[:club]
-    position = params[:position]
-    rating = params[:rating]
-
-    #Skapa en sträng med join "./public/uploaded_pictures/cat.png"
-    path = File.join("./public/uploaded_pictures/",params[:file][:filename])
-
-    #Spara bilden (skriv innehållet i tempfile till destinationen path)
-    File.write(path,File.read(params[:file][:tempfile]))
-
-    card_data = db.execute("INSERT INTO card (image, name, club, position, rating) VALUES (?,?,?,?,?)", [image, name, club, positon, rating])
-
-    redirect('/cards/new', locals:{klart: "kortet finns nu i webbshoppen"})
-end
-
 post('/register') do
     username = params["username"]
     password = params["password"]
@@ -113,6 +94,26 @@ post('/login') do
     username = params["log_username"]
     password = params["log_password"]
     login_user(username, password)
+end
+
+post('/upload_card') do
+
+    name = params[:name]
+    club = params[:club]
+    position = params[:position]
+    rating = params[:rating]
+    key_stats = params[:key_stats]
+    image = params[:image]
+
+    #Skapa en sträng med join "./public/uploaded_pictures/cat.png"
+    # path = File.join("./public/uploaded_pictures/",params[:file][:filename])
+
+    #Spara bilden (skriv innehållet i tempfile till destinationen path)
+    # File.write(path,File.read(params[:file][:tempfile]))
+
+    create_player(name, position, club, key_stats, rating, image)
+
+    redirect('/cards/new', locals:{klart: "kortet finns nu i webbshoppen och din inventory"})
 end
 
 post('/buy') do

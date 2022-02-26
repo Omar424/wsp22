@@ -1,6 +1,6 @@
 h1 Skapa anpassat kort för att lägga till i webbshoppen och din inventory
 
-form action="/upload_card" method="post" enctype="multipart/form-data"
+form#create_card action="/upload_card" method="post" enctype="multipart/form-data"
     h3 Vad ska din spelare heta? (Mellan 3 och 16 bokstäver)
     input.input_styling type="text" name="name" placeholder="Namn" minlength="3" maxlength="16" 
 
@@ -18,10 +18,21 @@ form action="/upload_card" method="post" enctype="multipart/form-data"
     input.input_styling#choose_rating type="number" name="rating" placeholder="50-99" min="50" max="99" 
 
     h3 Vad är spelarens bästa attribut?
-    input.input_styling type="text" name="key_stats" placeholder="Ex. Snabb, Teknisk, Fysisk, Bra skott"
+    select.input_styling required="" type="text" name="top_stat"
+        option disabled="" hidden="" selected="" value="" Välj attribut
+        option value="Pace" Snabbhet
+        option value="Shooting" Skott
+        option value="Passing" Passningar
+        option value="Strength" Styrka
+        option value="Agility" Skicklighet
+        option value="Dribbling" Dribbling
+        option value="Stamnia" Uthållighet
+    
+    / input.input_styling type="text" name="key_stats" placeholder="Ex. Snabb, Teknisk, Fysisk, Bra skott"
 
-    h3 Hur ser din spelare ut? (Ladda upp bild på spelare/kort)
-    input#upload_image type="file" name="image" accept='image/*'
+    h3 Hur ser din spelare ut?
+    label#choose_image.input_styling for="upload_image" Select Image for your player
+    input#upload_image type="file" name="image" accept='image/*' style=("display: none;")
 
     h3 Skapa spelare
     input.input_styling type="submit" value="Skapa custom spelare!"

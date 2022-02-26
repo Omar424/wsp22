@@ -42,8 +42,8 @@ def login_user(username, password)
     end
 end
 
-def create_player(name, position, club, key_stats, rating, image)
+def create_player(name, position, club, rating, top_stat, image)
     connect_to_db('db/db.db')
-    db.execute("INSERT INTO cards (name, position, club, rating, key_stats, image) VALUES (?,?,?,?,?,?)", [name, position, club, rating, key_stats, image])
+    db.execute("INSERT INTO cards (name, position, club, rating, top_stat, image) VALUES (?,?,?,?,?,?)", [name, position, club, rating, top_stat, image])
     return slim(:"cards/new", locals: {create_done:"Spelare skapad, finns i webshop och din inventory"})
 end

@@ -78,7 +78,7 @@ get('/card/:id') do
         redirect('/error')
     end
 
-    slim(:"recipes/index", locals:{recipes_info:recipe_data})
+    slim(:"cards/index", locals:{card_info:card_data})
 end
 
 #post routes
@@ -102,7 +102,7 @@ post('/upload_card') do
     club = params[:club]
     position = params[:position]
     rating = params[:rating]
-    key_stats = params[:key_stats]
+    top_stat = params[:top_stat]
     image = params[:image]
 
     #Skapa en sträng med join "./public/uploaded_pictures/cat.png"
@@ -111,7 +111,7 @@ post('/upload_card') do
     #Spara bilden (skriv innehållet i tempfile till destinationen path)
     # File.write(path,File.read(params[:file][:tempfile]))
 
-    create_player(name, position, club, key_stats, rating, image)
+    create_player(name, position, club, top_stat, rating, image)
 
     redirect('/cards/new', locals:{klart: "kortet finns nu i webbshoppen och din inventory"})
 end

@@ -101,20 +101,14 @@ footer {
 .input_styling {
   font-size: 16px;
   border-radius: 10px;
-}
-
-select:invalid {
-  color: gray; 
-}
-
-select option[value="Anfallare"], option[value="Mittfältare"], option[value="Försvarare"] {
-  color: black;
-}
-
-#upload_image {
-  font-size: 16px;
+  padding: 5px;
 }
 
 #choose_rating {
   text-align: center;
+}
+
+#choose_image {
+  border: 1px black solid;
+  background-color: white;
 }

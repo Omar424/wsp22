@@ -17,9 +17,9 @@ form#create_card action="/upload_card" method="post" enctype="multipart/form-dat
     h3 Hur bra är spelaren från skala 50-99
     input.input_styling#choose_rating type="number" name="rating" placeholder="50-99" min="50" max="99" 
 
-    h3 Vad är spelarens bästa attribut?
-    select.input_styling required="" type="text" name="top_stat"
-        option disabled="" hidden="" selected="" value="" Välj attribut
+    h3 Vad är spelarens tre bästa attribut?
+    select.input_styling required="" type="text" name="top_stat1"
+        option disabled="" hidden="" selected="" value="" Attribut 1
         option value="Pace" Snabbhet
         option value="Shooting" Skott
         option value="Passing" Passningar
@@ -27,12 +27,31 @@ form#create_card action="/upload_card" method="post" enctype="multipart/form-dat
         option value="Agility" Skicklighet
         option value="Dribbling" Dribbling
         option value="Stamnia" Uthållighet
-    
-    / input.input_styling type="text" name="key_stats" placeholder="Ex. Snabb, Teknisk, Fysisk, Bra skott"
+    br
+    br
+    select.input_styling required="" type="text" name="top_stat2"
+        option disabled="" hidden="" selected="" value="" Attribut 2
+        option value="Pace" Snabbhet
+        option value="Shooting" Skott
+        option value="Passing" Passningar
+        option value="Strength" Styrka
+        option value="Agility" Skicklighet
+        option value="Dribbling" Dribbling
+        option value="Stamnia" Uthållighet
+    br
+    br
+    select.input_styling required="" type="text" name="top_stat3"
+        option disabled="" hidden="" selected="" value="" Attribut 3
+        option value="Pace" Snabbhet
+        option value="Shooting" Skott
+        option value="Passing" Passningar
+        option value="Strength" Styrka
+        option value="Agility" Skicklighet
+        option value="Dribbling" Dribbling
+        option value="Stamnia" Uthållighet
 
     h3 Hur ser din spelare ut?
-    label#choose_image.input_styling for="upload_image" Select Image for your player
-    input#upload_image type="file" name="image" accept='image/*' style=("display: none;")
+    input.input_styling type="file" name="image" accept='image/*'
 
     h3 Skapa spelare
     input.input_styling type="submit" value="Skapa custom spelare!"

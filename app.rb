@@ -36,10 +36,10 @@ get('/inventory') do
 
     if session["user_id"] != nil
         connect_to_db(path)
-        inventory = db.execute("SELECT * FROM todos WHERE user_id = ?", [session["user_id"]])
+        inventory = db.execute("SELECT * FROM cards WHERE user_id = ?", [session["user_id"]])
         slim(:"inventory", locals: { inventory: inventory })
     else
-        redirect("/")
+        redirect('/')
     end
 
 end
@@ -102,7 +102,9 @@ post('/upload_card') do
     club = params[:club]
     position = params[:position]
     rating = params[:rating]
-    top_stat = params[:top_stat]
+    top_stat1 = params[:top_stat1]
+    top_stat2 = params[:top_stat2]
+    top_stat3 = params[:top_stat3]
     image = params[:image]
 
     #Skapa en sträng med join "./public/uploaded_pictures/cat.png"
@@ -117,6 +119,7 @@ post('/upload_card') do
 end
 
 post('/buy') do
+    # add_to_inventory(card_data)
     redirect('/')
 end
 

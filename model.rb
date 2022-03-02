@@ -42,6 +42,10 @@ def login_user(username, password)
     end
 end
 
+def add_to_inventory()
+    #kod
+end
+
 def create_player(name, position, club, rating, top_stat, image)
     connect_to_db('db/db.db')
     db.execute("INSERT INTO cards (name, position, club, rating, top_stat, image) VALUES (?,?,?,?,?,?)", [name, position, club, rating, top_stat, image])

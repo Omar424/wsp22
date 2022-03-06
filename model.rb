@@ -7,15 +7,15 @@ def connect_to_db(path)
 end
 
 def register_user(username, password, password_conf)
-    connect_to_db('db/db.db')
-    check_user = db.execute("SELECT * FROM users WHERE username = ?", [username])
+    db = connect_to_db('db/db.db')
+    user_existance = db.execute("SELECT * FROM users WHERE username = ?", [username])
     
     #Registeringskontroll, hantering av registrering
-    if check_user.empty?
+    if user_existance.empty?
         if password == password_conf
           crypted_password = BCrypt::Password.create(password)
           db.execute("INSERT INTO users (username, password) VALUES (?, ?)", [username, crypted_password])
-          return slim(:"user/login", locals: { error: "", sucess: "Nice, du blev registrerad" })
+          return slim(:"user/login", locals: { error: "", sucess: "Logga in för att se webshoppen" })
         else
           return slim(:"user/register", locals: { error: "Passwords does not match" })
         end
@@ -25,29 +25,34 @@ def register_user(username, password, password_conf)
 end
 
 def login_user(username, password)
-    connect_to_db(path)
-    user = db.execute("SELECT * FROM users WHERE username = ?", [username])
+    db = connect_to_db('db/db.db')
+    user = db.execute("SELECT * FROM users WHERE username = ?", [username]).first
+    p user
+    user_password = user["password"]
+    p user_password
+    user_id = user["id"]
+    p user_id
 
-    #Användarhantering med inloggning
     if user.empty?
-        # Fel hantering, visar att användaren inte finns!
-        return slim(:login, locals: { error: "Användaren finns inte!", sucess: "" })   
-    elsif BCrypt::Password.new(user[0]["password"]) == password
-        session[:user_id] = user[0]["id"]
+        return slim(:"user/login", locals: { error: "Användaren finns inte!", sucess: "" })   
+    elsif BCrypt::Password.new(user_password) == password
+        session[:user_id] = user["id"]
         puts "User id: #{session[:user_id]}"
-        redirect('/teams')
+        puts "User #{user}"
+        redirect('/webshop')
     else
-        # Fel hantering, visar att lösenordet inte matchar!
-        return slim(:login, locals: { error: "Fel lössenord!", sucess: "" })
+        return slim(:"user/login", locals: { error: "Fel lösenord!", sucess: "" })
     end
+
 end
 
 def add_to_inventory()
     #kod
+    db = connect_to_db('db/db.db')
+    db.execute("INSERT INTO ")
 end
 
-def create_player(name, position, club, rating, top_stat, image)
-    connect_to_db('db/db.db')
+def create_card(name, position, club, rating, top_stat, image)
+    db = connect_to_db('db/db.db')
     db.execute("INSERT INTO cards (name, position, club, rating, top_stat, image) VALUES (?,?,?,?,?,?)", [name, position, club, rating, top_stat, image])
-    return slim(:"cards/new", locals: {create_done:"Spelare skapad, finns i webshop och din inventory"})
 end

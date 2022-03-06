@@ -2,15 +2,29 @@
 h1 Webbshop
 h3 Köp kort i webbshopen för att lägga till de i din inventory
 
-- card.each do |card|
-    div#card_container
-        section.wrapper
-            ul
-                p#rating #{card[:rating]}
-                p#position #{card[:position]}
-                img#club src="#{card[:club]}"
-                p#name #{card[:name]}
-                img#face src="#{card[:picture]}"
+/ - card.each do |card|
+/     div#card_container
+/         section.wrapper
+/             ul
+/                 p#rating #{card[:rating]}
+/                 p#position #{card[:position]}
+/                 img#club src="#{card[:club]}"
+/                 p#name #{card[:name]}
+/                 img#face src="#{card[:picture]}"
                 
-                form action="/buy" method="post"
-                    button type="submit" Köp kort!
+/                 form action="/buy" method="post"
+/                     button type="submit" Köp kort!
+
+- cards.each do |cards|
+
+div#card_container
+    section.wrapper
+        ul
+            p#rating #{cards["rating"].to_i}
+            p#position #{cards["position"]}
+            p#club #{cards["club"]}
+            p#name #{cards["name"]}
+            img#face src="#{cards["face_image"]}" alt="Bilden kunde ej hittas :/"
+            
+            form action="/buy" method="post"
+                button type="submit" Köp kort!

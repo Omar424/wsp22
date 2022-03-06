@@ -44,27 +44,12 @@ end
 
 get('/webshop') do
 
-    # connect_to_db(path)
-    # card = db.execute("SELECT * FROM cards where user_id =?, user").first
-    # p card
-    
-    lines = File.readlines('cards_info.csv')
+    db = connect_to_db('db/db.db')
+    all_cards = db.execute("SELECT * FROM cards").first
+    p all_cards
 
-    double_array = lines.map do |element|
-        element.split(",")
-    end
-
-    array_with_hashes = double_array.map do |element| {
-        name:element[0],
-        club:element[1],
-        picture:element[2],
-        rating:element[3],
-        position:element[4]
-    }
-    end
-
-    # return slim(:webshop, locals:{card: card})
-    return slim(:webshop, locals:{card:array_with_hashes})
+    # return slim(:webshop, locals:{card:array_with_hashes})
+    return slim(:webshop, locals:{cards:all_cards})
 end
 
 get('/card/:id') do
@@ -108,13 +93,9 @@ post('/upload_card') do
     top_stat1 = params[:top_stat1]
     top_stat2 = params[:top_stat2]
     top_stat3 = params[:top_stat3]
-    image = params[:image]
 
-    #Skapa en sträng med join "./public/uploaded_pictures/cat.png"
-    # path = File.join("./public/uploaded_pictures/",params[:file][:filename])
-
-    #Spara bilden (skriv innehållet i tempfile till destinationen path)
-    # File.write(path,File.read(params[:file][:tempfile]))
+    path = File.join("./public/uploaded_pictures/", params[:image][:filename])
+    File.write(path, File.read(params[:image][:tempfile]))
 
     create_card(name, position, club, top_stat, rating, image)
 

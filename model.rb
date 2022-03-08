@@ -37,17 +37,34 @@ def login_user(username, password)
     else
         return slim(:"user/login", locals: { error: "Fel lösenord!", sucess: "" })
     end
+end
 
+def get_all_cards()
+    db = connect_to_db('db/db.db')
+    all_cards = db.execute("SELECT * FROM cards")
+    all_stats = db.execute("SELECT stat1, stat2, stat3 from stats where card_id = 1")
+    p all_cards
+    p all_stats
+    return slim(:webshop, locals:{cards:all_cards, stats:all_stats})
 end
 
 def add_to_inventory()
     #kod
     db = connect_to_db('db/db.db')
-    db.execute("INSERT INTO ")
+    db.execute("UPDATE VALUES user_id to user_id")
 end
 
-def create_card(name, position, club, rating, top_stat1, top_stat2, top_stat3, image)
+def create_card(name, position, club, rating, stat1, stat2, stat3, image_path, user_id)
     db = connect_to_db('db/db.db')
-    db.execute("INSERT INTO cards (name, position, club, rating, image) VALUES (?,?,?,?,?)", [name, position, club, rating, image])
-    db.execute("INSERT INTO top_stats (top_stat1, top_stat2, topstat3) VALUES (?,?,?)", [top_stat1, top_stat2, top_stat3])
+    db.execute("INSERT INTO cards (name, position, club, rating, face_image, user_id) VALUES (?,?,?,?,?,?)", [name, position, club, rating, image_path, user_id])
+    db.execute("INSERT INTO stats (stat1, stat2, stat3) VALUES (?,?,?)", [stat1, stat2, stat3])
 end
+
+
+# def temp()
+#     db = connect_to_db('db/db.db')
+#     # db.execute("SELECT * FROM cards where id = 1")
+#     INSERT INTO cards (name, position, club, rating, face_image, user_id) VALUES ("Omar","Anfallare","Real Madrid",90,'\uploaded_pictures\ronaldo.png', 18)
+# end
+
+# puts temp()

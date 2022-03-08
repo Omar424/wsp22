@@ -43,13 +43,7 @@ get('/inventory') do
 end
 
 get('/webshop') do
-
-    db = connect_to_db('db/db.db')
-    all_cards = db.execute("SELECT * FROM cards").first
-    p all_cards
-
-    # return slim(:webshop, locals:{card:array_with_hashes})
-    return slim(:webshop, locals:{cards:all_cards})
+    get_all_cards()
 end
 
 get('/card/:id') do
@@ -66,6 +60,7 @@ get('/card/:id') do
     slim(:"cards/index", locals:{card_info:card_data})
 end
 
+#Man ska inte komma till denna routen utan att vara inloggad, session_id ska vara tillgängligt
 get('/cards/new') do
     slim(:"cards/new")
 end
@@ -85,19 +80,22 @@ post('/login') do
     login_user(username, password)
 end
 
-post('/upload_card') do
+#Man ska inte komma till denna routen utan att vara inloggad, session_id ska vara tillgängligt
+post('/create_card') do
     name = params[:name]
-    club = params[:club]
     position = params[:position]
+    club = params[:club]
     rating = params[:rating]
-    top_stat1 = params[:top_stat1]
-    top_stat2 = params[:top_stat2]
-    top_stat3 = params[:top_stat3]
-
-    path = File.join("./public/uploaded_pictures/", params[:image][:filename])
-    File.write(path, File.read(params[:image][:tempfile]))
-
-    create_card(name, position, club, top_stat, rating, image)
+    stat1 = params[:stat1]
+    stat2 = params[:stat2]
+    stat3 = params[:stat3]
+    user_id = 100
+    image_path = File.join("/uploaded_pictures/", params[:image][:filename])
+    puts image_path #/uploaded_pictures/tree.jpg
+    
+    # File.write(path, File.read(params[:image][:tempfile]))
+    create_card(name, position, club, stat1, stat2, stat3, rating, image_path, user_id)
+    # insert_stats(top_stat1, top_stat2, top_stat3)
 
     redirect('/cards/new', locals:{klart: "kort skapat, den finns nu i webbshoppen"})
 end

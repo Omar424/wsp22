@@ -32,7 +32,7 @@ footer {
 }
 
 .wrapper {
-  border: 2px dotted black;
+  border: 2px solid black;
   margin-bottom: 20px;
   width: 250px;
   height: 240px;
@@ -50,15 +50,16 @@ footer {
 
 #rating {
   position: absolute;
-  left: 35px;
+  left: 56px;
   top: -25px;
   font-size: 28px;
 }
 
 #position {
   position: absolute;
-  top: 25px;
-  font-size: 16px;
+  left: 22px;
+  top: 24px;
+  font-size: 24px;
 }
 
 #nation {
@@ -71,15 +72,16 @@ footer {
 
 #club {
   position: absolute;
-  left: -5px;
+  left: 14px;
   top: 78px;
-  width: 115px;
-  height: 75px;
+  font-size: 18px;
+  width: 1px;
+  height: 70px;
 }
 
 #face {
   position: absolute;
-  left: 90px;
+  left: 110px;
   top: 10px;
   width: 140px;
   height: 140px;
@@ -88,14 +90,35 @@ footer {
 #name {
   position: absolute;
   top: 125px;
-  left: 70px;
+  left: 124px;
   font-size: 30px;
+  font-weight: 500;
+}
+
+.stat {
+  position: absolute;
+  top: 196px;
+}
+
+#stat1 {
+  left: 8px;
+  top: 153px;
+}
+
+#stat2 {
+  left: 8px;
+  top: 178px;
+}
+
+#stat3 {
+  left: 8px;
+  top: 201px;
 }
 
 .wrapper button {
   position: absolute;
   top: 200px;
-  left: 90px;
+  left: 144px;
 }
 
 .input_styling {
@@ -111,4 +134,8 @@ footer {
 #choose_image {
   border: 1px black solid;
   background-color: white;
+}
+
+#png {
+  color: red;
 }

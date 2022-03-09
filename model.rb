@@ -58,8 +58,8 @@ def create_card(name, position, club, rating, stat1, stat2, stat3, image_path, u
     db = connect_to_db('db/db.db')
     db.execute("INSERT INTO cards (name, position, club, rating, face_image, user_id) VALUES (?,?,?,?,?,?)", [name, position, club, rating, image_path, user_id])
     db.execute("INSERT INTO stats (stat1, stat2, stat3) VALUES (?,?,?)", [stat1, stat2, stat3])
+    redirect('/cards/new', locals:{klart: "kort skapat, den finns nu i webbshoppen"})
 end
-
 
 # def temp()
 #     db = connect_to_db('db/db.db')

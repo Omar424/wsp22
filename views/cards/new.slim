@@ -20,38 +20,43 @@ form#create_card action="/create_card" method="post" enctype="multipart/form-dat
     h3 Vad är spelarens tre bästa attribut?
     select.input_styling required="" type="text" name="stat1"
         option disabled="" hidden="" selected="" value="" Attribut 1
-        option value="Pace" Snabbhet
-        option value="Shooting" Skott
-        option value="Passing" Passningar
-        option value="Strength" Styrka
-        option value="Agility" Skicklighet
+        option value="Snabbhet" Snabbhet
+        option value="Skott" Skott
+        option value="Passningar" Passningar
+        option value="Styrka" Styrka
+        option value="Skicklighet" Skicklighet
         option value="Dribbling" Dribbling
-        option value="Stamnia" Uthållighet
+        option value="Uthållighet" Uthållighet
     br
     br
     select.input_styling required="" type="text" name="stat2"
         option disabled="" hidden="" selected="" value="" Attribut 2
-        option value="Pace" Snabbhet
-        option value="Shooting" Skott
-        option value="Passing" Passningar
-        option value="Strength" Styrka
-        option value="Agility" Skicklighet
+        option value="Snabbhet" Snabbhet
+        option value="Skott" Skott
+        option value="Passningar" Passningar
+        option value="Styrka" Styrka
+        option value="Skicklighet" Skicklighet
         option value="Dribbling" Dribbling
-        option value="Stamnia" Uthållighet
+        option value="Uthållighet" Uthållighet
     br
     br
     select.input_styling required="" type="text" name="stat3"
         option disabled="" hidden="" selected="" value="" Attribut 3
-        option value="Pace" Snabbhet
-        option value="Shooting" Skott
-        option value="Passing" Passningar
-        option value="Strength" Styrka
-        option value="Agility" Skicklighet
+        option value="Snabbhet" Snabbhet
+        option value="Skott" Skott
+        option value="Passningar" Passningar
+        option value="Styrka" Styrka
+        option value="Skicklighet" Skicklighet
         option value="Dribbling" Dribbling
-        option value="Stamnia" Uthållighet
+        option value="Uthållighet" Uthållighet
 
     h3 Hur ser din spelare ut?
-    h4#png Endast png-format!
+    div#border_image
+        h4 Ladda ner bilder på spelare, extrahera mappen och använd de på din spelare:
+        a download="" href="/img/player_faces.zip"
+            img alt="fotbollsspelare ansikten" height="142" src="/img/unknown_face.png"
+    
+    h3 
     input.input_styling type="file" name="image" accept='image/x-png' required=""
 
     h3 Skapa spelare

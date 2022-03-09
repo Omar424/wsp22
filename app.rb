@@ -82,6 +82,7 @@ end
 
 #Man ska inte komma till denna routen utan att vara inloggad, session_id ska vara tillgängligt
 post('/create_card') do
+
     name = params[:name]
     position = params[:position]
     club = params[:club]
@@ -90,14 +91,19 @@ post('/create_card') do
     stat2 = params[:stat2]
     stat3 = params[:stat3]
     user_id = 100
-    image_path = File.join("/uploaded_pictures/", params[:image][:filename])
-    puts image_path #/uploaded_pictures/tree.jpg
-    
-    # File.write(path, File.read(params[:image][:tempfile]))
-    create_card(name, position, club, stat1, stat2, stat3, rating, image_path, user_id)
-    # insert_stats(top_stat1, top_stat2, top_stat3)
 
-    redirect('/cards/new', locals:{klart: "kort skapat, den finns nu i webbshoppen"})
+    file = params[:image][:tempfile]
+    filename = params[:image][:filename]
+    image_path = "/uploaded_pictures/#{filename}"
+    puts file
+    puts filename
+    puts image_path
+    File.write("public/uploaded_pictures/#{filename}", File.read(params[:image][:tempfile]))
+
+    create_card(name, position, club, stat1, stat2, stat3, rating, image_path, user_id)
+
+    # puts image_path /uploaded_pictures/something.jpg
+    # File.write(image_path, File.read(params[:image][:tempfile]))
 end
 
 post('/buy') do

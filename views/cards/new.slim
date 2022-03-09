@@ -55,6 +55,27 @@ form#create_card action="/create_card" method="post" enctype="multipart/form-dat
         h4 Ladda ner bilder på spelare, extrahera mappen och använd de på din spelare:
         a download="" href="/img/player_faces.zip"
             img alt="fotbollsspelare ansikten" height="142" src="/img/unknown_face.png"
+        h4 Bilderna är ansikten på kända fotbollsspelare. Så här ser de ut:
+    
+    div#player_names
+        h3.player_name De bruyne
+        h3.player_name Kane
+        h3.player_name Kante
+        h3.player_name Lewandowski
+        h3.player_name Mbappe
+        h3.player_name Messi
+        h3.player_name Neymar
+        h3.player_name Ronaldo
+    
+    div#player_faces    
+        img.player_faces src="/img/debruyne.png" alt="de bruyne"
+        img.player_faces src="/img/kane.png" alt="kane"
+        img.player_faces src="/img/kante.png" alt="kante"
+        img.player_faces src="/img/lewandowski.png" alt="lewandowski"
+        img.player_faces src="/img/mbappe.png" alt="mbappe"
+        img.player_faces src="/img/messi.png" alt="messi"
+        img.player_faces src="/img/neymar.png" alt="neymar"
+        img.player_faces src="/img/ronaldo.png" alt="ronaldo"
     
     h3 
     input.input_styling type="file" name="image" accept='image/x-png' required=""

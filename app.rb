@@ -94,12 +94,9 @@ post('/create_card') do
 
     file = params[:image][:tempfile]
     filename = params[:image][:filename]
-    image_path = "/uploaded_pictures/#{filename}"
-    puts file
-    puts filename
-    puts image_path
-    File.write("public/uploaded_pictures/#{filename}", File.read(params[:image][:tempfile]))
-
+    image_path = "public/uploaded_pictures/#{filename}"
+    path = "uploaded_pictures/#{filename}"
+    File.write(image_path, File.read(params[:image][:tempfile]))
     create_card(name, position, club, stat1, stat2, stat3, rating, image_path, user_id)
 
     # puts image_path /uploaded_pictures/something.jpg

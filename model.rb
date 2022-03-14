@@ -54,9 +54,9 @@ def add_to_inventory()
     db.execute("UPDATE VALUES user_id to user_id")
 end
 
-def create_card(name, position, club, rating, stat1, stat2, stat3, image_path, user_id)
+def create_card(name, position, club, face, rating, stat1, stat2, stat3, user_id)
     db = connect_to_db('db/db.db')
-    db.execute("INSERT INTO cards (name, position, club, rating, face_image, user_id) VALUES (?,?,?,?,?,?)", [name, position, club, rating, image_path, user_id])
+    db.execute("INSERT INTO cards (name, position, club, image, rating, user_id) VALUES (?,?,?,?,?,?)", [name, position, club, face, rating, user_id])
     db.execute("INSERT INTO stats (stat1, stat2, stat3) VALUES (?,?,?)", [stat1, stat2, stat3])
     redirect('/cards/new', locals:{klart: "kort skapat, den finns nu i webbshoppen"})
 end

@@ -85,22 +85,21 @@ post('/create_card') do
 
     name = params[:name]
     position = params[:position]
-    club = params[:club]
     rating = params[:rating]
     stat1 = params[:stat1]
     stat2 = params[:stat2]
     stat3 = params[:stat3]
-    user_id = 100
+    session_id = 100
 
-    file = params[:image][:tempfile]
-    filename = params[:image][:filename]
-    image_path = "public/uploaded_pictures/#{filename}"
-    path = "uploaded_pictures/#{filename}"
-    File.write(image_path, File.read(params[:image][:tempfile]))
-    create_card(name, position, club, stat1, stat2, stat3, rating, image_path, user_id)
+    p face_path = "/uploaded_pictures/faces/#{params[:player_face][:filename]}"
+    # File.write(face_path, File.read(params[:player_face][:tempfile]))
+    
+    p club_path = "/uploaded_pictures/clubs/#{params[:club][:filename]}"
+    # File.write(club_path, File.read(params[:club][:tempfile]))
 
-    # puts image_path /uploaded_pictures/something.jpg
-    # File.write(image_path, File.read(params[:image][:tempfile]))
+    create_card(name, position, club_path, face_path, rating, stat1, stat2, stat3, session_id)
+
+    # puts image_path "/uploaded_pictures/faces/neymar.png"
 end
 
 post('/buy') do

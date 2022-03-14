@@ -37,7 +37,7 @@ footer {
   height: 350px;
   border-radius: 5px;
   position: relative;
-  background-image: url('/img/fifa_card.png');
+  background-image: url('/misc/fifa_card.png');
   background-repeat: no-repeat;
 }
 

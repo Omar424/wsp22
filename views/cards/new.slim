@@ -42,7 +42,7 @@ form#create_card action="/create_card" method="post" enctype="multipart/form-dat
         img.player_faces src="/img/clubs/tottenham.png" alt="tottenham"
         img.player_faces src="/img/clubs/united.png" alt="united"
 
-    input.input_styling type="file" name="image" accept='image/x-png' required=""
+    input.input_styling type="file" name="club" accept='image/x-png' required=""
 
     h3 Hur ser din spelare ut?
     div#border_image
@@ -70,7 +70,7 @@ form#create_card action="/create_card" method="post" enctype="multipart/form-dat
         img.player_faces src="/img/players/neymar.png" alt="neymar"
         img.player_faces src="/img/players/ronaldo.png" alt="ronaldo"
 
-    input.input_styling type="file" name="image" accept='image/x-png' required=""
+    input.input_styling type="file" name="player_face" accept='image/x-png' required=""
 
     h3 Hur bra är spelaren från skala 50-99
     input.input_styling#choose_rating type="number" name="rating" placeholder="50-99" min="50" max="99" required=""
@@ -106,9 +106,7 @@ form#create_card action="/create_card" method="post" enctype="multipart/form-dat
         option value="Styrka" Styrka
         option value="Skicklighet" Skicklighet
         option value="Dribbling" Dribbling
-        option value="Uthållighet" Uthållighet
-
-    
+        option value="Uthållighet" Uthållighet    
 
     h3 Skapa spelare
     input.input_styling type="submit" value="Skapa custom spelare!"

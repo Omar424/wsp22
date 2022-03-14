@@ -141,35 +141,69 @@ footer {
   color: red;
 }
 
+#border_club {
+  border: 3px black solid;
+  width: 240px;
+  padding: 10px;
+  background-color: lightyellow;
+}
+
 #border_image {
-  border: 1px black solid;
+  border: 3px black solid;
   width: 240px;
   padding: 10px;
   background-color: lightgreen;
 }
 
-#player_names {
-  border: 1px lightcoral solid;
+
+#player_names, #player_faces {
+  border-left: 3px black solid;
+  border-right: 3px black solid;
   width: 1000px;
   /* padding: 10px; */
-  margin-top: 10px;
-  background-color: lightcoral;
+  background-color: lightgreen;
   display: flex;
   justify-content: space-evenly;
+}
+
+#player_names {
+  margin-top: 10px;
   border-top-left-radius: 10px;
   border-top-right-radius: 10px;
+  border-top: 3px black solid;
 }
 
 #player_faces {
-  border: 1px lightcoral solid;
-  width: 1000px;
   padding-bottom: 5px;
-  background-color: lightcoral;
-  display: flex;
-  display: flex;
-  justify-content: space-evenly;
   border-bottom-left-radius: 10px;
   border-bottom-right-radius: 10px;
+  border-bottom: 3px black solid;
+}
+
+#player_clubs, #club-pics {
+  /* border: 1px black solid; */
+  border-left: 3px black solid;
+  border-right: 3px black solid;
+  width: 1400px;
+  /* padding: 10px; */
+  background-color: lightyellow;
+  display: flex;
+  font-size: 15px;
+  justify-content: space-evenly;
+}
+
+#player_clubs {
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+  margin-top: 10px;
+  border-top: 3px black solid;
+}
+
+#club-pics {
+  padding-bottom: 5px;
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
+  border-bottom: 3px black solid;
 }
 
 .player_faces {

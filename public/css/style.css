@@ -6,6 +6,12 @@ body {
   background-color: rgb(170, 224, 255);
 }
 
+.links {
+  font-size: 20px;
+  text-decoration: underline;
+  color: black;
+}
+
 footer {
   width: 99%;
   font-size: 20px;

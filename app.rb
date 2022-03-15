@@ -28,6 +28,10 @@ get('/login') do
     slim(:"user/login", locals: { error: "", sucess: "" })
 end
 
+get('/logout') do
+    session.destroy
+end
+
 get('/error') do
     slim(:error)
 end
@@ -56,7 +60,7 @@ get('/webshop') do
 end
 
 get('/card/:id') do
-    db = db_connection(path)
+    db = db_connection('db/db.db')
     card_id = params[:id]
 
     card_data = db.execute("SELECT * FROM cards WHERE id= ?", card_id).first
@@ -99,11 +103,13 @@ post('/create_card') do
     stat2 = params[:stat2]
     stat3 = params[:stat3]
     session_id = 100
-
     p face_path = "uploaded_pictures/faces/#{params[:player_face][:filename]}"
-    File.write(face_path, params[:player_face][:tempfile].read)
-    
     p club_path = "uploaded_pictures/clubs/#{params[:club][:filename]}"
+
+    File.open(face_path, "wb") do |f|
+        f.write(params[:player_face][:tempfile].read)
+    end
+
     File.open(club_path, "wb") do |f|
         f.write(params[:club][:tempfile].read)
     end

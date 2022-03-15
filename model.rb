@@ -27,11 +27,11 @@ end
 def login_user(username, password)
     db = connect_to_db('db/db.db')
     user = db.execute("SELECT * FROM users WHERE username = ?", [username]).first
-    hashed_password = user["password"]
+    # hashed_password = user["password"]
 
-    if user.empty?
+    if user == nil
         return slim(:"user/login", locals: { error: "Användaren finns inte!", sucess: "" })   
-    elsif BCrypt::Password.new(hashed_password) == password
+    elsif BCrypt::Password.new(user["password"]) == password
         session[:user_id] = user["id"]
         redirect('/webshop')
     else
@@ -39,13 +39,21 @@ def login_user(username, password)
     end
 end
 
+def get_cards()
+    db = connect_to_db('db/db.db')
+    user_cards = db.execute("SELECT * FROM cards where user_id = ?", user_id)
+    return slim(:webshop, locals:{cards:user_cards, stats:all_stats})
+end
+
 def get_all_cards()
     db = connect_to_db('db/db.db')
-    all_cards = db.execute("SELECT * FROM cards")
-    all_stats = db.execute("SELECT stat1, stat2, stat3 from stats where card_id = 1")
-    p all_cards
-    p all_stats
-    return slim(:webshop, locals:{cards:all_cards, stats:all_stats})
+    cards = db.execute("SELECT * FROM cards")
+    stats = db.execute("SELECT * FROM stats")
+    p cards
+    p stats
+    puts stats[0]
+    
+    return slim(:webshop, locals:{cards:cards, stats:stats})
 end
 
 def add_to_inventory()

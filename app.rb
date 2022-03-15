@@ -1,4 +1,5 @@
 require 'sinatra'
+require 'sinatra/reloader'
 require 'slim'
 require 'sqlite3'
 require 'bcrypt'
@@ -6,6 +7,10 @@ require_relative './model.rb'
 enable :sessions
 
 #get routes
+
+get('/uploaded_pictures/:type/:name') do
+    File.read("uploaded_pictures/#{params[:type]}/#{params[:name]}")
+end
 
 get('/') do
     if session["user_id"] != nil
@@ -33,13 +38,17 @@ end
 # end
 
 get('/inventory') do
+
     if session["user_id"] != nil
-        connect_to_db(path)
+        connect_to_db('db/db.db')
         inventory = db.execute("SELECT * FROM cards WHERE user_id = ?", [session["user_id"]])
         slim(:"inventory", locals: { inventory: inventory })
     else
         redirect('/')
     end
+
+    # get_cards()
+
 end
 
 get('/webshop') do
@@ -50,7 +59,7 @@ get('/card/:id') do
     db = db_connection(path)
     card_id = params[:id]
 
-    card_data = db.execute("SELECT * FROM cards WHERE id=(?)", card_id).first
+    card_data = db.execute("SELECT * FROM cards WHERE id= ?", card_id).first
 
     if card_data.nil?
         session[:message] = "card does not exist"
@@ -91,19 +100,21 @@ post('/create_card') do
     stat3 = params[:stat3]
     session_id = 100
 
-    p face_path = "/uploaded_pictures/faces/#{params[:player_face][:filename]}"
-    # File.write(face_path, File.read(params[:player_face][:tempfile]))
+    p face_path = "uploaded_pictures/faces/#{params[:player_face][:filename]}"
+    File.write(face_path, params[:player_face][:tempfile].read)
     
-    p club_path = "/uploaded_pictures/clubs/#{params[:club][:filename]}"
-    # File.write(club_path, File.read(params[:club][:tempfile]))
+    p club_path = "uploaded_pictures/clubs/#{params[:club][:filename]}"
+    File.open(club_path, "wb") do |f|
+        f.write(params[:club][:tempfile].read)
+    end
 
     create_card(name, position, club_path, face_path, rating, stat1, stat2, stat3, session_id)
 
-    # puts image_path "/uploaded_pictures/faces/neymar.png"
+    # puts image_path "uploaded_pictures/faces/neymar.png"
 end
 
 post('/buy') do
-    # add_to_inventory(card_data)
+    add_to_inventory(card_data)
     # update ägaren av kortet, nya ägaren den som köpte
     redirect('/')
 end

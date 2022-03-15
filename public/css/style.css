@@ -155,12 +155,10 @@ footer {
   background-color: lightgreen;
 }
 
-
 #player_names, #player_faces {
   border-left: 3px black solid;
   border-right: 3px black solid;
   width: 1000px;
-  /* padding: 10px; */
   background-color: lightgreen;
   display: flex;
   justify-content: space-evenly;
@@ -181,15 +179,13 @@ footer {
 }
 
 #player_clubs, #club-pics {
-  /* border: 1px black solid; */
   border-left: 3px black solid;
   border-right: 3px black solid;
   width: 1400px;
-  /* padding: 10px; */
   background-color: lightyellow;
   display: flex;
   font-size: 15px;
-  justify-content: space-evenly;
+  justify-content: space-around;
 }
 
 #player_clubs {
@@ -206,7 +202,12 @@ footer {
   border-bottom: 3px black solid;
 }
 
-.player_faces {
+.player_faces{
   height: 90px;
   width: 90px;
+}
+
+.player_club {
+  height: 70px;
+  width: 70px;
 }

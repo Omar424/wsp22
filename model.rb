@@ -42,6 +42,13 @@ def login_user(username, password)
     end
 end
 
+def create_card(name, position, club, face, rating, stat1, stat2, stat3, user_id)
+    db = connect_to_db('db/db.db')
+    db.execute("INSERT INTO cards (name, position, club, image, rating, user_id) VALUES (?,?,?,?,?,?)", [name, position, club, face, rating, user_id])
+    db.execute("INSERT INTO stats (stat1, stat2, stat3) VALUES (?,?,?)", [stat1, stat2, stat3])
+    redirect('/webshop', locals:{klart: "kort skapat, den finns nu i webbshoppen"})
+end
+
 def get_cards()
     db = connect_to_db('db/db.db')
     user_cards = db.execute("SELECT * FROM cards where user_id = ?", user_id)
@@ -50,14 +57,22 @@ end
 
 def get_all_cards()
     if session["user_id"] != nil
+
         db = connect_to_db('db/db.db')
         cards = db.execute("SELECT * FROM cards")
-        stats = db.execute("SELECT * FROM stats")
-        p cards
-        p stats
-        puts stats[0]
+        stats = db.execute("SELECT stat1, stat2, stat3 FROM stats")
         
-        return slim(:webshop, locals:{cards:cards, stats:stats})
+        p stats
+
+        # stat1 = stats[0]["stat1"]
+        # stat2 = stats[0]["stat2"]
+        # stat3 = stats[0]["stat3"]
+
+        cards = cards.each_with_index.map { |card, i| 
+            p card, i
+            card["stats"] = stats[i]}
+
+        return slim(:webshop, locals:{cards:cards})
     else
         redirect("/")
     end
@@ -67,14 +82,6 @@ def add_to_inventory()
     #kod
     db = connect_to_db('db/db.db')
     db.execute("UPDATE VALUES in cards user_id to user_id")
-end
-
-def create_card(name, position, club, face, rating, stat1, stat2, stat3, user_id)
-    db = connect_to_db('db/db.db')
-    db.execute("INSERT INTO cards (name, position, club, image, rating, user_id) VALUES (?,?,?,?,?,?)", [name, position, club, face, rating, user_id])
-    db.execute("INSERT INTO stats (stat1, stat2, stat3) VALUES (?,?,?)", [stat1, stat2, stat3])
-
-    redirect('/webshop', locals:{klart: "kort skapat, den finns nu i webbshoppen"})
 end
 
 # def temp()

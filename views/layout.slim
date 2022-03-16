@@ -10,7 +10,6 @@ html lang="en"
     body
 
         div#link_container
-            a.links href="/" Homepage
 
             - if session[:user_id] != nil
                 a.links href="/webshop" Webbshop
@@ -21,6 +20,7 @@ html lang="en"
                 form action="/logout" method="post"
                     input#logout type="submit" value="Logout"
             - else
+                a.links href="/" Homepage
                 a.links href="/register" Registrera dig
                 a.links href="/login" Logga in
                 h2 Currently not logged in

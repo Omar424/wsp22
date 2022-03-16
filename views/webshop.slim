@@ -2,7 +2,7 @@
 h1 Webbshop
 h3 Köp kort i webbshopen för att lägga till de i din inventory
 
-- cards.each do |card|
+- cards.each_with_index do |card, i|
         div#card_container
             section.wrapper
                 ul
@@ -10,10 +10,10 @@ h3 Köp kort i webbshopen för att lägga till de i din inventory
                     p#position #{card["position"]}
                     img#club src="#{card["club"]}" alt=":/"
                     p#name #{card["name"]}
-                    p#stat1.stat #{card["stats"]["stat1"]}
-                    p#stat2.stat #{card["stats"]["stat2"]}
-                    p#stat3.stat #{card["stats"]["stat3"]}
-                    img#face src="#{cards["image"]}" alt=":/"
+                    img#face src="#{card["image"]}" alt=":/"
+                    p#stat1.stat #{stat1[i]}
+                    p#stat2.stat #{stat2[i]}
+                    p#stat3.stat #{stat3[i]}
                     
                     form action="/buy" method="post"
                         button type="submit" Köp kort!

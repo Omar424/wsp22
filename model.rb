@@ -60,19 +60,37 @@ def get_all_cards()
 
         db = connect_to_db('db/db.db')
         cards = db.execute("SELECT * FROM cards")
-        stats = db.execute("SELECT stat1, stat2, stat3 FROM stats")
+        stats = db.execute("SELECT card_id, stat1, stat2, stat3 FROM stats")
         
-        p stats
+        # p cards
+        # p stats
 
-        # stat1 = stats[0]["stat1"]
-        # stat2 = stats[0]["stat2"]
-        # stat3 = stats[0]["stat3"]
+        stat_1_array = []
+        stat_2_array = []
+        stat_3_array = []
 
-        cards = cards.each_with_index.map { |card, i| 
-            p card, i
-            card["stats"] = stats[i]}
+        i = 0
 
-        return slim(:webshop, locals:{cards:cards})
+        while i < cards.length
+            stat_1_array << stats[i]["stat1"]
+            stat_2_array << stats[i]["stat2"]
+            stat_3_array << stats[i]["stat3"]
+            i += 1
+        end
+
+        p "stat_1_arrray är #{stat_1_array}"
+        p "stat_2_arrray är #{stat_2_array}"
+        p "stat_2_arrray är #{stat_3_array}"
+        
+
+        # cards = cards.each_with_index.map { |card, i| 
+        #     p card, i
+        #     card["stats"] = stats[i]
+        # }
+
+        # stat1:stat1, stat2:stat2, stat3:stat3
+
+        return slim(:webshop, locals:{cards:cards, stats:stats, stat1:stat_1_array, stat2:stat_2_array, stat3:stat_3_array})
     else
         redirect("/")
     end

@@ -8,9 +8,6 @@ enable :sessions
 
 #get routes
 
-get('/uploaded_pictures/:type/:name') do
-    File.read("uploaded_pictures/#{params[:type]}/#{params[:name]}")
-end
 
 get('/') do
     if session["user_id"] != nil
@@ -22,30 +19,31 @@ end
 
 get('/register') do
     return slim(:"user/register", locals: { error: "" })
-  end
-  
+end
+
 get('/login') do
     slim(:"user/login", locals: { error: "", sucess: "" })
 end
 
 get('/logout') do
     session.destroy
+    redirect("/")
 end
 
 get('/error') do
     slim(:error)
 end
 
-# get('/cards') do
-#     ska visa användarens alla skapta bilder med hjälp av SQL query
-#     slim(:"cards/index")
-# end
+get('/uploaded_pictures/:type/:name') do
+    File.read("uploaded_pictures/#{params[:type]}/#{params[:name]}")
+end
 
 get('/inventory') do
 
     if session["user_id"] != nil
-        connect_to_db('db/db.db')
+        db = connect_to_db("db/db.db")
         inventory = db.execute("SELECT * FROM cards WHERE user_id = ?", [session["user_id"]])
+        inventory = db.execute("SELECT * FROM stats WHERE user_id = ?", [session["user_id"]])
         slim(:"inventory", locals: { inventory: inventory })
     else
         redirect('/')
@@ -75,7 +73,7 @@ end
 
 #Man ska inte komma till denna routen utan att vara inloggad, session_id ska vara tillgängligt
 get('/cards/new') do
-    slim(:"cards/new")
+    slim(:"cards/new", locals:{session_id: session["user_id"]})
 end
 
 #post routes
@@ -102,19 +100,23 @@ post('/create_card') do
     stat1 = params[:stat1]
     stat2 = params[:stat2]
     stat3 = params[:stat3]
-    session_id = 100
+    p session[:user_id]
+    # file_path för ruby att veta vart den ska skriva in filen
+    p file_face_path = "public/uploaded_pictures/faces/#{params[:player_face][:filename]}"
+    p file_club_path = "public/uploaded_pictures/clubs/#{params[:club][:filename]}"
+    # path för get_routen att veta source för bilden
     p face_path = "uploaded_pictures/faces/#{params[:player_face][:filename]}"
     p club_path = "uploaded_pictures/clubs/#{params[:club][:filename]}"
 
-    File.open(face_path, "wb") do |f|
+    File.open(file_face_path, "wb") do |f|
         f.write(params[:player_face][:tempfile].read)
     end
 
-    File.open(club_path, "wb") do |f|
+    File.open(file_club_path, "wb") do |f|
         f.write(params[:club][:tempfile].read)
     end
 
-    create_card(name, position, club_path, face_path, rating, stat1, stat2, stat3, session_id)
+    create_card(name, position, club_path, face_path, rating, stat1, stat2, stat3, session[:user_id])
 
     # puts image_path "uploaded_pictures/faces/neymar.png"
 end

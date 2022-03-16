@@ -37,16 +37,6 @@ footer {
   border-radius: 10px;
 }
 
-.wrapper {
-  margin-bottom: 20px;
-  width: 250px;
-  height: 350px;
-  border-radius: 5px;
-  position: relative;
-  background-image: url('/misc/fifa_card.png');
-  background-repeat: no-repeat;
-}
-
 #card_container {
   display:flex;
   justify-content: space-around;
@@ -54,53 +44,61 @@ footer {
   width: 100%;
 }
 
+#fifa_card {
+  width: 250px;
+  height: 350px;
+  position: relative;
+  background-image: url('/misc/fifa_card.png');
+}
+
 #rating {
   position: absolute;
   left: 56px;
   top: 2px;
   font-weight: 500;
-  font-size: 28px;
+  font-size: 30px;
 }
 
 #position {
   position: absolute;
-  left: 46px;
+  left: 40px;
   top: 52px;
-  font-size: 16px;
-}
-
-#nation {
-  position: absolute;
-  top: 65px;
-  left: 30px;
-  width: 40px;
-  height: 40px;
+  font-size: 19px;
 }
 
 #club {
-  font-weight: bold;
   position: absolute;
   left: 35px;
   top: 108px;
-  font-size: 16px;
-  width: 70px;
-  height: 70px;
+  width: 60px;
+  height: 60px;
 }
 
 #face {
   position: absolute;
-  left: 94px;
-  top: 40px;
-  width: 140px;
-  height: 140px;
+  left: 95px;
+  top: 62px;
+  width: 120px;
+  height: 120px;
 }
 
 #name {
   position: absolute;
-  top: 149px;
-  left: 73px;
+  /* top: 149px; */
+  left: -7px;
   font-size: 26px;
   font-weight: 500;
+  bottom: 72px;
+}
+
+#stats_name {
+  display: flex;
+  width: 144px;
+  height: 142px;
+  position: relative;
+  justify-content: space-between;
+  top: 167px;
+  left: 92px;
 }
 
 .stat {
@@ -108,24 +106,20 @@ footer {
 }
 
 #stat1 {
-  left: 99px;
-  top: 230px;
+  bottom: 20px;
 }
 
 #stat2 {
-  left: 100px;
-  top: 210px;
+  bottom: 40px;
 }
 
 #stat3 {
-  left: 88px;
-  top: 191px;
+  bottom: 60px;
 }
 
-.wrapper button {
+#fifa_card button {
   position: absolute;
-  top: 271px;
-  left: 88px;
+  bottom: 6px;
 }
 
 .input_styling {
@@ -216,4 +210,9 @@ footer {
 .player_club {
   height: 70px;
   width: 70px;
+}
+
+#all_cards {
+  display: flex;
+  justify-content: center;
 }

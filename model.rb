@@ -35,7 +35,6 @@ def login_user(username, password)
         session[:user_id] = user["id"]
         session[:username] = user["username"]
         puts "User id: #{session[:user_id]}"
-        puts "User #{user}"
         redirect('/webshop')
     else
         return slim(:"user/login", locals: { error: "Fel lösenord!", sucess: "" })
@@ -49,10 +48,11 @@ def create_card(name, position, club, face, rating, stat1, stat2, stat3, user_id
     redirect('/webshop', locals:{klart: "kort skapat, den finns nu i webbshoppen"})
 end
 
-def get_cards()
+def get_user_cards()
     db = connect_to_db('db/db.db')
-    user_cards = db.execute("SELECT * FROM cards where user_id = ?", user_id)
-    return slim(:webshop, locals:{cards:user_cards, stats:all_stats})
+    user_cards = db.execute("SELECT * FROM cards where user_id = ?", session[:id])
+    user_cards_stats = db.execute("SELECT stat1, stat2, stat3 FROM stats where user_id = ?", session[:id])
+    return slim(:webshop, locals:{cards:user_cards, stats:user_cards_stats})
 end
 
 def get_all_cards()
@@ -60,35 +60,19 @@ def get_all_cards()
 
         db = connect_to_db('db/db.db')
         cards = db.execute("SELECT * FROM cards")
-        stats = db.execute("SELECT card_id, stat1, stat2, stat3 FROM stats")
-        
-        # p cards
-        # p stats
+        stats = db.execute("SELECT stat1, stat2, stat3 FROM stats")
 
         stat_1_array = []
         stat_2_array = []
         stat_3_array = []
 
         i = 0
-
         while i < cards.length
             stat_1_array << stats[i]["stat1"]
             stat_2_array << stats[i]["stat2"]
             stat_3_array << stats[i]["stat3"]
             i += 1
         end
-
-        p "stat_1_arrray är #{stat_1_array}"
-        p "stat_2_arrray är #{stat_2_array}"
-        p "stat_2_arrray är #{stat_3_array}"
-        
-
-        # cards = cards.each_with_index.map { |card, i| 
-        #     p card, i
-        #     card["stats"] = stats[i]
-        # }
-
-        # stat1:stat1, stat2:stat2, stat3:stat3
 
         return slim(:webshop, locals:{cards:cards, stats:stats, stat1:stat_1_array, stat2:stat_2_array, stat3:stat_3_array})
     else

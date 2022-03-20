@@ -34,6 +34,21 @@ get('/error') do
     slim(:error)
 end
 
+get('/user/:id/profile') do
+
+    user_id = params[:id]
+
+    db = connect_to_db('db/db.db')
+    user_info = db.execute("SELECT * FROM users where id = ?", user_id).first
+
+    if user_info.nil?
+        session[:message] = "user does not exist"
+        redirect('/error')
+    end
+    
+    slim(:"user/index", locals:{user_data:user_info})
+end
+
 get('/uploaded_pictures/:type/:name') do
     File.read("uploaded_pictures/#{params[:type]}/#{params[:name]}")
 end

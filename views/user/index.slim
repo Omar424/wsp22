@@ -1,1 +1,9 @@
-h2 #{user_data['username']}'s profile
+h2 #{user_info["username"]}'s profil och skapta kort
+
+#{message}
+
+- cards.each do |cards|
+    a href="/card/#{cards["id"]}" Kort #{cards["id"]}
+    br
+    br
+a href="/cards/new" Skapa ett nytt kort

@@ -82,10 +82,19 @@ footer {
   height: 120px;
 }
 
+/* #name {
+  position: absolute;
+  top: 149px;
+  left: -7px;
+  font-size: 26px;
+  font-weight: 500;
+  bottom: 72px;
+} */
+
 #name {
   position: absolute;
-  /* top: 149px; */
-  left: -7px;
+  top: 152px;
+  left: 73px;
   font-size: 26px;
   font-weight: 500;
   bottom: 72px;

@@ -36,17 +36,25 @@ end
 
 get('/user/:id/profile') do
 
-    user_id = params[:id]
+    # if session["user_id"] != nil
+        db = connect_to_db('db/db.db')
+        user_id = params[:id]
+        user_data = db.execute("SELECT * FROM users where id = ?", user_id).first
+        user_cards = db.execute("SELECT * FROM cards where user_id = ?", user_id)
 
-    db = connect_to_db('db/db.db')
-    user_info = db.execute("SELECT * FROM users where id = ?", user_id).first
-
-    if user_info.nil?
-        session[:message] = "user does not exist"
-        redirect('/error')
-    end
-    
-    slim(:"user/index", locals:{user_data:user_info})
+        p user_data
+        p user_cards
+        
+        if user_data == nil
+            slim(:error, locals:{message: "user with id: #{user_id} does not exist"})
+        elsif user_cards.length == 0
+            slim(:"user/index", locals:{user_info:user_data, cards:user_cards, message: "user with id #{user_id} hasn't created a card"})
+        else
+            slim(:"user/index", locals:{user_info:user_data, cards:user_cards, message: "temp"})
+        end
+    # else
+        # redirect('/')
+    # end
 end
 
 get('/uploaded_pictures/:type/:name') do
@@ -59,12 +67,12 @@ get('/inventory') do
         db = connect_to_db("db/db.db")
         inventory = db.execute("SELECT * FROM cards WHERE user_id = ?", [session["user_id"]])
         inventory = db.execute("SELECT * FROM stats WHERE user_id = ?", [session["user_id"]])
-        slim(:"inventory", locals: { inventory: inventory })
+        slim(:"inventory", locals: {inventory:inventory})
     else
         redirect('/')
     end
 
-    # get_cards()
+    # get_user_cards()
 
 end
 
@@ -73,17 +81,19 @@ get('/webshop') do
 end
 
 get('/card/:id') do
-    db = db_connection('db/db.db')
+    db = connect_to_db("db/db.db")
     card_id = params[:id]
 
-    card_data = db.execute("SELECT * FROM cards WHERE id= ?", card_id).first
+    card_data = db.execute("SELECT * FROM cards WHERE id = ?", card_id).first
+    # p card_data
+    # p card_data["rating"]
 
     if card_data.nil?
-        session[:message] = "card does not exist"
+        session[:message] = "Card with id: #{card_id} does not exist :/"
         redirect('/error')
     end
 
-    slim(:"cards/index", locals:{card_info:card_data})
+    slim(:"cards/show", locals:{card:card_data, id:card_id})
 end
 
 #Man ska inte komma till denna routen utan att vara inloggad, session_id ska vara tillgängligt
@@ -140,6 +150,10 @@ post('/buy') do
     add_to_inventory(card_data)
     # update ägaren av kortet, nya ägaren den som köpte
     redirect('/')
+end
+
+post('/delete') do
+    delete_card()
 end
 
 post('/logout') do

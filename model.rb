@@ -86,6 +86,12 @@ def add_to_inventory()
     db.execute("UPDATE VALUES in cards user_id to user_id")
 end
 
+def delete_card()
+    db = connect_to_db('db/db.db')
+    db.execute("DELETE * FROM cards where card_id = ?", card_id)
+    redirect('/')
+end
+
 # def temp()
 #     db = connect_to_db('db/db.db')
 #     # db.execute("SELECT * FROM cards where id = 1")

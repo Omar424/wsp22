@@ -34,6 +34,11 @@ get('/error') do
     slim(:error)
 end
 
+post('/cards/:id/delete') do
+    card_id = params["id"].to_i
+    delete_card(card_id)
+end
+
 get('/user/:id/profile') do
 
     # if session["user_id"] != nil

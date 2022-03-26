@@ -56,25 +56,26 @@ def get_user_cards()
 end
 
 def get_all_cards()
+    
     if session["user_id"] != nil
-
         db = connect_to_db('db/db.db')
         cards = db.execute("SELECT * FROM cards")
-        stats = db.execute("SELECT stat1, stat2, stat3 FROM stats")
+        # stats = db.execute("SELECT stat1, stat2, stat3 FROM stats")
 
-        stat_1_array = []
-        stat_2_array = []
-        stat_3_array = []
+        # stat_1_array = []
+        # stat_2_array = []
+        # stat_3_array = []
 
-        i = 0
-        while i < cards.length
-            stat_1_array << stats[i]["stat1"]
-            stat_2_array << stats[i]["stat2"]
-            stat_3_array << stats[i]["stat3"]
-            i += 1
-        end
+        # i = 0
+        # while i < cards.length
+        #     stat_1_array << stats[i]["stat1"]
+        #     stat_2_array << stats[i]["stat2"]
+        #     stat_3_array << stats[i]["stat3"]
+        #     # stats:stats, stat1:stat_1_array, stat2:stat_2_array, stat3:stat_3_array
+        #     i += 1
+        # end
 
-        return slim(:webshop, locals:{cards:cards, stats:stats, stat1:stat_1_array, stat2:stat_2_array, stat3:stat_3_array})
+        return slim(:webshop, locals:{cards:cards})
     else
         redirect("/")
     end
@@ -86,10 +87,10 @@ def add_to_inventory()
     db.execute("UPDATE VALUES in cards user_id to user_id")
 end
 
-def delete_card()
+def delete_card(card_id)
     db = connect_to_db('db/db.db')
-    db.execute("DELETE * FROM cards where card_id = ?", card_id)
-    redirect('/')
+    db.execute("DELETE FROM cards where id = ?", card_id)
+    redirect('/webshop')
 end
 
 # def temp()

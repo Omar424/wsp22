@@ -2,6 +2,9 @@
 h1 Webbshop
 h3 Köp kort i webbshopen för att lägga till de i din inventory
 
+/ p = session[:user_id]
+/ p = cards[0]["user_id"]
+
 div#all_cards
     - cards.each_with_index do |card, i|
         div#fifa_card
@@ -9,11 +12,16 @@ div#all_cards
             p#position #{card["position"]}
             img#club src="#{card["club"]}" alt=":/"
             img#face src="/#{card["image"]}" alt=":/"
+            p#name #{card["name"]}
             div#stats_name
-                p#name #{card["name"]}
-                p#stat1.stat #{stat1[i]}
-                p#stat2.stat #{stat2[i]}
-                p#stat3.stat #{stat3[i]}
+                / p#stat1.stat #{stat1[i]}
+                / p#stat2.stat #{stat2[i]}
+                / p#stat3.stat #{stat3[i]}
+
+            form action="/buy" method="post"
+                button#buy_card type="submit" Köp kort!
             
-                form action="/buy" method="post"
-                    button type="submit" Köp kort!
+            - if card["user_id"] == session[:user_id]
+                form action="/cards/#{card["id"]}/delete" method="post"
+                    button#delete_card type="submit" Radera kort!
+                p#card_owner Du äger kortet

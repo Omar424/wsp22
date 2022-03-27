@@ -70,7 +70,7 @@ footer {
   position: absolute;
   left: 35px;
   top: 108px;
-  height: 60px;
+  height: 55px;
 }
 
 #face {
@@ -119,17 +119,34 @@ footer {
 
 #buy_card {
   position: absolute;
-  bottom: 60px;
-  right: 56px;
+  bottom: 30px;
+  right: 80px;
   height: auto;
   width: 80px;
   background-color: lightgreen;
 }
 
+#goto_card {
+  height: 100px;
+  width: 100px;
+  color:red;
+}
+
+#update_card {
+  position: absolute;
+  right: 68px;
+  top: 241px;
+  background-color: lightblue;
+  text-decoration: none;
+  font-size: 14px;
+  color: black;
+  border: 1px solid black;
+}
+
 #delete_card {
   position: absolute;
   bottom: 31px;
-  right: 50px;
+  right: 75px;
   width: 88px;
   height: auto;
   background-color: rgb(201, 101, 101);

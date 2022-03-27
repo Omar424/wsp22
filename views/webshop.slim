@@ -7,21 +7,26 @@ h3 Köp kort i webbshopen för att lägga till de i din inventory
 
 div#all_cards
     - cards.each_with_index do |card, i|
-        div#fifa_card
-            p#rating #{card["rating"]}
-            p#position #{card["position"]}
-            img#club src="#{card["club"]}" alt=":/"
-            img#face src="/#{card["image"]}" alt=":/"
-            p#name #{card["name"]}
-            div#stats_name
-                / p#stat1.stat #{stat1[i]}
-                / p#stat2.stat #{stat2[i]}
-                / p#stat3.stat #{stat3[i]}
+            div#fifa_card
+                p#rating #{card["rating"]}
+                p#position #{card["position"]}
+                img#club src="#{card["club"]}" alt=":/"
+                img#face src="/#{card["image"]}" alt=":/"
+                p#name #{card["name"]}
+                a#goto_card href="/card/#{i+1}" Gå till kortet
+                
+                div#stats_name
+                    / p#stat1.stat #{stat1[i]}
+                    / p#stat2.stat #{stat2[i]}
+                    / p#stat3.stat #{stat3[i]}
+                
+                - if card["user_id"] == session[:user_id]
+                    form action="/cards/#{card["id"]}/delete" method="post"
+                        button#delete_card type="submit" Radera kort!
+        
+                    a#update_card href="/cards/#{card["id"]}/edit" Uppdatera kort
+                    p#card_owner Du äger kortet
 
-            form action="/buy" method="post"
-                button#buy_card type="submit" Köp kort!
-            
-            - if card["user_id"] == session[:user_id]
-                form action="/cards/#{card["id"]}/delete" method="post"
-                    button#delete_card type="submit" Radera kort!
-                p#card_owner Du äger kortet
+                - else
+                    form action="/buy" method="post"
+                        button#buy_card type="submit" Köp kort!

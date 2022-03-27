@@ -1,0 +1,23 @@
+h3 Redigera kort:
+
+div#all_card
+    div#fifa_card
+        p#rating #{card["rating"]}
+        p#position #{card["position"]}
+        img#club src="#{card["club"]}" alt=":/"
+        img#face src="/#{card["image"]}" alt=":/"
+        p#name #{card["name"]}
+
+br
+
+form action="/card/#{card["id"]}/update" method="POST"
+    input.input_styling type="text" name="name" minlength="3" maxlength="16" required="" value="#{card["name"]}"
+    input.input_styling#choose_rating type="number" name="rating" min="50" max="99" required="" value="#{card["rating"]}"
+
+    select.input_styling required="" type="text" name="position" placeholder="Position"
+        option disabled="" hidden="" selected="" value="" Choose position
+        option value="Anfallare" Anfallare
+        option value="Mittfältare" Mittfältare
+        option value="Försvarare" Försvarare
+    input type="hidden" name="card_id" value="#{card["id"]}"
+    input.input_styling type="submit" name="Uppdatera Kort"

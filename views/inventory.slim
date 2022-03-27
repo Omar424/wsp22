@@ -1,19 +1,22 @@
 - @title = "Inventory"
 
-h1 Din inventory
+h1 Inventory
 
 h2 Dina kort
-- inventory.each_with_index do |inventory, i|
+- cards.each_with_index do |cards, i|
         div#card_container
             div#fifa_card
-                p#rating #{card["rating"]}
-                p#position #{card["position"]}
-                img#club src="#{card["club"]}" alt=":/"
-                p#name #{card["name"]}
-                img#face src="#{card["image"]}" alt=":/"
-                p#stat1.stat #{stat1[i]}
-                p#stat2.stat #{stat2[i]}
-                p#stat3.stat #{stat3[i]}
-                
-                form action="/buy" method="post"
-                    button type="submit" Köp kort!
+                p#rating #{cards["rating"]}
+                p#position #{cards["position"]}
+                img#club src="#{cards["club"]}" alt=":/"
+                p#name #{cards["name"]}
+                img#face src="#{cards["image"]}" alt=":/"
+                / p#stat1.stat #{stat1[i]}
+                / p#stat2.stat #{stat2[i]}
+                / p#stat3.stat #{stat3[i]}
+
+                form action="/cards/#{cards["id"]}/delete" method="post"
+                    button#delete_card type="submit" Radera kort!
+
+                a#update_card href="/cards/#{cards["id"]}/edit" Uppdatera kort
+                p#card_owner Du äger kortet

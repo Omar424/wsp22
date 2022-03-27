@@ -8,10 +8,10 @@ end
 
 def register_user(username, password, password_conf)
     db = connect_to_db('db/db.db')
-    user = db.execute("SELECT * FROM users WHERE username = ?", [username]).first
+    user = db.execute("SELECT * FROM users WHERE username = ?", username).first
     
     #Registeringskontroll, hantering av registrering
-    if user.empty?
+    if user == nil
         if password == password_conf
           hashed_password = BCrypt::Password.create(password)
           db.execute("INSERT INTO users (username, password) VALUES (?, ?)", [username, hashed_password])

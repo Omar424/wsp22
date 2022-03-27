@@ -70,9 +70,9 @@ get('/inventory') do
 
     if session["user_id"] != nil
         db = connect_to_db("db/db.db")
-        inventory = db.execute("SELECT * FROM cards WHERE user_id = ?", [session["user_id"]])
-        inventory = db.execute("SELECT * FROM stats WHERE user_id = ?", [session["user_id"]])
-        slim(:"inventory", locals: {inventory:inventory})
+        cards = db.execute("SELECT * FROM cards WHERE user_id = ?", [session["user_id"]])
+        stats = db.execute("SELECT * FROM stat")
+        slim(:"inventory", locals: {cards:cards, stats:stats})
     else
         redirect('/')
     end
@@ -87,23 +87,31 @@ end
 
 get('/card/:id') do
     db = connect_to_db("db/db.db")
-    card_id = params[:id]
+    card_id = params[:id].to_i
 
     card_data = db.execute("SELECT * FROM cards WHERE id = ?", card_id).first
     # p card_data
     # p card_data["rating"]
 
-    if card_data.nil?
-        session[:message] = "Card with id: #{card_id} does not exist :/"
-        redirect('/error')
+    if card_data != nil
+        slim(:"cards/show", locals:{card:card_data, id:card_id})
+    else
+        message = "Card with id: #{card_id} does not exist :/"
+        slim(:"error", locals:{message:message})
     end
 
-    slim(:"cards/show", locals:{card:card_data, id:card_id})
 end
 
 #Man ska inte komma till denna routen utan att vara inloggad, session_id ska vara tillgängligt
 get('/cards/new') do
     slim(:"cards/new", locals:{session_id: session["user_id"]})
+end
+
+get('/cards/:id/edit') do
+    id = params[:id].to_i
+    db = connect_to_db('db/db.db')
+    card = db.execute("SELECT * FROM cards WHERE id = ?", id).first
+    slim(:"/cards/edit", locals:{card:card})
 end
 
 #post routes
@@ -147,14 +155,23 @@ post('/create_card') do
     end
 
     create_card(name, position, club_path, face_path, rating, stat1, stat2, stat3, session[:user_id])
+end
 
-    # puts image_path "uploaded_pictures/faces/neymar.png"
+post('/cards/:id/update') do
+    id = params[:id].to_i
+    name = params[:name]
+    rating = params[:rating].to_i
+    position = params[:position]
+    # card_id = params[:card_id].to_i
+    db = SQLite3::Database.new("db/db.db")
+    db.execute("UPDATE cards SET name = ?, rating = ?, position = ? WHERE id = ?", name, rating, position, id)
+    redirect('/webshop')
 end
 
 post('/buy') do
     add_to_inventory(card_data)
     # update ägaren av kortet, nya ägaren den som köpte
-    redirect('/')
+    redirect('/webshop')
 end
 
 post('/delete') do

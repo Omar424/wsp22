@@ -8,8 +8,14 @@ div#all_cards
         img#club src="#{card["club"]}" alt=":/"
         img#face src="/#{card["image"]}" alt=":/"
 
-        form action="/buy" method="post"
-            button type="submit" Köp kort!
+        - if card["user_id"] == session[:user_id]
+                form action="/cards/#{card["id"]}/delete" method="post"
+                    button#delete_card type="submit" Radera kort!
+    
+                a#update_card href="/cards/#{card["id"]}/edit" Uppdatera kort
+                p#card_owner Du äger kortet
 
-form action="/delete" method="post"
-    button type="submit" Ta bort kort
+        - else
+            form action="/buy" method="post"
+                button#buy_card type="submit" Köp kort!
+            

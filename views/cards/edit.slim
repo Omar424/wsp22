@@ -7,17 +7,21 @@ div#all_card
         img#club src="#{card["club"]}" alt=":/"
         img#face src="/#{card["image"]}" alt=":/"
         p#name #{card["name"]}
-
 br
 
-form action="/card/#{card["id"]}/update" method="POST"
+form action="/cards/#{card["id"]}/update" method="POST"
+    h3 Ändra Namn
     input.input_styling type="text" name="name" minlength="3" maxlength="16" required="" value="#{card["name"]}"
+    
+    h3 Ändra betyg
     input.input_styling#choose_rating type="number" name="rating" min="50" max="99" required="" value="#{card["rating"]}"
-
+    
+    h3 Ändra position
     select.input_styling required="" type="text" name="position" placeholder="Position"
-        option disabled="" hidden="" selected="" value="" Choose position
+        option disabled="" hidden="" selected="" #{card["position"]}
         option value="Anfallare" Anfallare
         option value="Mittfältare" Mittfältare
         option value="Försvarare" Försvarare
+    
     input type="hidden" name="card_id" value="#{card["id"]}"
     input.input_styling type="submit" name="Uppdatera Kort"

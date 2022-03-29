@@ -14,6 +14,7 @@ html lang="en"
             - if session[:user_id] != nil
                 a.links href="/webshop" Webbshop
                 a.links href="/cards/new" Skapa kort
+                a.links href="/user/#{session[:user_id]}/profile" Profil
                 a.links href="/inventory" Inventory
                 h2 Logged in as #{session[:username]}
 

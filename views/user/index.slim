@@ -1,9 +1,38 @@
-h2 #{user_info["username"]}'s profil och skapta kort
+- if session["username"] == user_info["username"]
+    h2 Din profil och skapta kort
+- else
+    h2 #{user_info["username"]}'s profil och skapta kort
 
 #{message}
 
-- cards.each do |cards|
-    a href="/card/#{cards["id"]}" Kort #{cards["id"]}
-    br
-    br
-a href="/cards/new" Skapa ett nytt kort
+/ - cards.each do |cards|
+/     a href="/card/#{cards["id"]}" Kort #{cards["id"]}
+/     br
+/     br
+/ a href="/cards/new" Skapa ett nytt kort
+
+
+/ h2 Kort med id #{id}
+
+- cards.each_with_index do |cards, i|
+        div#card_container
+            div#fifa_card
+                p#rating #{cards["rating"]}
+                p#position #{cards["position"]}
+                img#club src="#{cards["club"]}" alt=":/"
+                p#name #{cards["name"]}
+                img#face src="/#{cards["image"]}" alt=":/"
+                / p#stat1.stat #{stat1[i]}
+                / p#stat2.stat #{stat2[i]}
+                / p#stat3.stat #{stat3[i]}
+
+                - if cards["user_id"] == session[:user_id]
+                    form action="/cards/#{cards["id"]}/delete" method="post"
+                        button#delete_card type="submit" Radera kort!
+        
+                    a#update_card href="/cards/#{cards["id"]}/edit" Uppdatera kort
+                    p#card_owner Du äger kortet
+
+                - else
+                    form action="/buy" method="post"
+                        button#buy_card type="submit" Köp kort!

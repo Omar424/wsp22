@@ -1,9 +1,8 @@
 - @title = "Webbshop"
 h1 Webbshop
 h3 Köp kort i webbshopen för att lägga till de i din inventory
+p Ditt id är #{cards[0]["user_id"]}
 
-/ p = session[:user_id]
-/ p = cards[0]["user_id"]
 
 div#all_cards
     - cards.each_with_index do |card, i|
@@ -14,7 +13,11 @@ div#all_cards
                 img#face src="/#{card["image"]}" alt=":/"
                 p#name #{card["name"]}
                 a#goto_card href="/card/#{i+1}" Gå till kortet
-                
+                a#goto_card href="/card/#{i+1}"
+                / - id = card["user_id"].to_i
+                / p = id
+                / - get_card_owner(id)
+                / / p Skapad av #{owner}
                 div#stats_name
                     / p#stat1.stat #{stat1[i]}
                     / p#stat2.stat #{stat2[i]}
@@ -28,5 +31,5 @@ div#all_cards
                     p#card_owner Du äger kortet
 
                 - else
-                    form action="/buy" method="post"
-                        button#buy_card type="submit" Köp kort!
+                    form action="/cards/#{card["id"]}/buy" method="post"
+                            button#buy_card type="submit" Köp kort!

@@ -25,7 +25,10 @@ html lang="en"
                 a.links href="/register" Registrera dig
                 a.links href="/login" Logga in
                 h2 Currently not logged in
-
+        .flash 
+            - flash.each do |key, value|
+                div class="flash_#{key}"
+                    |#{value}
         ==yield
 
         script src="/js/script.js"

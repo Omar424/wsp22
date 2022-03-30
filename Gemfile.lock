@@ -1,0 +1,48 @@
+GIT
+  remote: https://github.com/chrisb/yard-sinatra
+  revision: 226e048f615bdf068e65010d47f8cb143fd08865
+  specs:
+    yard-sinatra (2.0.0.beta)
+      activesupport
+      yard (~> 0.7)
+
+GEM
+  remote: https://rubygems.org/
+  specs:
+    activesupport (7.0.2.3)
+      concurrent-ruby (~> 1.0, >= 1.0.2)
+      i18n (>= 1.6, < 2)
+      minitest (>= 5.1)
+      tzinfo (~> 2.0)
+    concurrent-ruby (1.1.10)
+    i18n (1.10.0)
+      concurrent-ruby (~> 1.0)
+    minitest (5.15.0)
+    mustermann (1.1.1)
+      ruby2_keywords (~> 0.0.1)
+    rack (2.2.3)
+    rack-protection (2.2.0)
+      rack
+    ruby2_keywords (0.0.5)
+    sinatra (2.2.0)
+      mustermann (~> 1.0)
+      rack (~> 2.2)
+      rack-protection (= 2.2.0)
+      tilt (~> 2.0)
+    tilt (2.0.10)
+    tzinfo (2.0.4)
+      concurrent-ruby (~> 1.0)
+    webrick (1.7.0)
+    yard (0.9.27)
+      webrick (~> 1.7.0)
+
+PLATFORMS
+  x64-mingw-ucrt
+
+DEPENDENCIES
+  sinatra (~> 2.2)
+  yard
+  yard-sinatra!
+
+BUNDLED WITH
+   2.3.10

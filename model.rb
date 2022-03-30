@@ -31,31 +31,56 @@ def login_user(username, password)
     db = connect_to_db('db/db.db')
     user = db.execute("SELECT * FROM users WHERE username = ?", [username]).first
     # hashed_password = user["password"]
-
     if user == nil
-        return slim(:"user/login", locals: { error: "Användaren finns inte!", sucess: "" })   
+        flash[:error] = "Användaren finns inte!"
+        redirect "/login"
     elsif BCrypt::Password.new(user["password"]) == password
         session[:user_id] = user["id"]
         session[:username] = user["username"]
         puts "User id: #{session[:user_id]}"
-        redirect('/webshop')
+        flash[:sucess]
+        redirect "/webshop"
     else
-        return slim(:"user/login", locals: { error: "Fel lösenord!", sucess: "" })
+        flash[:error] = "Fel lösenord!"
+        redirect "/login"
     end
 end
 
-#Funktion för att skapa kort
-def create_card(name, position, club, face, rating, stat1, stat2, stat3, user_id)
-    db = connect_to_db('db/db.db')
-    db.execute("INSERT INTO cards (name, position, club, image, rating, user_id) VALUES (?,?,?,?,?,?)", [name, position, club, face, rating, user_id])
-    db.execute("INSERT INTO stats (stat1, stat2, stat3) VALUES (?,?,?)", [stat1, stat2, stat3])
-    File.open(file_face_path, "wb") do |f|
-        f.write(params[:player_face][:tempfile].read)
+def determine_stats(stat1, stat2, stat3)
+
+    stats = {
+    1 => "Snabbhet",
+    2 => "Skott",
+    3 => "Passningar",
+    4 => "Styrka",
+    5 => "Skicklighet",
+    6 => "Dribbling",
+    7 => "Uthållighet"
+    }
+
+    i = 0
+    while i < stats.length
+        if stats[i] == stat1
+            stat1 = i.to_i
+        end
+        i += 1
     end
-    File.open(file_club_path, "wb") do |f|
-        f.write(params[:club][:tempfile].read)
+    
+    j = 0
+    while j < stats.length
+        if stats[j] == stat2
+            stat2 = j.to_i
+        end
+        j += 1
     end
-    redirect('/webshop')
+    
+    k = 0
+    while k < stats.length
+        if stats[k] == stat3
+            stat3 = k.to_i
+        end
+        k += 1
+    end
 end
 
 #Funktion för att få användarens kort, inventory
@@ -80,11 +105,11 @@ def get_all_cards()
         cards = db.execute("SELECT * FROM cards")
         users = db.execute("SELECT * FROM users")
         # stats = db.execute("SELECT stat1, stat2, stat3 FROM stats")
-
+        
         # stat_1_array = []
         # stat_2_array = []
         # stat_3_array = []
-
+        
         # i = 0
         # while i < cards.length
         #     stat_1_array << stats[i]["stat1"]
@@ -97,6 +122,25 @@ def get_all_cards()
     else
         redirect('/')
     end
+end
+
+#Funktion för att skapa kort
+def create_card(name, position, club, face, rating, stat1, stat2, stat3, user_id)
+    db = connect_to_db("db/db.db")
+    db.execute("INSERT INTO cards (name, position, club, image, rating, user_id) VALUES (?,?,?,?,?,?)", [name, position, club, face, rating, user_id])
+    created_card_id = db.execute("SELECT id from cards ORDER by id DESC LIMIT 1")
+    p "created card id är #{created_card_id}"
+    db.execute("INSERT INTO card_stats_rel (card_id, stat_id) VALUES (?,?)", created_card_id, 0)
+    db.execute("INSERT INTO card_stats_rel (card_id, stat_id) VALUES (?,?)", [created_card_id, 1])
+    db.execute("INSERT INTO card_stats_rel (card_id, stat_id) VALUES (?,?)", [created_card_id, 2])
+    # db.execute("UPDATE card_stats_rel SET card_id = ?, stat_id = ? WHERE id = ?",[stat1, created_card_id])
+    File.open(file_face_path, "wb") do |f|
+        f.write(params[:player_face][:tempfile].read)
+    end
+    File.open(file_club_path, "wb") do |f|
+        f.write(params[:club][:tempfile].read)
+    end
+    redirect('/webshop')
 end
 
 #Funktion för att köpa kort

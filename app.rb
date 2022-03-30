@@ -3,6 +3,7 @@ require 'sinatra/reloader'
 require 'slim'
 require 'sqlite3'
 require 'bcrypt'
+require 'sinatra/flash'
 require_relative './model.rb'
 enable :sessions
 
@@ -100,7 +101,9 @@ end
 #Skapa kort
 get('/cards/new') do
     if session["user_id"] != nil
-        slim(:"cards/new", locals:{session_id: session["user_id"]})
+        db = connect_to_db("db/db.db")
+        stats = db.execute("SELECT stats from stat")
+        slim(:"cards/new", locals:{session_id: session["user_id"], stats:stats})
     else
         route = "/cards/new"
         "Du måste logga in för att komma till routen #{route}"
@@ -141,15 +144,20 @@ post('/create_card') do
     name = params[:name]
     position = params[:position]
     rating = params[:rating]
+    
+    # file_path för ruby att veta vart den ska skriva in filen
+    p face_path = "uploaded_pictures/faces/#{params[:player_face][:filename]}"
+    p club_path = "uploaded_pictures/clubs/#{params[:club][:filename]}"
+    
+    # path för get_routen att veta source för bilden
+    p file_face_path = "public/uploaded_pictures/faces/#{params[:player_face][:filename]}"
+    p file_club_path = "public/uploaded_pictures/clubs/#{params[:club][:filename]}"
+
     stat1 = params[:stat1]
     stat2 = params[:stat2]
     stat3 = params[:stat3]
-    # file_path för ruby att veta vart den ska skriva in filen
-    p file_face_path = "public/uploaded_pictures/faces/#{params[:player_face][:filename]}"
-    p file_club_path = "public/uploaded_pictures/clubs/#{params[:club][:filename]}"
-    # path för get_routen att veta source för bilden
-    p face_path = "uploaded_pictures/faces/#{params[:player_face][:filename]}"
-    p club_path = "uploaded_pictures/clubs/#{params[:club][:filename]}"
+    determine_stats(stat1, stat2, stat3)
+
     create_card(name, position, club_path, face_path, rating, stat1, stat2, stat3, session[:user_id])
 end
 

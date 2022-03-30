@@ -1,5 +1,7 @@
 h3 style="color:red" Session id är #{session["user_id"]}
 
+p #{stats}
+
 h2 Skapa anpassat kort för att lägga till i webbshoppen och din inventory
 
 form#create_card action="/create_card" method="post" enctype="multipart/form-data"
@@ -79,36 +81,31 @@ form#create_card action="/create_card" method="post" enctype="multipart/form-dat
 
     h3 Vad är spelarens tre bästa attribut?
     select.input_styling name="stat1" required="" type="text"
-        option disabled="" hidden="" selected="" value="" Attribut 1
-        option value="Snabbhet" Snabbhet
-        option value="Skott" Skott
-        option value="Passningar" Passningar
-        option value="Styrka" Styrka
-        option value="Skicklighet" Skicklighet
-        option value="Dribbling" Dribbling
-        option value="Uthållighet" Uthållighet
+        - stats.each_with_index do |stat, i|
+            option disabled="" hidden="" selected="" value="" Attribut 1
+            option #{stats[i]["stats"]}
     br
     br
     select.input_styling name="stat2" required="" type="text"
-        option disabled="" hidden="" selected="" value="" Attribut 2
-        option value="Snabbhet" Snabbhet
-        option value="Skott" Skott
-        option value="Passningar" Passningar
-        option value="Styrka" Styrka
-        option value="Skicklighet" Skicklighet
-        option value="Dribbling" Dribbling
-        option value="Uthållighet" Uthållighet
+        - stats.each_with_index do |stat, i|
+            option disabled="" hidden="" selected="" value="" Attribut 2
+            option #{stats[i]["stats"]}
     br
     br
     select.input_styling name="stat3" required="" type="text"
-        option disabled="" hidden="" selected="" value="" Attribut 3
-        option value="Snabbhet" Snabbhet
-        option value="Skott" Skott
-        option value="Passningar" Passningar
-        option value="Styrka" Styrka
-        option value="Skicklighet" Skicklighet
-        option value="Dribbling" Dribbling
-        option value="Uthållighet" Uthållighet    
+        - stats.each_with_index do |stat, i|
+            option disabled="" hidden="" selected="" value="" Attribut 3
+            option #{stats[i]["stats"]}
 
     h3 Skapa spelare
     input.input_styling type="submit" value="Skapa custom spelare!"
+ 
+    / select.input_styling name="stat3" required="" type="text"
+    /     option disabled="" hidden="" selected="" value="" Attribut 3
+    /     option value="Snabbhet" Snabbhet
+    /     option value="Skott" Skott
+    /     option value="Passningar" Passningar
+    /     option value="Styrka" Styrka
+    /     option value="Skicklighet" Skicklighet
+    /     option value="Dribbling" Dribbling
+    /     option value="Uthållighet" Uthållighet

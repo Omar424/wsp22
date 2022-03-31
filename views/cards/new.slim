@@ -15,8 +15,35 @@ form#create_card action="/create_card" method="post" enctype="multipart/form-dat
         option value="Mittfältare" Mittfältare
         option value="Försvarare" Försvarare
 
-    h3 Vilken klubb spelar din spelare i?
+    h3 Hur ser din spelare ut?
+    div#border_image
+        h4 Ladda ner bilder på spelare, extrahera mappen och använd de på din spelare (eller använd din egna png):
+        a download="" style="color: red; font-weight: 500; text-decoration: none; text-decoration: none;"  href="/misc/player_faces.zip" Tryck här för att ladda ner bilderna
+        h4 Bilderna är ansikten på kända fotbollsspelare. Så här ser de ut:
+    
+    div#player_names
+        h3.player_name De bruyne
+        h3.player_name Kane
+        h3.player_name Kante
+        h3.player_name Lewandowski
+        h3.player_name Mbappe
+        h3.player_name Messi
+        h3.player_name Neymar
+        h3.player_name Ronaldo
+    
+    div#player_faces    
+        img.player_faces src="/img/players/debruyne.png" alt="de bruyne"
+        img.player_faces src="/img/players/kane.png" alt="kane"
+        img.player_faces src="/img/players/kante.png" alt="kante"
+        img.player_faces src="/img/players/lewandowski.png" alt="lewandowski"
+        img.player_faces src="/img/players/mbappe.png" alt="mbappe"
+        img.player_faces src="/img/players/messi.png" alt="messi"
+        img.player_faces src="/img/players/neymar.png" alt="neymar"
+        img.player_faces src="/img/players/ronaldo.png" alt="ronaldo"
 
+    input.input_styling type="file" name="player_face" accept='image/x-png' required=""
+
+    h3 Vilken klubb spelar din spelare i?
     div#border_club
         h4 Ladda ner bilder på kända fotbollsklubb, extrahera mappen och använd de på din spelare (eller använd din egna png):
         a download="" style="color: red; font-weight: 500; text-decoration: none; text-decoration: none;"  href="/misc/clubs.zip" Tryck här för att ladda ner bilderna.
@@ -47,34 +74,6 @@ form#create_card action="/create_card" method="post" enctype="multipart/form-dat
         img.player_club src="/img/clubs/united.png" alt="united"
 
     input.input_styling type="file" name="club" accept='image/x-png' required=""
-
-    h3 Hur ser din spelare ut?
-    div#border_image
-        h4 Ladda ner bilder på spelare, extrahera mappen och använd de på din spelare (eller använd din egna png):
-        a download="" style="color: red; font-weight: 500; text-decoration: none; text-decoration: none;"  href="/misc/player_faces.zip" Tryck här för att ladda ner bilderna
-        h4 Bilderna är ansikten på kända fotbollsspelare. Så här ser de ut:
-    
-    div#player_names
-        h3.player_name De bruyne
-        h3.player_name Kane
-        h3.player_name Kante
-        h3.player_name Lewandowski
-        h3.player_name Mbappe
-        h3.player_name Messi
-        h3.player_name Neymar
-        h3.player_name Ronaldo
-    
-    div#player_faces    
-        img.player_faces src="/img/players/debruyne.png" alt="de bruyne"
-        img.player_faces src="/img/players/kane.png" alt="kane"
-        img.player_faces src="/img/players/kante.png" alt="kante"
-        img.player_faces src="/img/players/lewandowski.png" alt="lewandowski"
-        img.player_faces src="/img/players/mbappe.png" alt="mbappe"
-        img.player_faces src="/img/players/messi.png" alt="messi"
-        img.player_faces src="/img/players/neymar.png" alt="neymar"
-        img.player_faces src="/img/players/ronaldo.png" alt="ronaldo"
-
-    input.input_styling type="file" name="player_face" accept='image/x-png' required=""
 
     h3 Hur bra är spelaren från skala 50-99
     input.input_styling#choose_rating type="number" name="rating" placeholder="50-99" min="50" max="99" required=""

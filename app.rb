@@ -14,6 +14,10 @@ get('/') do
     if session["user_id"] != nil
         redirect('/webshop')
     else
+        # determine_stat("Snabbhet")
+        # determine_stat("Uthållighet")
+        # determine_stat("Skott")
+        # convert_stats()
         slim(:index)
     end
 end
@@ -43,15 +47,16 @@ get('/user/:id/profile') do
         user_cards = db.execute("SELECT * FROM cards where user_id = ?", user_id)
     
         if user_data == nil
-            "user with id: #{user_id} does not exist"
+            flash[:error] = "Användare med id #{user_id} finns inte"
+            redirect "/"
         elsif user_cards.length == 0
             slim(:"user/index", locals:{user_info:user_data, cards:user_cards, message: "user with id #{user_id} hasn't created a card"})
         else
             slim(:"user/index", locals:{user_info:user_data, cards:user_cards, message: "temp"})
         end
     else
-        route = "/user/#{user_id}/profile"
-        slim(:"/error", locals:{m:"Du måste vara inloggad för att se routen #{route}"})
+        flash[:error] = "Du måste vara inloggad för att se en profil"
+        redirect "/"
     end
 end
 
@@ -86,15 +91,15 @@ get('/card/:id') do
     if session["user_id"] != nil
         db = connect_to_db("db/db.db")
         card_data = db.execute("SELECT * FROM cards WHERE id = ?", card_id).first
-
+        
         if card_data != nil
             slim(:"cards/show", locals:{card:card_data, id:card_id})
         else
             "Card with id: #{card_id} does not exist :/"
         end
     else
-        route = "/cards/#{card_id}"
-        "Du måste logga in för att komma till routen #{route}"
+        flash[:error] = "Logga in för att visa ett kort"
+        redirect "/"
     end
 end
 
@@ -105,8 +110,8 @@ get('/cards/new') do
         stats = db.execute("SELECT stats from stat")
         slim(:"cards/new", locals:{session_id: session["user_id"], stats:stats})
     else
-        route = "/cards/new"
-        "Du måste logga in för att komma till routen #{route}"
+        flash[:error] = "Logga in för att skapa ett kort"
+        redirect "/"
     end
 end
 
@@ -118,7 +123,8 @@ get('/cards/:id/edit') do
         card = db.execute("SELECT * FROM cards WHERE id = ?", id).first
         slim(:"/cards/edit", locals:{card:card})
     else
-        "Du måste logga in för att redigera ett kort"
+        flash[:error] = "Logga in för att redigera ett kort"
+        redirect "/"
     end
 end
 
@@ -144,21 +150,53 @@ post('/create_card') do
     name = params[:name]
     position = params[:position]
     rating = params[:rating]
+    user_id = session[:user_id]
     
     # file_path för ruby att veta vart den ska skriva in filen
-    p face_path = "uploaded_pictures/faces/#{params[:player_face][:filename]}"
-    p club_path = "uploaded_pictures/clubs/#{params[:club][:filename]}"
+    # p club_path = "public/uploaded_pictures/clubs/#{params[:club][:filename]}"
+    # p face_path = "public/uploaded_pictures/faces/#{params[:player_face][:filename]}"
     
-    # path för get_routen att veta source för bilden
-    p file_face_path = "public/uploaded_pictures/faces/#{params[:player_face][:filename]}"
-    p file_club_path = "public/uploaded_pictures/clubs/#{params[:club][:filename]}"
+    # path för databasen att lägga in i tabell
+    p club = "uploaded_pictures/clubs/#{params[:club][:filename]}"
+    p face = "uploaded_pictures/faces/#{params[:player_face][:filename]}"
 
     stat1 = params[:stat1]
     stat2 = params[:stat2]
     stat3 = params[:stat3]
-    determine_stats(stat1, stat2, stat3)
 
-    create_card(name, position, club_path, face_path, rating, stat1, stat2, stat3, session[:user_id])
+    stats = {1 => "Snabbhet", 2 => "Skott", 3 => "Passningar", 4 => "Styrka", 5 => "Skicklighet", 6 => "Dribbling",7 => "Uthållighet"}
+    
+    p "#{stat1} blev konverterad till"
+    i = 0
+    while i < (stats.length + 1)
+        if stats[i] == stat1
+            stat1 = i.to_i
+        end
+        i += 1
+    end
+    p "#{stat1}"
+
+    p "#{stat2} blev konverterad till"
+    j = 0
+    while j < (stats.length + 1)
+        if stats[j] == stat2
+            stat2 = j.to_i
+        end
+        j += 1
+    end
+    p "#{stat2}"
+    
+    p "#{stat3} blev konverterad till"
+    k = 0
+    while k < (stats.length + 1)
+        if stats[k] == stat3
+            stat3 = k.to_i
+        end
+        k += 1
+    end
+    p "#{stat3}"
+
+    create_card(name, position, club, face, rating, stat1, stat2, stat3, user_id)
 end
 
 #Köpa kort

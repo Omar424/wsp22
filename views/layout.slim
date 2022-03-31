@@ -28,7 +28,7 @@ html lang="en"
         .flash 
             - flash.each do |key, value|
                 div class="flash_#{key}"
-                    |#{value}
+                    | #{value}
         ==yield
 
         script src="/js/script.js"

@@ -46,43 +46,6 @@ def login_user(username, password)
     end
 end
 
-def determine_stats(stat1, stat2, stat3)
-
-    stats = {
-    1 => "Snabbhet",
-    2 => "Skott",
-    3 => "Passningar",
-    4 => "Styrka",
-    5 => "Skicklighet",
-    6 => "Dribbling",
-    7 => "Uthållighet"
-    }
-
-    i = 0
-    while i < stats.length
-        if stats[i] == stat1
-            stat1 = i.to_i
-        end
-        i += 1
-    end
-    
-    j = 0
-    while j < stats.length
-        if stats[j] == stat2
-            stat2 = j.to_i
-        end
-        j += 1
-    end
-    
-    k = 0
-    while k < stats.length
-        if stats[k] == stat3
-            stat3 = k.to_i
-        end
-        k += 1
-    end
-end
-
 #Funktion för att få användarens kort, inventory
 # def get_user_cards()
 #     db = connect_to_db('db/db.db')
@@ -104,7 +67,15 @@ def get_all_cards()
         db = connect_to_db('db/db.db')
         cards = db.execute("SELECT * FROM cards")
         users = db.execute("SELECT * FROM users")
-        # stats = db.execute("SELECT stat1, stat2, stat3 FROM stats")
+        stats = db.execute("SELECT card_id, stat_id FROM card_stats_rel")
+        
+        stat_dict = stats = {1 => "Snabbhet", 2 => "Skott", 3 => "Passningar", 4 => "Styrka", 5 => "Skicklighet", 6 => "Dribbling",7 => "Uthållighet"}
+        
+        
+        # i = 0
+        # while i < stat_dict.length
+        #     if 
+        # end
         
         # stat_1_array = []
         # stat_2_array = []
@@ -124,21 +95,92 @@ def get_all_cards()
     end
 end
 
+def convert_stats()
+    db = connect_to_db("db/db.db")
+    p stats = db.execute("SELECT card_id, stat_id FROM card_stats_rel").last
+    puts "#{stats["stat_id"]} blev konverterad till"
+    
+    # stats.each do |stat|
+    #     p stat = stat
+    # end
+    
+    statname = ""
+    
+    if stats["stat_id"] == 1
+        statname = "Snabbhet"
+    elsif stats["stat_id"] == 2
+        statname = "Skott"
+    elsif stats["stat_id"] == 3
+        statname = "Passningar"
+    elsif stats["stat_id"] == 4
+        statname = "Styrka"
+    elsif stats["stat_id"] == 5
+        statname = "Skicklighet"
+    elsif stats["stat_id"] == 6
+        statname = "Dribbling"
+    elsif stats["stat_id"] == 7
+        statname = "Uthållighet"
+    end
+    
+    puts "#{statname}"
+end
+
+def determine_stat(stat)
+    stats = {1 => "Snabbhet", 2 => "Skott", 3 => "Passningar", 4 => "Styrka", 5 => "Skicklighet", 6 => "Dribbling", 7 => "Uthållighet"}
+
+    p "#{stat} blev konverterad till"
+    
+    i = 0
+    while i < (stats.length + 1)
+        if stats[i] == stat
+            stat = i.to_i
+        end
+        i += 1
+    end
+    
+    # j = 0
+    # while j < stats.length
+    #     if stats[j] == stat2
+    #         number2 = j.to_i
+    #     end
+    #     j += 1
+    # end
+    
+    # k = 0
+    # while k < stats.length
+    #     if stats[k] == stat3
+    #         number3 = k.to_i
+    #     end
+    #     k += 1
+    # end
+
+    puts "#{stat}"
+    # puts "2) #{stat2} blev konverterad till #{number2}"
+    # puts "3) #{stat3} blev konverterad till #{number3}"
+end
+
 #Funktion för att skapa kort
 def create_card(name, position, club, face, rating, stat1, stat2, stat3, user_id)
+    #ansluter till databasen
     db = connect_to_db("db/db.db")
+
+    #creating card
     db.execute("INSERT INTO cards (name, position, club, image, rating, user_id) VALUES (?,?,?,?,?,?)", [name, position, club, face, rating, user_id])
-    created_card_id = db.execute("SELECT id from cards ORDER by id DESC LIMIT 1")
-    p "created card id är #{created_card_id}"
-    db.execute("INSERT INTO card_stats_rel (card_id, stat_id) VALUES (?,?)", created_card_id, 0)
-    db.execute("INSERT INTO card_stats_rel (card_id, stat_id) VALUES (?,?)", [created_card_id, 1])
-    db.execute("INSERT INTO card_stats_rel (card_id, stat_id) VALUES (?,?)", [created_card_id, 2])
-    # db.execute("UPDATE card_stats_rel SET card_id = ?, stat_id = ? WHERE id = ?",[stat1, created_card_id])
-    File.open(file_face_path, "wb") do |f|
-        f.write(params[:player_face][:tempfile].read)
-    end
-    File.open(file_club_path, "wb") do |f|
+    p created_card_id = db.execute("SELECT id from cards").last
+    id = created_card_id["id"].to_i
+    
+    #insertion of stats
+    db.execute("INSERT INTO card_stats_rel (card_id, stat_id) VALUES (?,?)", [id, stat1])
+    db.execute("INSERT INTO card_stats_rel (card_id, stat_id) VALUES (?,?)", [id, stat2])
+    db.execute("INSERT INTO card_stats_rel (card_id, stat_id) VALUES (?,?)", [id, stat3])
+    p "spelarens stats har lagts till"
+    
+    #Skriver in filerna för ansikte och klubb i respektive path
+    File.open(("public/" + club), "wb") do |f|
         f.write(params[:club][:tempfile].read)
+    end
+    File.open(("public/" + face), "wb") do |f|
+        f.write(params[:player_face][:tempfile].read)
     end
     redirect('/webshop')
 end

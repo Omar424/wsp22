@@ -289,3 +289,7 @@ footer {
   from{opacity: 0;}
   to{opacity: 1;}
 }
+
+.submit:hover {
+  cursor: pointer;
+}

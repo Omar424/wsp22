@@ -151,14 +151,13 @@ post('/create_card') do
     position = params[:position]
     rating = params[:rating]
     user_id = session[:user_id]
+    # path för databasen att lägga in i tabell
+    p club = "uploaded_pictures/clubs/#{params[:club][:filename]}"
+    p face = "uploaded_pictures/faces/#{params[:player_face][:filename]}"
     
     # file_path för ruby att veta vart den ska skriva in filen
     # p club_path = "public/uploaded_pictures/clubs/#{params[:club][:filename]}"
     # p face_path = "public/uploaded_pictures/faces/#{params[:player_face][:filename]}"
-    
-    # path för databasen att lägga in i tabell
-    p club = "uploaded_pictures/clubs/#{params[:club][:filename]}"
-    p face = "uploaded_pictures/faces/#{params[:player_face][:filename]}"
 
     stat1 = params[:stat1]
     stat2 = params[:stat2]

@@ -17,11 +17,11 @@ h2 Dina kort
 
                 - if cards["user_id"] == session[:user_id]
                     form action="/cards/#{cards["id"]}/delete" method="post"
-                        button#delete_card type="submit" Radera kort!
+                        button#delete_card.submit type="submit" Radera kort!
         
                     a#update_card href="/cards/#{cards["id"]}/edit" Uppdatera kort
                     p#card_owner Du äger kortet
 
                 - else
                     form action="/buy" method="post"
-                        button#buy_card type="submit" Köp kort!
+                        button#buy_card.submit type="submit" Köp kort!

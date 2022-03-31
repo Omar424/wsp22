@@ -125,40 +125,6 @@ def convert_stats()
     puts "#{statname}"
 end
 
-def determine_stat(stat)
-    stats = {1 => "Snabbhet", 2 => "Skott", 3 => "Passningar", 4 => "Styrka", 5 => "Skicklighet", 6 => "Dribbling", 7 => "Uthållighet"}
-
-    p "#{stat} blev konverterad till"
-    
-    i = 0
-    while i < (stats.length + 1)
-        if stats[i] == stat
-            stat = i.to_i
-        end
-        i += 1
-    end
-    
-    # j = 0
-    # while j < stats.length
-    #     if stats[j] == stat2
-    #         number2 = j.to_i
-    #     end
-    #     j += 1
-    # end
-    
-    # k = 0
-    # while k < stats.length
-    #     if stats[k] == stat3
-    #         number3 = k.to_i
-    #     end
-    #     k += 1
-    # end
-
-    puts "#{stat}"
-    # puts "2) #{stat2} blev konverterad till #{number2}"
-    # puts "3) #{stat3} blev konverterad till #{number3}"
-end
-
 #Funktion för att skapa kort
 def create_card(name, position, club, face, rating, stat1, stat2, stat3, user_id)
     #ansluter till databasen

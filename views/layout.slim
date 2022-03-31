@@ -19,7 +19,7 @@ html lang="en"
                 h2 Logged in as #{session[:username]}
 
                 form action="/logout" method="post"
-                    input#logout type="submit" value="Logout"
+                    input#logout.submit type="submit" value="Logout"
             - else
                 a.links href="/" Homepage
                 a.links href="/register" Registrera dig

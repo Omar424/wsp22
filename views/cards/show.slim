@@ -5,7 +5,7 @@ div#all_cards
         p#rating #{card["rating"]}
         p#name #{card["name"]}
         p#position #{card["position"]}
-        img#club src="#{card["club"]}" alt=":/"
+        img#club src="/#{card["club"]}" alt=":/"
         img#face src="/#{card["image"]}" alt=":/"
 
         - if card["user_id"] == session[:user_id]

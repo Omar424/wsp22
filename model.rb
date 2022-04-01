@@ -61,40 +61,6 @@ def get_card_owner(id)
     slim(:"webshop", locals:{owner:owner})
 end
 
-#Funktion för att få alla kort i databasen, webshop
-def get_all_cards()
-    if session["user_id"] != nil
-        db = connect_to_db('db/db.db')
-        cards = db.execute("SELECT * FROM cards")
-        users = db.execute("SELECT * FROM users")
-        stats = db.execute("SELECT card_id, stat_id FROM card_stats_rel")
-        
-        stat_dict = stats = {1 => "Snabbhet", 2 => "Skott", 3 => "Passningar", 4 => "Styrka", 5 => "Skicklighet", 6 => "Dribbling",7 => "Uthållighet"}
-        
-        
-        # i = 0
-        # while i < stat_dict.length
-        #     if 
-        # end
-        
-        # stat_1_array = []
-        # stat_2_array = []
-        # stat_3_array = []
-        
-        # i = 0
-        # while i < cards.length
-        #     stat_1_array << stats[i]["stat1"]
-        #     stat_2_array << stats[i]["stat2"]
-        #     stat_3_array << stats[i]["stat3"]
-        #     # stats:stats, stat1:stat_1_array, stat2:stat_2_array, stat3:stat_3_array
-        #     i += 1
-        # end
-        return slim(:webshop, locals:{cards:cards, users:users})
-    else
-        redirect('/')
-    end
-end
-
 def convert_stats()
     db = connect_to_db("db/db.db")
     p stats = db.execute("SELECT card_id, stat_id FROM card_stats_rel").last
@@ -126,19 +92,19 @@ def convert_stats()
 end
 
 #Funktion för att skapa kort
-def create_card(name, position, club, face, rating, stat1, stat2, stat3, user_id)
+def create_card(name, position, club, face, rating, stat1, stat2, stat3, stat1_num, stat2_num, stat3_num, user_id)
     #ansluter till databasen
     db = connect_to_db("db/db.db")
-
+    
     #creating card
     db.execute("INSERT INTO cards (name, position, club, image, rating, user_id) VALUES (?,?,?,?,?,?)", [name, position, club, face, rating, user_id])
     p created_card_id = db.execute("SELECT id from cards").last
     id = created_card_id["id"].to_i
     
     #insertion of stats
-    db.execute("INSERT INTO card_stats_rel (card_id, stat_id) VALUES (?,?)", [id, stat1])
-    db.execute("INSERT INTO card_stats_rel (card_id, stat_id) VALUES (?,?)", [id, stat2])
-    db.execute("INSERT INTO card_stats_rel (card_id, stat_id) VALUES (?,?)", [id, stat3])
+    db.execute("INSERT INTO card_stats_rel (card_id, stat_id) VALUES (?,?)", [id, stat1_num])
+    db.execute("INSERT INTO card_stats_rel (card_id, stat_id) VALUES (?,?)", [id, stat2_num])
+    db.execute("INSERT INTO card_stats_rel (card_id, stat_id) VALUES (?,?)", [id, stat3_num])
     p "spelarens stats har lagts till"
     
     #Skriver in filerna för ansikte och klubb i respektive path
@@ -148,7 +114,60 @@ def create_card(name, position, club, face, rating, stat1, stat2, stat3, user_id
     File.open(("public/" + face), "wb") do |f|
         f.write(params[:player_face][:tempfile].read)
     end
+    
+    #Redirectar till webshop med det nya kortet
     redirect('/webshop')
+end
+
+#Funktion för att få alla kort i databasen, webshop
+def get_all_cards()
+    if session["user_id"] != nil
+        db = connect_to_db('db/db.db')
+        cards = db.execute("SELECT * FROM cards")
+        p stats = db.execute("SELECT card_id, stat_id FROM card_stats_rel")
+
+        stats_names = []   
+
+        stats.each do |stat|
+            if stat["stat_id"] == 1
+                stats_words << "Snabbhet"
+            elsif stat["stat_id"] == 2
+                stats_words << "Skott"
+            elsif stat["stat_id"] == 3
+                stats_words << "Passningar"
+            elsif stat["stat_id"] == 4
+                stats_words << "Styrka"
+            elsif stats["stat_id"] == 5
+                stats_words << "Skicklighet"
+            elsif stats["stat_id"] == 6
+                stats_words << "Dribbling"
+            elsif stats["stat_id"] == 7
+                stats_words << "Uthållighet"
+            end
+        end
+
+        # i = 0
+        # while i < stat_dict.length
+        #     if 
+        # end
+        
+        # stat_1_array = []
+        # stat_2_array = []
+        # stat_3_array = []
+        
+        # i = 0
+        # while i < cards.length
+        #     stat_1_array << stats[i]["stat1"]
+        #     stat_2_array << stats[i]["stat2"]
+        #     stat_3_array << stats[i]["stat3"]
+        #     # stats:stats, stat1:stat_1_array, stat2:stat_2_array, stat3:stat_3_array
+        #     i += 1
+        # end
+        return slim(:webshop, locals:{cards:cards, stats:stats})
+    else
+        flash["error"] = "Du måste logga in för att se webshoppen"
+        redirect "/"
+    end
 end
 
 #Funktion för att köpa kort
@@ -162,6 +181,12 @@ end
 def update_card(card_id, name, rating, position)
     db = connect_to_db("db/db.db")
     db.execute("UPDATE cards SET name = ?, rating = ?, position = ? WHERE id = ?", name, rating, position, card_id)
+    redirect('/webshop')
+end
+
+def update_card_without_position(card_id, name, rating)
+    db = connect_to_db("db/db.db")
+    db.execute("UPDATE cards SET name = ?, rating = ? WHERE id = ?", name, rating, card_id)
     redirect('/webshop')
 end
 
@@ -180,3 +205,49 @@ end
 # end
 
 # puts temp()
+
+def omar()
+    db = connect_to_db('db/db.db')
+    p cards = db.execute("SELECT * FROM cards")
+    p stats = db.execute("SELECT card_id, stat_id FROM card_stats_rel")
+    stats_names = []
+
+    stats_1_names = []
+    stats_2_names = []
+    stats_3_names = []
+    
+    stats.each do |stat|
+        if stat["stat_id"] == 1
+            stats_names << "Snabbhet"
+        elsif stat["stat_id"] == 2
+            stats_names << "Skott"
+        elsif stat["stat_id"] == 3
+            stats_names << "Passningar"
+        elsif stat["stat_id"] == 4
+            stats_names << "Styrka"
+        elsif stat["stat_id"] == 5
+            stats_names << "Skicklighet"
+        elsif stat["stat_id"] == 6
+            stats_names << "Dribbling"
+        elsif stat["stat_id"] == 7
+            stats_names << "Uthållighet"
+        end
+    end
+
+    p stats_names
+    
+    # stat_1_array = []
+    # stat_2_array = []
+    # stat_3_array = []
+    
+    # i = 0
+    # while i < cards.length
+    #     stat_1_array << stats[i]["stat1"]
+    #     stat_2_array << stats[i]["stat2"]
+    #     stat_3_array << stats[i]["stat3"]
+    #     stats:stats, stat1:stat_1_array, stat2:stat_2_array, stat3:stat_3_array
+    #     i += 1
+    # end
+
+    return slim(:webshop, locals:{cards:cards, stats:stats})
+end

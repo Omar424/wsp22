@@ -18,6 +18,7 @@ get('/') do
         # determine_stat("Uthållighet")
         # determine_stat("Skott")
         # convert_stats()
+        omar()
         slim(:index)
     end
 end
@@ -121,7 +122,12 @@ get('/cards/:id/edit') do
         id = params[:id].to_i
         db = connect_to_db('db/db.db')
         card = db.execute("SELECT * FROM cards WHERE id = ?", id).first
-        slim(:"/cards/edit", locals:{card:card})
+        if card == nil
+            flash[:error] = "Kortet med id #{id} finns inte"
+            redirect "/webshop"
+        else
+            slim(:"/cards/edit", locals:{card:card})
+        end
     else
         flash[:error] = "Logga in för att redigera ett kort"
         redirect "/"
@@ -162,6 +168,9 @@ post('/create_card') do
     stat1 = params[:stat1]
     stat2 = params[:stat2]
     stat3 = params[:stat3]
+    stat1_num = ""
+    stat2_num = ""
+    stat3_num = ""
 
     stats = {1 => "Snabbhet", 2 => "Skott", 3 => "Passningar", 4 => "Styrka", 5 => "Skicklighet", 6 => "Dribbling",7 => "Uthållighet"}
     
@@ -169,33 +178,33 @@ post('/create_card') do
     i = 0
     while i < (stats.length + 1)
         if stats[i] == stat1
-            stat1 = i.to_i
+            stat1_num = i.to_i
         end
         i += 1
     end
-    p "#{stat1}"
+    p "#{stat1_num}"
 
     p "#{stat2} blev konverterad till"
     j = 0
     while j < (stats.length + 1)
         if stats[j] == stat2
-            stat2 = j.to_i
+            stat2_num = j.to_i
         end
         j += 1
     end
-    p "#{stat2}"
+    p "#{stat2_num}"
     
     p "#{stat3} blev konverterad till"
     k = 0
     while k < (stats.length + 1)
         if stats[k] == stat3
-            stat3 = k.to_i
+            stat3_num = k.to_i
         end
         k += 1
     end
-    p "#{stat3}"
+    p "#{stat3_num}"
 
-    create_card(name, position, club, face, rating, stat1, stat2, stat3, user_id)
+    create_card(name, position, club, face, rating, stat1, stat2, stat3, stat1_num, stat2_num, stat3_num, user_id)
 end
 
 #Köpa kort
@@ -210,7 +219,12 @@ post('/cards/:id/update') do
     name = params[:name]
     rating = params[:rating].to_i
     position = params[:position]
-    update_card(card_id, name, rating, position)
+    if position == nil
+        update_card_without_position(card_id, name, rating)
+    else
+        update_card(card_id, name, rating, position)
+    end
+
 end
 
 #Radera kort

@@ -43,8 +43,8 @@ get('/login') do
     end
 end
 
-#Route för att komma till användarens eller andras profil
-get('/user/:id/profile') do
+#Route för att komma till användarens eller andras inventory
+get('/user/:id/inventory') do
     user_id = params[:id]
     get_user_inventory(user_id)
 end
@@ -67,9 +67,7 @@ end
 #Skapa kort
 get('/cards/new') do
     if session["user_id"] != nil
-        db = connect_to_db("db/db.db")
-        stats = db.execute("SELECT stats from stat")
-        slim(:"cards/new", locals:{session_id: session["user_id"], stats:stats})
+        slim(:"cards/new")
     else
         flash[:error] = "Logga in för att skapa ett kort"
         redirect "/"
@@ -78,21 +76,8 @@ end
 
 #Uppdatera kort
 get('/cards/:id/edit') do
-    if session[:user_id] != nil
-        id = params[:id].to_i
-        db = connect_to_db('db/db.db')
-        card = db.execute("SELECT * FROM cards WHERE id = ?", id).first
-        p stats = db.execute("SELECT stat1_id, stat2_id FROM card_stats_rel WHERE card_id = ?", id).first
-        if card == nil
-            flash[:error] = "Kortet med id #{id} finns inte"
-            redirect "/webshop"
-        else
-            slim(:"/cards/edit", locals:{card:card, stats:stats})
-        end
-    else
-        flash[:error] = "Logga in för att redigera ett kort"
-        redirect "/"
-    end
+    card_id = params[:id].to_i
+    edit_card(card_id)
 end
 
 #post-routes

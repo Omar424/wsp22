@@ -50,6 +50,7 @@ def login_user(username, password)
     end
 end
 
+#Funktion för att visa ett specifikt kort
 def show_one_card(card_id)
     if session["user_id"] != nil
         db = connect_to_db("db/db.db")
@@ -87,11 +88,11 @@ def get_user_inventory(user_id)
         #Om användaren inte skapat några kort och det inte är den aktiva användaren
         elsif user_cards == nil && user_data["id"] != session["user_id"]
             flash[:error] = "Användaren #{session[:username]} har inte skapat några kort"
-            redirect "/user/#{user_id}/profile"
+            redirect "/user/#{user_id}/inventory"
         #Om användaren inte skapat några kort och det är den aktiva användaren
         elsif user_cards == nil && user_data["id"] == session["user_id"]
             flash[:error] = "Du har inte skapat några kort"
-            redirect "/user/#{user_id}/profile"
+            redirect "/user/#{user_id}/inventory"
         else
             slim(:"inventory", locals:{user:user_data, cards:user_cards, stats:stats})
         end
@@ -108,6 +109,7 @@ end
 #     slim(:"webshop", locals:{owner:owner})
 # end
 
+#Funktion som konverterar stats från nummer till namn
 def convert_stats()
     db = connect_to_db("db/db.db")
     p stats = db.execute("SELECT card_id, stat_id FROM card_stats_rel").last
@@ -248,6 +250,23 @@ def buy_card(card_id)
     db.execute("UPDATE cards SET user_id = ? WHERE id = ?", session[:user_id], card_id)
     flash[:sucess] = "Du har köpt kortet"
     redirect "/webshop"
+end
+
+def edit_card(card_id)
+    if session[:user_id] != nil
+        db = connect_to_db('db/db.db')
+        card = db.execute("SELECT * FROM cards WHERE id = ?", card_id).first
+        p stats = db.execute("SELECT stat1_id, stat2_id FROM card_stats_rel WHERE card_id = ?", card_id).first
+        if card == nil
+            flash[:error] = "Kortet med id #{id} finns inte"
+            redirect "/webshop"
+        else
+            slim(:"/cards/edit", locals:{card:card, stats:stats})
+        end
+    else
+        flash[:error] = "Logga in för att redigera ett kort"
+        redirect "/"
+    end
 end
 
 #Funktion för att uppdatera kort

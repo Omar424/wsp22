@@ -14,7 +14,7 @@ html lang="en"
                 h1#sitename FCW
                 a.links href="/webshop" Webbshop
                 a.links href="/cards/new" Skapa kort
-                a.links href="/user/#{session[:user_id]}/profile" Inventory
+                a.links href="/user/#{session[:user_id]}/inventory" Inventory
                 h2.white Inloggad som #{session[:username]}
 
                 form.submit action="/logout" method="post"

@@ -18,9 +18,8 @@ div#all_cards
                 / - get_card_owner(id)
                 / / p Skapad av #{owner}
                 div#stats_name
-                    / p#stat1.stat #{stat1[i]}
-                    / p#stat2.stat #{stat2[i]}
-                    / p#stat3.stat #{stat3[i]}
+                    p#stat1.stat #{stat1[i]}
+                    p#stat2.stat #{stat2[i]}
                 
                 - if card["user_id"] == session[:user_id]
                     form action="/cards/#{card["id"]}/delete" method="post"

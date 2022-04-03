@@ -25,12 +25,12 @@ end
 
 #Registrering
 get('/register') do
-    return slim(:"user/register", locals: { error: "" })
+    slim(:"user/register")
 end
 
 #Logga in
 get('/login') do
-    slim(:"user/login", locals: { error: "", sucess: "" })
+    slim(:"user/login")
 end
 
 #Error
@@ -40,9 +40,8 @@ end
 
 #Route för att komma till användarens eller andras profil
 get('/user/:id/profile') do
-    user_id = params[:id]
-
     if session["user_id"] != nil
+        user_id = params[:id]
         db = connect_to_db('db/db.db')
         user_data = db.execute("SELECT * FROM users where id = ?", user_id).first
         user_cards = db.execute("SELECT * FROM cards where user_id = ?", user_id)
@@ -51,9 +50,10 @@ get('/user/:id/profile') do
             flash[:error] = "Användare med id #{user_id} finns inte"
             redirect "/"
         elsif user_cards.length == 0
-            slim(:"user/index", locals:{user_info:user_data, cards:user_cards, message: "user with id #{user_id} hasn't created a card"})
+            flash[:error] = "Användaren #{session[:username]} har inte skapat några kort"
+            slim(:"user/index", locals:{user_info:user_data, cards:user_cards})
         else
-            slim(:"user/index", locals:{user_info:user_data, cards:user_cards, message: "temp"})
+            slim(:"user/index", locals:{user_info:user_data, cards:user_cards})
         end
     else
         flash[:error] = "Du måste vara inloggad för att se en profil"
@@ -67,7 +67,6 @@ end
 
 #Inventory, användarens kort
 get('/inventory') do
-    
     if session["user_id"] != nil
         db = connect_to_db("db/db.db")
         cards = db.execute("SELECT * FROM cards WHERE user_id = ?", [session["user_id"]])
@@ -87,16 +86,17 @@ end
 
 #Visa 1 kort
 get('/card/:id') do
-    card_id = params[:id].to_i
 
     if session["user_id"] != nil
+        card_id = params[:id].to_i
         db = connect_to_db("db/db.db")
         card_data = db.execute("SELECT * FROM cards WHERE id = ?", card_id).first
         
         if card_data != nil
             slim(:"cards/show", locals:{card:card_data, id:card_id})
         else
-            "Card with id: #{card_id} does not exist :/"
+            flash[:error] = "Kortet med id #{card_id} finns inte"
+            # redirect "/"
         end
     else
         flash[:error] = "Logga in för att visa ett kort"
@@ -167,15 +167,13 @@ post('/create_card') do
 
     stat1 = params[:stat1]
     stat2 = params[:stat2]
-    stat3 = params[:stat3]
     stat1_num = ""
     stat2_num = ""
-    stat3_num = ""
-
     stats = {1 => "Snabbhet", 2 => "Skott", 3 => "Passningar", 4 => "Styrka", 5 => "Skicklighet", 6 => "Dribbling",7 => "Uthållighet"}
-    
-    p "#{stat1} blev konverterad till"
     i = 0
+    j = 0
+
+    p "#{stat1} blev konverterad till"
     while i < (stats.length + 1)
         if stats[i] == stat1
             stat1_num = i.to_i
@@ -185,7 +183,6 @@ post('/create_card') do
     p "#{stat1_num}"
 
     p "#{stat2} blev konverterad till"
-    j = 0
     while j < (stats.length + 1)
         if stats[j] == stat2
             stat2_num = j.to_i
@@ -193,18 +190,8 @@ post('/create_card') do
         j += 1
     end
     p "#{stat2_num}"
-    
-    p "#{stat3} blev konverterad till"
-    k = 0
-    while k < (stats.length + 1)
-        if stats[k] == stat3
-            stat3_num = k.to_i
-        end
-        k += 1
-    end
-    p "#{stat3_num}"
 
-    create_card(name, position, club, face, rating, stat1, stat2, stat3, stat1_num, stat2_num, stat3_num, user_id)
+    create_card(name, position, club, face, rating, stat1, stat2, stat1_num, stat2_num, user_id)
 end
 
 #Köpa kort
@@ -224,7 +211,6 @@ post('/cards/:id/update') do
     else
         update_card(card_id, name, rating, position)
     end
-
 end
 
 #Radera kort

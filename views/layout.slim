@@ -9,9 +9,9 @@ html lang="en"
         title = "FCW #{@title}"
     body
 
-        div#link_container
-
-            - if session[:user_id] != nil
+        - if session[:user_id] != nil
+            #link_container
+                h1#white FCW
                 a.links href="/webshop" Webbshop
                 a.links href="/cards/new" Skapa kort
                 a.links href="/user/#{session[:user_id]}/profile" Profil
@@ -20,15 +20,18 @@ html lang="en"
 
                 form action="/logout" method="post"
                     input#logout.submit type="submit" value="Logout"
-            - else
+        - else
+            #link_container
+                h1#white FCW
                 a.links href="/" Homepage
                 a.links href="/register" Registrera dig
                 a.links href="/login" Logga in
-                h2 Currently not logged in
-        .flash 
-            - flash.each do |key, value|
-                div class="flash_#{key}"
-                    | #{value}
-        ==yield
+                h3#white Currently not logged in
+                    
+    .flash
+        - flash.each do |key, value|
+            div class="flash_#{key}"
+                | #{value}
+    ==yield
 
-        script src="/js/script.js"
+    script src="/js/script.js"

@@ -1,15 +1,13 @@
-br
-h2 Logga in
-
-form action="/login" method="POST"
-    br
-    input.input_styling type="text" name="username" placeholder="Enter Username" required=""
-    br
-    br
-    input.input_styling type="password" name="password" placeholder="Enter Password" required=""
-    br
-    br
-    button.input_styling.submit type="submit" value="Log in" Log in!
-
-- if error
-    p #{error}
+- @title = "Login"
+.login
+    .form
+        form#login-form action="/login" method="POST"
+            h2#logga_in Logga in
+            br
+            input.input_styling type="text" name="username" placeholder="Användarnamn" required=""
+            br
+            br
+            input.input_styling type="password" name="password" placeholder="Lösenord" required=""
+            br
+            br
+            button.input_styling.submit type="submit" value="Log in" Logga in

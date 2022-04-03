@@ -13,7 +13,6 @@ h2 Dina kort
                 img#face src="#{cards["image"]}" alt=":/"
                 / p#stat1.stat #{stat1[i]}
                 / p#stat2.stat #{stat2[i]}
-                / p#stat3.stat #{stat3[i]}
 
                 - if cards["user_id"] == session[:user_id]
                     form action="/cards/#{cards["id"]}/delete" method="post"

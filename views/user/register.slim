@@ -1,20 +1,12 @@
 - @title = "Register"
-br
-h3 Choose a username and password and create your account!
-
-form action="/register" method="POST"
-    
-    p Välj ett användarnamn (Mellan 3 och 12 bokstäver)
-    input.input_styling type="text" name="username" placeholder="Enter Username" minlength="3" maxlength="12" required=""
-  
-    p Välj ett lösenord (Mellan 3 och 12 bokstäver)
-    input.input_styling type="password" name="password" placeholder="Enter Password" minlength="3" maxlength="12" required=""
-    
-    p Bekräfta lösenord
-    input.input_styling type="password" name="password_conf" placeholder="Confirm Password" minlength="3" maxlength="12" required=""
-    
-    p Skapa konto 
-    button.input_styling.submit type="submit" value="Create Account" Create account!
-
-- if error
-    p.error #{error}
+.login
+    .form
+        form action="/register" method="POST"
+            h2#registrera_dig Registrera dig
+            br
+            input.input_styling type="text" name="username" placeholder="Användarnamn (3 - 12 bokstäver)" minlength="3" maxlength="12" required=""
+            br
+            input.input_styling type="password" name="password" placeholder="Lösenord (3 - 12 bokstäver)" minlength="3" maxlength="12" required=""
+            br
+            input.input_styling type="password" name="password_conf" placeholder="Lösenord igen" minlength="3" maxlength="12" required=""
+            button.input_styling.submit type="submit" value="Create Account" Create account!

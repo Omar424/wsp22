@@ -89,10 +89,6 @@ form#create_card action="/create_card" method="post" enctype="multipart/form-dat
             option #{stats[i]["stats"]}
     br
     br
-    select.input_styling name="stat3" required="" type="text"
-        - stats.each_with_index do |stat, i|
-            option disabled="" hidden="" selected="" value="" Attribut 3
-            option #{stats[i]["stats"]}
 
     h3 Skapa spelare
     input.input_styling.submit type="submit" value="Skapa custom spelare!"

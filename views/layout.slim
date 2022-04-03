@@ -11,22 +11,21 @@ html lang="en"
 
         - if session[:user_id] != nil
             #link_container
-                h1#white FCW
+                h1#sitename FCW
                 a.links href="/webshop" Webbshop
                 a.links href="/cards/new" Skapa kort
-                a.links href="/user/#{session[:user_id]}/profile" Profil
-                a.links href="/inventory" Inventory
-                h2 Logged in as #{session[:username]}
+                a.links href="/user/#{session[:user_id]}/profile" Inventory
+                h2.white Inloggad som #{session[:username]}
 
-                form action="/logout" method="post"
-                    input#logout.submit type="submit" value="Logout"
+                form.submit action="/logout" method="post"
+                    input#logout.submit type="submit" value="Logga ut"
         - else
             #link_container
-                h1#white FCW
+                h1#sitename.white FCW
                 a.links href="/" Homepage
                 a.links href="/register" Registrera dig
                 a.links href="/login" Logga in
-                h3#white Currently not logged in
+                h2.white Inte inloggad
                     
     .flash
         - flash.each do |key, value|

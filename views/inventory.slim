@@ -1,26 +1,34 @@
 - @title = "Inventory"
-
-h1 Inventory
-
-h2 Dina kort
-- cards.each_with_index do |cards, i|
+- if session["username"] == user["username"]
+    h2.white Din inventory
+    - cards.each_with_index do |cards, i|
         div#card_container
             div#fifa_card
                 p#rating #{cards["rating"]}
                 p#position #{cards["position"]}
-                img#club src="#{cards["club"]}" alt=":/"
+                img#club src="/#{cards["club"]}" alt=":/"
                 p#name #{cards["name"]}
-                img#face src="#{cards["image"]}" alt=":/"
-                / p#stat1.stat #{stat1[i]}
-                / p#stat2.stat #{stat2[i]}
+                a#goto_card href="/card/#{i+1}" Gå till kortet
+                img#face src="/#{cards["image"]}" alt=":/"
+                p#stat1.stat #{stats[i]["stat1_id"]}
+                p#stat2.stat #{stats[i]["stat2_id"]}
 
                 - if cards["user_id"] == session[:user_id]
                     form action="/cards/#{cards["id"]}/delete" method="post"
                         button#delete_card.submit type="submit" Radera kort!
         
                     a#update_card href="/cards/#{cards["id"]}/edit" Uppdatera kort
-                    p#card_owner Du äger kortet
 
-                - else
-                    form action="/buy" method="post"
-                        button#buy_card.submit type="submit" Köp kort!
+- elsif session["username"] != user["username"]
+    h2.white #{user["username"]}'s profil och skapta kort
+    - cards.each_with_index do |cards, i|
+        div#card_container
+            div#fifa_card
+                p#rating #{cards["rating"]}
+                p#position #{cards["position"]}
+                img#club src="/#{cards["club"]}" alt=":/"
+                p#name #{cards["name"]}
+                a#goto_card href="/card/#{i+1}" Gå till kortet
+                img#face src="/#{cards["image"]}" alt=":/"
+                p#stat1.stat #{stats[i]["stat1_id"]}
+                p#stat2.stat #{stats[i]["stat2_id"]}

@@ -1,12 +1,14 @@
 - @title = "Register"
-.login
+.register
     .form
         form action="/register" method="POST"
             h2#registrera_dig Registrera dig
             br
             input.input_styling type="text" name="username" placeholder="Användarnamn (3 - 12 bokstäver)" minlength="3" maxlength="12" required=""
             br
+            br
             input.input_styling type="password" name="password" placeholder="Lösenord (3 - 12 bokstäver)" minlength="3" maxlength="12" required=""
             br
+            br
             input.input_styling type="password" name="password_conf" placeholder="Lösenord igen" minlength="3" maxlength="12" required=""
-            button.input_styling.submit type="submit" value="Create Account" Create account!
+            button.submit#register type="submit" value="Skapa konto!" Skapa konto!

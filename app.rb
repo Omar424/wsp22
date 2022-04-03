@@ -18,65 +18,39 @@ get('/') do
         # determine_stat("Uthållighet")
         # determine_stat("Skott")
         # convert_stats()
-        omar()
+        # omar()
         slim(:index)
     end
 end
 
 #Registrering
 get('/register') do
-    slim(:"user/register")
+    if session["user_id"] != nil
+        flash[:already_logged_in] = "Du är redan inloggad!"
+        redirect "/webshop"
+    else
+        slim(:"user/register")
+    end
 end
 
 #Logga in
 get('/login') do
-    slim(:"user/login")
-end
-
-#Error
-get('/error') do
-    slim(:error)
+    if session["user_id"] != nil
+        flash[:already_logged_in] = "Du är redan inloggad!"
+        redirect "/webshop"
+    else
+        slim(:"user/login")
+    end
 end
 
 #Route för att komma till användarens eller andras profil
 get('/user/:id/profile') do
-    if session["user_id"] != nil
-        user_id = params[:id]
-        db = connect_to_db('db/db.db')
-        user_data = db.execute("SELECT * FROM users where id = ?", user_id).first
-        user_cards = db.execute("SELECT * FROM cards where user_id = ?", user_id)
-    
-        if user_data == nil
-            flash[:error] = "Användare med id #{user_id} finns inte"
-            redirect "/"
-        elsif user_cards.length == 0
-            flash[:error] = "Användaren #{session[:username]} har inte skapat några kort"
-            slim(:"user/index", locals:{user_info:user_data, cards:user_cards})
-        else
-            slim(:"user/index", locals:{user_info:user_data, cards:user_cards})
-        end
-    else
-        flash[:error] = "Du måste vara inloggad för att se en profil"
-        redirect "/"
-    end
+    user_id = params[:id]
+    get_user_inventory(user_id)
 end
 
 get('/uploaded_pictures/:type/:name') do
     File.read("uploaded_pictures/#{params[:type]}/#{params[:name]}")
-end
-
-#Inventory, användarens kort
-get('/inventory') do
-    if session["user_id"] != nil
-        db = connect_to_db("db/db.db")
-        cards = db.execute("SELECT * FROM cards WHERE user_id = ?", [session["user_id"]])
-        stats = db.execute("SELECT * FROM stat")
-        slim(:"inventory", locals: {cards:cards, stats:stats})
-    else
-        redirect('/')
-    end
-    
-    # inventory()
 end
 
 #Webshop
@@ -86,22 +60,8 @@ end
 
 #Visa 1 kort
 get('/card/:id') do
-
-    if session["user_id"] != nil
-        card_id = params[:id].to_i
-        db = connect_to_db("db/db.db")
-        card_data = db.execute("SELECT * FROM cards WHERE id = ?", card_id).first
-        
-        if card_data != nil
-            slim(:"cards/show", locals:{card:card_data, id:card_id})
-        else
-            flash[:error] = "Kortet med id #{card_id} finns inte"
-            # redirect "/"
-        end
-    else
-        flash[:error] = "Logga in för att visa ett kort"
-        redirect "/"
-    end
+    card_id = params[:id].to_i
+    show_one_card(card_id)
 end
 
 #Skapa kort
@@ -122,11 +82,12 @@ get('/cards/:id/edit') do
         id = params[:id].to_i
         db = connect_to_db('db/db.db')
         card = db.execute("SELECT * FROM cards WHERE id = ?", id).first
+        p stats = db.execute("SELECT stat1_id, stat2_id FROM card_stats_rel WHERE card_id = ?", id).first
         if card == nil
             flash[:error] = "Kortet med id #{id} finns inte"
             redirect "/webshop"
         else
-            slim(:"/cards/edit", locals:{card:card})
+            slim(:"/cards/edit", locals:{card:card, stats:stats})
         end
     else
         flash[:error] = "Logga in för att redigera ett kort"

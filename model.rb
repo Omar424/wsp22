@@ -9,20 +9,20 @@ end
 
 #Registrering
 def register_user(username, password, password_conf)
+    #Ansluter till databasen och hämtar användar-data
     db = connect_to_db("db/db.db")
     user = db.execute("SELECT * FROM users WHERE username = ?", username).first
     
-    #Registeringskontroll, hantering av registrering
+    #Kollar om användarnamnet redan finns
     if user == nil
         if password == password_conf
           hashed_password = BCrypt::Password.create(password)
           db.execute("INSERT INTO users (username, password) VALUES (?, ?)", [username, hashed_password])
           flash[:register_sucess] = "Du är registrerad, logga in för att se webbshoppen"
           redirect "/login"
-        elsif user != nil && password != password_conf
+        elsif password != password_conf
             flash[:wrong_conf] = "Lösenorden matchar inte!"
-            flash[:username_exist] = "Användarnamnet är upptaget!"
-            redirect "/register"
+            redirect "/"
         end
     else
         flash[:username_exist] = "Användarnamnet är upptaget!"
@@ -32,9 +32,11 @@ end
 
 #Logga in
 def login_user(username, password)
-    db = connect_to_db('db/db.db')
+    #Ansluter till databasen och hämtar användar-data
+    db = connect_to_db("db/db.db")
     user = db.execute("SELECT * FROM users WHERE username = ?", [username]).first
-    # hashed_password = user["password"]
+
+    #Kollar om användaren finns
     if user == nil
         flash[:no_such_user] = "Användaren finns inte!"
         redirect "/login"
@@ -48,21 +50,63 @@ def login_user(username, password)
     end
 end
 
+def show_one_card(card_id)
+    if session["user_id"] != nil
+        db = connect_to_db("db/db.db")
+        card_data = db.execute("SELECT * FROM cards WHERE id = ?", card_id).first
+        
+        if card_data != nil
+            slim(:"cards/show", locals:{card:card_data, id:card_id})
+        else
+            flash[:error] = "Kort med id #{card_id} finns inte"
+            redirect "/"
+        end
+    else
+        flash[:error] = "Logga in för att visa ett kort"
+        redirect "/"
+    end
+end
+
 #Funktion för att få användarens kort, inventory
-# def inventory()
-#     db = connect_to_db("db/db.db")
-#     user_cards = db.execute("SELECT * FROM cards where user_id = ?", session[:user_id])
-#     card_id = db.execute("SELECT id FROM cards where user_id = ?", session[:user_id])
-#     user_cards_stats = db.execute("SELECT stat1, stat2 FROM card_stats_rel where card_id = ?", card_id)
-#     return slim(:webshop, locals:{cards:user_cards, stats:user_cards_stats})
-# end
+def get_user_inventory(user_id)
+    if session["user_id"] != nil
+        db = connect_to_db("db/db.db")
+        active_user_data = db.execute("SELECT * FROM users where id = ?", session["user_id"]).first
+
+        user_data = db.execute("SELECT username FROM users where id = ?", user_id).first
+        p user_cards = db.execute("SELECT * FROM cards where user_id = ?", user_id)
+        p user_cards[0]["id"]
+        p user_cards.length
+        stats = db.execute("SELECT stat1_id, stat2_id FROM card_stats_rel")
+        p stats
+    
+        #Om användaren finns inte
+        if user_data == nil
+            flash[:error] = "Användare med id #{user_id} finns inte"
+            redirect "/webshop"
+        #Om användaren inte skapat några kort och det inte är den aktiva användaren
+        elsif user_cards == nil && user_data["id"] != session["user_id"]
+            flash[:error] = "Användaren #{session[:username]} har inte skapat några kort"
+            redirect "/user/#{user_id}/profile"
+        #Om användaren inte skapat några kort och det är den aktiva användaren
+        elsif user_cards == nil && user_data["id"] == session["user_id"]
+            flash[:error] = "Du har inte skapat några kort"
+            redirect "/user/#{user_id}/profile"
+        else
+            slim(:"inventory", locals:{user:user_data, cards:user_cards, stats:stats})
+        end
+    else
+        flash[:error] = "Du måste vara inloggad för att se en profil"
+        redirect "/"
+    end
+end
 
 #Funktion för att få ägaren av ett kort
-def get_card_owner(id)
-    db = connect_to_db("db/db.db")
-    owner = db.execute("SELECT username FROM users WHERE id = ?", id)
-    slim(:"webshop", locals:{owner:owner})
-end
+# def get_card_owner(id)
+#     db = connect_to_db("db/db.db")
+#     owner = db.execute("SELECT username FROM users WHERE id = ?", id)
+#     slim(:"webshop", locals:{owner:owner})
+# end
 
 def convert_stats()
     db = connect_to_db("db/db.db")
@@ -123,13 +167,14 @@ end
 
 #Funktion för att få alla kort i databasen, webshop
 def get_all_cards()
-    if session["user_id"] != nil
 
-        db = connect_to_db("db/db.db") #Ansluter till databasen
+    if session["user_id"] != nil
+        #Ansluter till databasen och hämtar alla kort
+        db = connect_to_db("db/db.db")
         
-        #Hämtar stats från och kort från databasen
+        #Hämtar stats och kort från databasen
         cards = db.execute("SELECT * FROM cards")
-        p stats = db.execute("SELECT stat1_id, stat2_id FROM card_stats_rel")
+        stats = db.execute("SELECT stat1_id, stat2_id FROM card_stats_rel")
         
         #Initerar variabler
         first_stats = []
@@ -188,11 +233,7 @@ def get_all_cards()
                 stats_2_names << "Uthållighet"
             end
         end
-        
-        # p first_stats
-        # p second_stats
-        # p stats_1_names
-        # p stats_2_names
+
         return slim(:webshop, locals:{cards:cards, stat1:stats_1_names, stat2:stats_2_names})
 
     else
@@ -232,81 +273,62 @@ def delete_card(card_id)
     redirect "/webshop"
 end
 
-# def temp()
-#     db = connect_to_db('db/db.db')
-#     # db.execute("SELECT * FROM cards where id = 1")
-#     INSERT INTO cards (name, position, club, rating, face_image, user_id) VALUES ("Omar","Anfallare","Real Madrid",90,'\uploaded_pictures\ronaldo.png', 18)
+# def omar()
+#     db = connect_to_db("db/db.db")
+#     cards = db.execute("SELECT * FROM cards")
+#     p info = db.execute("SELECT card_id, stat1_id, stat2_id FROM card_stats_rel")
+#     p stats = db.execute("SELECT stat1_id, stat2_id FROM card_stats_rel")
+    
+#     first_stats = []
+#     second_stats = []
+#     stats_1_names = []
+#     stats_2_names = []
+
+#     i = 0
+#     while i <= (cards.length - 1)
+#         first_stats << stats[i]["stat1_id"]
+#         i += 1
+#     end
+
+#     j = 0
+#     while j <= (cards.length - 1)
+#         second_stats << stats[j]["stat2_id"]
+#         j += 1
+#     end
+
+#     first_stats.each do |stat|
+#         if stat == 1
+#             stats_1_names << "Snabbhet"
+#         elsif stat == 2
+#             stats_1_names << "Skott"
+#         elsif stat == 3
+#             stats_1_names << "Passningar"
+#         elsif stat == 4
+#             stats_1_names << "Styrka"
+#         elsif stat == 5
+#             stats_1_names << "Skicklighet"
+#         elsif stat == 6
+#             stats_1_names << "Dribbling"
+#         elsif stat == 7
+#             stats_1_names << "Uthållighet"
+#         end
+#     end
+
+#     second_stats.each do |stat|
+#         if stat == 1
+#             stats_2_names << "Snabbhet"
+#         elsif stat == 2
+#             stats_2_names << "Skott"
+#         elsif stat == 3
+#             stats_2_names << "Passningar"
+#         elsif stat == 4
+#             stats_2_names << "Styrka"
+#         elsif stat == 5
+#             stats_2_names << "Skicklighet"
+#         elsif stat == 6
+#             stats_2_names << "Dribbling"
+#         elsif stat == 7
+#             stats_2_names << "Uthållighet"
+#         end
+#     end
 # end
-
-# puts temp()
-
-def omar()
-    db = connect_to_db("db/db.db")
-    cards = db.execute("SELECT * FROM cards")
-    p info = db.execute("SELECT card_id, stat1_id, stat2_id FROM card_stats_rel")
-    p stats = db.execute("SELECT stat1_id, stat2_id FROM card_stats_rel")
-    
-    first_stats = []
-    # second_stats = []
-    # stats_1_names = []
-    # stats_2_names = []
-    
-    # p cards.length #2
-    # p stats[0]["stat1_id"]
-    # p stats[1]["stat1_id"]
-    # p stats[2]["stat1_id"]
-
-    i = 0
-    while i <= (cards.length - 1)
-        first_stats << stats[i]["stat1_id"]
-        i += 1
-    end
-
-    # j = 0
-    # while j < (cards.length - 1)
-    #     second_stats << stats[j]["stat2_id"]
-    #     j += 1
-    # end
-
-    p first_stats
-    # p second_stats
-
-    # first_stats.each do |stat|
-    #     if stat == 1
-    #         stats_1_names << "Snabbhet"
-    #     elsif stat == 2
-    #         stats_1_names << "Skott"
-    #     elsif stat == 3
-    #         stats_1_names << "Passningar"
-    #     elsif stat == 4
-    #         stats_1_names << "Styrka"
-    #     elsif stat == 5
-    #         stats_1_names << "Skicklighet"
-    #     elsif stat == 6
-    #         stats_1_names << "Dribbling"
-    #     elsif stat == 7
-    #         stats_1_names << "Uthållighet"
-    #     end
-    # end
-
-    # second_stats.each do |stat|
-    #     if stat == 1
-    #         stats_2_names << "Snabbhet"
-    #     elsif stat == 2
-    #         stats_2_names << "Skott"
-    #     elsif stat == 3
-    #         stats_2_names << "Passningar"
-    #     elsif stat == 4
-    #         stats_2_names << "Styrka"
-    #     elsif stat == 5
-    #         stats_2_names << "Skicklighet"
-    #     elsif stat == 6
-    #         stats_2_names << "Dribbling"
-    #     elsif stat == 7
-    #         stats_2_names << "Uthållighet"
-    #     end
-    # end
-
-    # p stats_1_names
-    # p stats_2_names
-end

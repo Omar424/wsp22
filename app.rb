@@ -67,7 +67,9 @@ end
 #Skapa kort
 get('/cards/new') do
     if session["user_id"] != nil
-        slim(:"cards/new")
+        db = connect_to_db("db/db.db")
+        stats = db.execute("SELECT stats FROM stat")
+        slim(:"cards/new", :locals => {stats: stats})
     else
         flash[:error] = "Logga in för att skapa ett kort"
         redirect "/"
@@ -103,10 +105,8 @@ post('/create_card') do
     position = params[:position]
     rating = params[:rating]
     user_id = session[:user_id]
-    # path för databasen att lägga in i tabell
     p club = "uploaded_pictures/clubs/#{params[:club][:filename]}"
     p face = "uploaded_pictures/faces/#{params[:player_face][:filename]}"
-    
     # file_path för ruby att veta vart den ska skriva in filen
     # p club_path = "public/uploaded_pictures/clubs/#{params[:club][:filename]}"
     # p face_path = "public/uploaded_pictures/faces/#{params[:player_face][:filename]}"

@@ -10,22 +10,36 @@ html lang="en"
     body
 
         - if session[:user_id] != nil
-            #link_container
-                h1#sitename FCW
-                a.links href="/webshop" Webbshop
-                a.links href="/cards/new" Skapa kort
-                a.links href="/user/#{session[:user_id]}/inventory" Inventory
-                h2.white Inloggad som #{session[:username]}
+            h1#sitename FCW - Football Cards Webshop 
+            #menuToggle
+                input type="checkbox"
+                span
+                span
+                span
+                ul#menu
+                    a href="/webshop"
+                        li Webshop
+                    a href="/cards/new"
+                        li Skapa kort
+                    a href="/user/#{session[:user_id]}/inventory"
+                        li Inventory
 
-                form.submit action="/logout" method="post"
-                    input#logout.submit type="submit" value="Logga ut"
+            form#logout-form.submit action="/logout" method="post"
+                input#logout.submit type="submit" value="Logga ut"
         - else
-            #link_container
-                h1#sitename.white FCW
-                a.links href="/" Homepage
-                a.links href="/register" Registrera dig
-                a.links href="/login" Logga in
-                h2.white Inte inloggad
+            h1#sitename FCW - Football Cards Webshop
+            #menuToggle
+                input type="checkbox" /
+                span
+                span
+                span
+                ul#menu
+                    a href="/"
+                        li Homepage
+                    a href="/register"
+                        li Registrera dig
+                    a href="/login"
+                        li Logga in
                     
     .flash
         - flash.each do |key, value|
@@ -33,4 +47,4 @@ html lang="en"
                 | #{value}
     ==yield
 
-    script src="/js/script.js"
+    / script src="/js/script.js"

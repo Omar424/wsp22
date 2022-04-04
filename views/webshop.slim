@@ -1,8 +1,6 @@
 - @title = "Webbshop"
-h1.white Webbshop
-h3.white Köp kort i webbshopen för att lägga till de i din inventory
-p.white id: #{session[:user_id]}
-p.white användarnamn: #{session[:username]}
+h1.white Webshop
+h3.white Köp kort i webshopen för att lägga till de i din inventory
 
 div#all_cards
     - cards.each_with_index do |card, i|
@@ -21,7 +19,6 @@ div#all_cards
                 / p = id
                 / - get_card_owner(id)
                 / / p Skapad av #{owner}
-            
                 
                 - if card["user_id"] == session[:user_id]
                     form action="/cards/#{card["id"]}/delete" method="post"

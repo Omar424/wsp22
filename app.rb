@@ -68,7 +68,7 @@ end
 get('/cards/new') do
     if session["user_id"] != nil
         db = connect_to_db("db/db.db")
-        stats = db.execute("SELECT stats FROM stat")
+        stats = db.execute("SELECT stats FROM stats")
         slim(:"cards/new", :locals => {stats: stats})
     else
         flash[:error] = "Logga in för att skapa ett kort"

@@ -136,7 +136,7 @@ footer {
 }
 
 #update_card:hover {
-  background-color: rgb(21, 71, 235);
+  background-color: rgb(39, 39, 109);
   transition: 1s;
 }
 
@@ -159,9 +159,12 @@ footer {
 }
 
 #goto_card {
-  height: 100px;
-  width: 100px;
-  color:red;
+  display: inline-block;
+  width: 192px;
+  height: 303px;
+  position: absolute;
+  left: 28px;
+  top: 20px;
 }
 
 #card_owner {
@@ -180,10 +183,6 @@ footer {
   border: 1px black solid;
   background-color: white;
 }
-
-/* #red {
-  color: red;
-} */
 
 #border_club {
   border: 3px black solid;
@@ -395,7 +394,7 @@ footer {
   border: 0;
   border-radius: 5px;
   margin: 0 0 15px;
-  padding: 15px;
+  padding: 12px;
   box-sizing: border-box;
   font-size: 16px;
   font-family: 'Comfortaa', cursive;

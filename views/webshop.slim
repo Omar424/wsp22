@@ -4,29 +4,29 @@ h3.white Köp kort i webshopen för att lägga till de i din inventory
 
 div#all_cards
     - cards.each_with_index do |card, i|
-            div#fifa_card
-                p#rating #{card["rating"]}
-                p#position #{card["position"]}
-                img#club src="#{card["club"]}" alt=":/"
-                img#face src="/#{card["image"]}" alt=":/"
-                p#name #{card["name"]}
-                a#goto_card href="/card/#{i+1}" Gå till kortet
-                a#goto_card href="/card/#{i+1}"
-                p#stat1.stat #{stat1[i]}
-                p#stat2.stat #{stat2[i]}
-            
-                / - id = card["user_id"].to_i
-                / p = id
-                / - get_card_owner(id)
-                / / p Skapad av #{owner}
-                
-                - if card["user_id"] == session[:user_id]
-                    form action="/cards/#{card["id"]}/delete" method="post"
-                        button#delete_card.submit type="submit" Radera kort!
-        
-                    a#update_card href="/cards/#{card["id"]}/edit" Uppdatera kort
-                    p#card_owner Du äger kortet
+        div#fifa_card
+            a#go_to_card style="color:red;" href="/card/#{card["id"]}"
+            p#rating #{card["rating"]}
+            p#position #{card["position"]}
+            img#club src="#{card["club"]}" alt=":/"
+            img#face src="/#{card["image"]}" alt=":/"
+            p#name #{card["name"]}
+            a#goto_card href="/card/#{i+1}"
+            p#stat1.stat #{stat1[i]}
+            p#stat2.stat #{stat2[i]}
 
-                - else
-                    form action="/cards/#{card["id"]}/buy" method="post"
-                            button#buy_card.submit type="submit" Köp kort!
+            / - id = card["user_id"].to_i
+            / p = id
+            / - get_card_owner(id)
+            / / p Skapad av #{owner}
+            
+            - if card["user_id"] == session[:user_id]
+                form action="/cards/#{card["id"]}/delete" method="post"
+                    button#delete_card.submit type="submit" Radera kort!
+    
+                a#update_card href="/cards/#{card["id"]}/edit" Uppdatera kort
+                p#card_owner Du äger kortet
+
+            - else
+                form action="/cards/#{card["id"]}/buy" method="post"
+                        button#buy_card.submit type="submit" Köp kort!

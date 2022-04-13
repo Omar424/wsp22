@@ -33,6 +33,17 @@ footer {
   bottom: 0px;
 }
 
+#create_today {
+  color: lightgreen;
+  text-align: center;
+  text-decoration: none;
+}
+
+#create_today:hover {
+  color: lightgreen;
+  text-decoration: underline;
+}
+
 /* kort styling */
 #fifa_card {
   width: 250px;
@@ -117,10 +128,19 @@ footer {
 
 #buy_card {
   position: absolute;
-  bottom: 30px;
-  right: 80px;
-  /* width: 80px; */
-  background-color: lightgreen;
+  left: 85px;
+  bottom: 70px;
+  padding: 6px;
+  border-radius: 5px;
+  font-family: 'Comfortaa', cursive;
+  font-size: 15px;
+  background-color: rgb(58, 200, 45);
+  color: white;
+  cursor: pointer;
+}
+
+#buy_card:hover {
+  background-color: darkgreen;
 }
 
 #update_card {
@@ -131,7 +151,7 @@ footer {
   border-radius: 5px;
   font-family: 'Comfortaa', cursive;
   font-size: 15px;
-  background-color: #4eb9d0;
+  background-color: #4ab0c7;
   color: white;
 }
 
@@ -410,6 +430,10 @@ footer {
   right: 50px;
 }
 
+#logout-form:hover {
+  cursor: pointer;
+}
+
 #logout {
   background-color:rgb(224, 90, 90);
   padding: 12px;
@@ -417,11 +441,11 @@ footer {
   border-radius: 5px;
   color: #FFFFFF;
   font-size: 18px;
-  cursor: pointer;
 }
 
 #logout:hover {
   background-color: darkred;
+  cursor: pointer;
 }
 
 #register, #login, #edit, #create_player {
@@ -456,7 +480,7 @@ footer {
 #menuToggle a {
   text-decoration: none;
   color: #232323;  
-  transition: color 0.3s ease;
+  /* transition: color 0.3s ease; */
 }
 
 #menuToggle a:hover {
@@ -486,9 +510,9 @@ footer {
   border-radius: 3px;
   z-index: 1;
   transform-origin: 4px 0px;
-  transition: transform 0.5s cubic-bezier(0.77,0.2,0.05,1.0),
-              background 0.5s cubic-bezier(0.77,0.2,0.05,1.0),
-              opacity 0.55s ease;
+  /* transition: transform 0.5s cubic-bezier(0.77,0.2,0.05,1.0), */
+              /* background 0.5s cubic-bezier(0.77,0.2,0.05,1.0), */
+              /* opacity 0.55s ease; */
 }
 
 #menuToggle span:first-child {

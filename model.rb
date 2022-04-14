@@ -141,17 +141,17 @@ def convert_stats()
 end
 
 #Funktion för att skapa kort
-def create_card(name, position, club, face, rating, stat1, stat2, stat1_num, stat2_num, user_id)
+def create_card(name, position, club, face, rating, stat1, stat2, stat1_num, stat2_num, owner, user_id)
     #ansluter till databasen
     db = connect_to_db("db/db.db")
     
     #creating card
-    db.execute("INSERT INTO cards (name, position, club, image, rating, user_id) VALUES (?,?,?,?,?,?)", [name, position, club, face, rating, user_id])
-    p created_card_id = db.execute("SELECT id from cards").last
-    id = created_card_id["id"].to_i
+    db.execute("INSERT INTO cards (name, position, club, image, rating, owner, user_id) VALUES (?,?,?,?,?,?,?)", [name, position, club, face, rating, owner, user_id])
+    p latest_card_id = db.execute("SELECT id from cards").last
+    id = latest_card_id["id"].to_i
     
     #insertion of stats
-    db.execute("INSERT INTO card_stats_rel (card_id, stat_id, stat2_id) VALUES (?,?,?)", [id, stat1_num, stat2_num])
+    db.execute("INSERT INTO card_stats_rel (card_id, stat1_id, stat2_id) VALUES (?,?,?)", [id, stat1_num, stat2_num])
     p "spelarens stats har lagts till"
     
     #Skriver in filerna för ansikte och klubb i respektive path
@@ -163,7 +163,7 @@ def create_card(name, position, club, face, rating, stat1, stat2, stat1_num, sta
     end
     
     #Redirectar till webshop med det nya kortet
-    flash[:sucess] = "Du har skapat ett nytt kort"
+    flash[:sucess] = "Ditt kort har skapats"
     redirect "/webshop"
 end
 
@@ -239,7 +239,7 @@ def get_all_cards()
         return slim(:webshop, locals:{cards:cards, stat1:stats_1_names, stat2:stats_2_names})
 
     else
-        flash["error"] = "Du måste logga in för att se webshoppen"
+        flash["error"] = "Logga in för att se webshoppen"
         redirect "/"
     end
 end
@@ -351,3 +351,22 @@ end
 #         end
 #     end
 # end
+
+def convert(statname)
+    if statname == "Snabbhet"
+        stat = 1
+    elsif statname == "Skott"
+        stat = 2
+    elsif statname == "Passningar"
+        stat = 3
+    elsif statname == "Styrka"
+        stat = 4
+    elsif statname == "Skicklighet"
+        stat = 5
+    elsif statname == "Dribbling"
+        stat = 6
+    elsif statname == "Uthållighet"
+        stat = 7
+    end
+    p stat
+end

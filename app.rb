@@ -19,6 +19,7 @@ get('/') do
         # determine_stat("Skott")
         # convert_stats()
         # omar()
+        convert("Snabbhet")
         slim(:index)
     end
 end
@@ -68,7 +69,7 @@ end
 get('/cards/new') do
     if session["user_id"] != nil
         db = connect_to_db("db/db.db")
-        stats = db.execute("SELECT stats FROM stats")
+        stats = db.execute("SELECT stats FROM stat")
         slim(:"cards/new", :locals => {stats: stats})
     else
         flash[:error] = "Logga in för att skapa ett kort"
@@ -101,43 +102,50 @@ end
 
 #Skapa kort
 post('/create_card') do
-    name = params[:name]
-    position = params[:position]
-    rating = params[:rating]
-    user_id = session[:user_id]
-    p club = "uploaded_pictures/clubs/#{params[:club][:filename]}"
-    p face = "uploaded_pictures/faces/#{params[:player_face][:filename]}"
-    # file_path för ruby att veta vart den ska skriva in filen
-    # p club_path = "public/uploaded_pictures/clubs/#{params[:club][:filename]}"
-    # p face_path = "public/uploaded_pictures/faces/#{params[:player_face][:filename]}"
 
-    stat1 = params[:stat1]
-    stat2 = params[:stat2]
-    stat1_num = ""
-    stat2_num = ""
-    stats = {1 => "Snabbhet", 2 => "Skott", 3 => "Passningar", 4 => "Styrka", 5 => "Skicklighet", 6 => "Dribbling",7 => "Uthållighet"}
-    i = 0
-    j = 0
+    if session[:user_id] != nil
+        user_id = session[:user_id]
+        owner = session[:username]
+        name = params[:name]
+        position = params[:position]
+        rating = params[:rating]
+        p club = "uploaded_pictures/clubs/#{params[:club][:filename]}"
+        p face = "uploaded_pictures/faces/#{params[:player_face][:filename]}"
+        # file_path för ruby att veta vart den ska skriva in filen
+        # p club_path = "public/uploaded_pictures/clubs/#{params[:club][:filename]}"
+        # p face_path = "public/uploaded_pictures/faces/#{params[:player_face][:filename]}"
+        stat1 = params[:stat1]
+        stat2 = params[:stat2]
+        stat1_num = ""
+        stat2_num = ""
+        
+        stats = {1 => "Snabbhet", 2 => "Skott", 3 => "Passningar", 4 => "Styrka", 5 => "Skicklighet", 6 => "Dribbling",7 => "Uthållighet"}
+        i = 0
+        j = 0
 
-    p "#{stat1} blev konverterad till"
-    while i < (stats.length + 1)
-        if stats[i] == stat1
-            stat1_num = i.to_i
+        p "#{stat1} blev konverterad till"
+        while i < (stats.length + 1)
+            if stats[i] == stat1
+                stat1_num = i.to_i
+            end
+            i += 1
         end
-        i += 1
-    end
-    p "#{stat1_num}"
+        p "#{stat1_num}"
 
-    p "#{stat2} blev konverterad till"
-    while j < (stats.length + 1)
-        if stats[j] == stat2
-            stat2_num = j.to_i
+        p "#{stat2} blev konverterad till"
+        while j < (stats.length + 1)
+            if stats[j] == stat2
+                stat2_num = j.to_i
+            end
+            j += 1
         end
-        j += 1
-    end
-    p "#{stat2_num}"
+        p "#{stat2_num}"
 
-    create_card(name, position, club, face, rating, stat1, stat2, stat1_num, stat2_num, user_id)
+        create_card(name, position, club, face, rating, stat1, stat2, stat1_num, stat2_num, owner, user_id)
+    else
+        flash[:error] = "Logga in för att skapa ett kort"
+        redirect "/"
+    end
 end
 
 #Köpa kort

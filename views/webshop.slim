@@ -1,6 +1,7 @@
 - @title = "Webbshop"
 h1.white Webshop
 h3.white Köp kort i webshopen för att lägga till de i din inventory
+h3.white Tryck på korten för att visa ett enskilt kort
 
 div#all_cards
     - cards.each_with_index do |card, i|
@@ -11,14 +12,10 @@ div#all_cards
             img#club src="#{card["club"]}" alt=":/"
             img#face src="/#{card["image"]}" alt=":/"
             p#name #{card["name"]}
-            a#goto_card href="/card/#{i+1}"
+            a#goto_card href="/card/#{card["id"]}"
             p#stat1.stat #{stat1[i]}
             p#stat2.stat #{stat2[i]}
-
-            / - id = card["user_id"].to_i
-            / p = id
-            / - get_card_owner(id)
-            / / p Skapad av #{owner}
+            p style="color:white;" Kort skapat av #{card["owner"]}
             
             - if card["user_id"] == session[:user_id]
                 form action="/cards/#{card["id"]}/delete" method="post"

@@ -11,11 +11,8 @@ div#all_cards
         - if card["user_id"] == session[:user_id]
                 form action="/cards/#{card["id"]}/delete" method="post"
                     button#delete_card.submit type="submit" Radera kort!
-    
                 a#update_card href="/cards/#{card["id"]}/edit" Uppdatera kort
-                p#card_owner Du äger kortet
 
         - else
             form action="/buy" method="post"
                 button#buy_card.submit type="submit" Köp kort!
-            

@@ -1,4 +1,4 @@
-h2.white Kort nr #{id}
+h2.white Kort nr #{card["id"]}
 
 div#all_cards
     div#fifa_card
@@ -8,11 +8,11 @@ div#all_cards
         img#club src="/#{card["club"]}" alt=":/"
         img#face src="/#{card["image"]}" alt=":/"
 
-        - if card["user_id"] == session[:user_id]
+        - if card["owner"] == session[:username]
                 form action="/cards/#{card["id"]}/delete" method="post"
                     button#delete_card.submit type="submit" Radera kort!
                 a#update_card href="/cards/#{card["id"]}/edit" Uppdatera kort
 
-        - else
-            form action="/buy" method="post"
-                button#buy_card.submit type="submit" Köp kort!
+h3.white
+  | Vill du köpa kortet? Besök 
+  a#create_today href="/webshop" webbshoppen

@@ -15,9 +15,14 @@ div#all_cards
             a#goto_card href="/card/#{card["id"]}"
             p#stat1.stat #{stat1[i]}
             p#stat2.stat #{stat2[i]}
-            p style="color:white;" Kort skapat av #{card["owner"]}
+
+            - if card["owner"] == session[:username]
+                p style="color:white;" Du äger detta kort
+            - else
+                p style="color:white;" Ägare: #{card["owner"]}
+            end
             
-            - if card["user_id"] == session[:user_id]
+            - if card["owner"] == session[:username]
                 form action="/cards/#{card["id"]}/delete" method="post"
                     button#delete_card.submit type="submit" Radera kort!
                 a#update_card href="/cards/#{card["id"]}/edit" Uppdatera kort

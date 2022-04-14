@@ -1,6 +1,8 @@
 - @title = "Inventory"
-- if session["username"] == user["username"]
+- if session["username"] == owner
     h2.white Din inventory
+    - if cards.empty?
+        p.white Du har inga kort i din inventory
     div#all_cards
         - cards.each_with_index do |cards, i|
                 div#fifa_card
@@ -8,27 +10,26 @@
                     p#position #{cards["position"]}
                     img#club src="/#{cards["club"]}" alt=":/"
                     p#name #{cards["name"]}
-                    a#goto_card href="/card/#{i+1}"
+                    a#goto_card href="/card/#{cards["id"]}"
                     img#face src="/#{cards["image"]}" alt=":/"
-                    p#stat1.stat #{stats[i]["stat1_id"]}
-                    p#stat2.stat #{stats[i]["stat2_id"]}
+                    p#stat1.stat #{stats[i][0]["stat1_id"]}
+                    p#stat2.stat #{stats[i][0]["stat2_id"]}
 
                     - if cards["user_id"] == session[:user_id]
                         form action="/cards/#{cards["id"]}/delete" method="post"
                             button#delete_card.submit type="submit" Radera kort!
-            
                         a#update_card href="/cards/#{cards["id"]}/edit" Uppdatera kort
 
-- elsif session["username"] != user["username"]
-    h2.white #{user["username"]}'s profil och skapta kort
-    - cards.each_with_index do |cards, i|
-        div#card_container
-            div#fifa_card
-                p#rating #{cards["rating"]}
-                p#position #{cards["position"]}
-                img#club src="/#{cards["club"]}" alt=":/"
-                p#name #{cards["name"]}
-                a#goto_card href="/card/#{i+1}" Gå till kortet
-                img#face src="/#{cards["image"]}" alt=":/"
-                p#stat1.stat #{stats[i]["stat1_id"]}
-                p#stat2.stat #{stats[i]["stat2_id"]}
+- elsif session["username"] != owner
+    h2.white #{owner}'s inventory
+    div#all_cards
+        - cards.each_with_index do |cards, i|
+                div#fifa_card
+                    p#rating #{cards["rating"]}
+                    p#position #{cards["position"]}
+                    img#club src="/#{cards["club"]}" alt=":/"
+                    p#name #{cards["name"]}
+                    a#goto_card href="/card/#{cards["id"]}"
+                    img#face src="/#{cards["image"]}" alt=":/"
+                    p#stat1.stat #{stats[i][0]["stat1_id"]}
+                    p#stat2.stat #{stats[i][0]["stat2_id"]}

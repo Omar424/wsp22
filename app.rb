@@ -19,7 +19,7 @@ get('/') do
         # determine_stat("Skott")
         # convert_stats()
         # omar()
-        convert("Snabbhet")
+        # convert("Snabbhet")
         slim(:index)
     end
 end
@@ -36,7 +36,7 @@ end
 
 #Logga in
 get('/login') do
-    if session["user_id"] != nil
+    if session["logged_in"] == true
         flash[:already_logged_in] = "Du är redan inloggad!"
         redirect "/webshop"
     else
@@ -45,13 +45,9 @@ get('/login') do
 end
 
 #Route för att komma till användarens eller andras inventory
-get('/user/:id/inventory') do
-    user_id = params[:id]
-    get_user_inventory(user_id)
-end
-
-get('/uploaded_pictures/:type/:name') do
-    File.read("uploaded_pictures/#{params[:type]}/#{params[:name]}")
+get('/inventory/:username') do
+    owner = params[:username]
+    get_user_inventory(owner)
 end
 
 #Webshop
@@ -67,7 +63,7 @@ end
 
 #Skapa kort
 get('/cards/new') do
-    if session["user_id"] != nil
+    if session["logged_in"] == true
         db = connect_to_db("db/db.db")
         stats = db.execute("SELECT stats FROM stat")
         slim(:"cards/new", :locals => {stats: stats})
@@ -102,9 +98,7 @@ end
 
 #Skapa kort
 post('/create_card') do
-
-    if session[:user_id] != nil
-        user_id = session[:user_id]
+    if session["logged_in"] == true
         owner = session[:username]
         name = params[:name]
         position = params[:position]
@@ -141,14 +135,14 @@ post('/create_card') do
         end
         p "#{stat2_num}"
 
-        create_card(name, position, club, face, rating, stat1, stat2, stat1_num, stat2_num, owner, user_id)
+        create_card(name, position, club, face, rating, stat1, stat2, stat1_num, stat2_num, owner)
     else
         flash[:error] = "Logga in för att skapa ett kort"
         redirect "/"
     end
 end
 
-#Köpa kort
+#Köp kort
 post('/cards/:id/buy') do
     card_id = params["id"].to_i
     buy_card(card_id)
@@ -179,11 +173,6 @@ post('/logout') do
     redirect('/')
 end
 
-# before do
-#     p "Before KÖRS, session_user_id är #{session[:user_id]}."
-
-#     if (session[:user_id] ==  nil) && (request.path_info != '/')
-#         session[:error] = "You need to log in to see this"
-#         redirect('/error')
-#     end
+# get('/uploaded_pictures/:type/:name') do
+#     File.read("uploaded_pictures/#{params[:type]}/#{params[:name]}")
 # end

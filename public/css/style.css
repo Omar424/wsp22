@@ -102,21 +102,37 @@ footer {
   left: 85px;
   font-size: 24px;
   font-weight: 500;
-  bottom: 72px;
 }
 
-.stat {
+#information {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100px;
+  width: 100%;
+  position: absolute;
+  top: -82px;
+}
+
+.stat, #ownership, #two_best {
+  color: white;
   position: absolute;
 }
 
+#two_best {
+  top: 10px;
+}
+
 #stat1 {
-  top: 20px;
-  right: 80px;
+  top: 28px;
 }
 
 #stat2 {
-  top: 40px;
-  right: 100px;
+  top: 51px;
+}
+
+#ownership {
+  top: 75px;
 }
 
 .submit {
@@ -279,7 +295,7 @@ footer {
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
-  margin-top: 60px;
+  margin-top: 100px;
 }
 
 #flex_edit {

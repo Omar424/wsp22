@@ -54,19 +54,19 @@ def convert_to_statname(array)
     length = array.length
     array.each do |stat|
         if stat == 1
-            array << "Snabbhet"
+            array << "Snabb"
         elsif stat == 2
-            array << "Skott"
+            array << "Bra skott"
         elsif stat == 3
-            array << "Passningar"
+            array << "Bra passningar"
         elsif stat == 4
-            array << "Styrka"
+            array << "Stark"
         elsif stat == 5
-            array << "Skicklighet"
+            array << "Skicklig"
         elsif stat == 6
-            array << "Dribbling"
+            array << "Bra dribbling"
         elsif stat == 7
-            array << "Uthållighet"
+            array << "Bra uthållighet"
         end
     end
     array.shift(length)
@@ -79,17 +79,16 @@ def show_one_card(card_id)
         card = db.execute("SELECT * FROM cards WHERE id = ?", card_id).first
         card_stats = db.execute("SELECT stat1_id, stat2_id FROM card_stats_rel WHERE card_id = ?", card_id).first
         
-        first_stats = []
-        second_stats = []
-        first_stats << card_stats["stat1_id"]
-        second_stats << card_stats["stat2_id"]
-        convert_to_statname(first_stats)
-        convert_to_statname(second_stats)
-
         if card == nil
             flash[:error] = "Kortet med id #{card_id} finns inte"
             redirect "/webshop"
         else
+            first_stats = []
+            second_stats = []
+            first_stats << card_stats["stat1_id"]
+            second_stats << card_stats["stat2_id"]
+            convert_to_statname(first_stats)
+            convert_to_statname(second_stats)
             slim(:"/cards/show", locals:{card:card, stat1:first_stats, stat2:second_stats})
         end
     else
@@ -180,7 +179,7 @@ def get_all_cards()
         
         #Hämtar stats och kort från databasen
         cards = db.execute("SELECT * FROM cards")
-        p stats = db.execute("SELECT stat1_id, stat2_id FROM card_stats_rel")
+        stats = db.execute("SELECT stat1_id, stat2_id FROM card_stats_rel")
 
         #Initerar variabler
         first_stats = []
@@ -226,7 +225,13 @@ def edit_card(card_id)
             flash[:error] = "Du kan inte redigera ett kort du inte äger"
             redirect "/webshop"
         else
-            slim(:"/cards/edit", locals:{card:card, stats:card_stats})
+            first_stats = []
+            second_stats = []
+            first_stats << card_stats["stat1_id"]
+            second_stats << card_stats["stat2_id"]
+            convert_to_statname(first_stats)
+            convert_to_statname(second_stats)
+            slim(:"/cards/edit", locals:{card:card, stat1:first_stats, stat2:second_stats})
         end
     else
         flash[:error] = "Logga in för att redigera ett kort"
@@ -273,7 +278,6 @@ def convert(statname)
     elsif statname == "Uthållighet"
         stat = 7
     end
-    p stat
     stat
 end
 # __________________________________________________________________________________________________________

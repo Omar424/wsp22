@@ -9,21 +9,22 @@ h3.white Tryck på korten för att visa ett enskilt kort
 div#all_cards
     - cards.each_with_index do |card, i|
         div#fifa_card
-            a#go_to_card style="color:white;" href="/card/#{card["id"]}"
+            a#goto_card href="/card/#{card["id"]}"
             p#rating #{card["rating"]}
             p#position #{card["position"]}
             img#club src="#{card["club"]}" alt=":/"
             img#face src="/#{card["image"]}" alt=":/"
             p#name #{card["name"]}
-            a#goto_card href="/card/#{card["id"]}"
-            p#stat1.stat #{stat1[i]}
-            p#stat2.stat #{stat2[i]}
 
-            - if card["owner"] == session[:username]
-                p style="color:white;" Du äger detta kort
-            - else
-                p style="color:white;" Ägare: #{card["owner"]}
-            end
+            #information
+                p#two_best Två bästa attribut:
+                p#stat1.stat 1. #{stat1[i]}
+                p#stat2.stat 2. #{stat2[i]}
+
+                - if card["owner"] == session[:username]
+                    p#ownership Ägare: du
+                - else
+                    p#ownership Ägare: #{card["owner"]}
             
             - if card["owner"] == session[:username]
                 form action="/cards/#{card["id"]}/delete" method="post"

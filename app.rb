@@ -14,12 +14,6 @@ get('/') do
     if session["user_id"] != nil
         redirect('/webshop')
     else
-        # determine_stat("Snabbhet")
-        # determine_stat("Uthållighet")
-        # determine_stat("Skott")
-        # convert_stats()
-        # omar()
-        # convert("Snabbhet")
         slim(:index)
     end
 end
@@ -103,8 +97,8 @@ post('/create_card') do
         name = params[:name]
         position = params[:position]
         rating = params[:rating]
-        p club = "uploaded_pictures/clubs/#{params[:club][:filename]}"
-        p face = "uploaded_pictures/faces/#{params[:player_face][:filename]}"
+        club = "uploaded_pictures/clubs/#{params[:club][:filename]}"
+        face = "uploaded_pictures/faces/#{params[:player_face][:filename]}"
         # file_path för ruby att veta vart den ska skriva in filen
         # p club_path = "public/uploaded_pictures/clubs/#{params[:club][:filename]}"
         # p face_path = "public/uploaded_pictures/faces/#{params[:player_face][:filename]}"

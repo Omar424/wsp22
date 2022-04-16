@@ -12,8 +12,8 @@ div#all_cards
 
 - if card["owner"] == session[:username]
     h3.white
-        | Vill du uppdatera ditt kort? Besök 
-        a#create_today href="/webshop" webbshoppen
+        | Du äger detta kort, vill du uppdatera kortet? 
+        a#create_today href="/cards/#{card["id"]}/edit" Tryck här!
 - else
     h3.white
         | Vill du köpa kortet? Besök 

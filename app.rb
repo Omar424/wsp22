@@ -45,9 +45,9 @@ get('/login') do
 end
 
 #Route för att komma till användarens eller andras inventory
-get('/inventory/:username') do
-    owner = params[:username]
-    get_user_inventory(owner)
+get('/inventory/:user') do
+    user = params[:user]
+    get_inventory(user)
 end
 
 #Webshop

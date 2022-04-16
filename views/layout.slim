@@ -21,10 +21,9 @@ html lang="en"
                         li Webshop
                     a href="/cards/new"
                         li Skapa kort
-                    / a href="/user/#{session[:user_id]}/inventory"
                     a href="/inventory/#{session[:username]}"
                         li Inventory
-
+                    
             form#logout-form.submit action="/logout" method="post"
                 input#logout.submit type="submit" value="Logga ut"
         - else

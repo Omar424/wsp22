@@ -310,7 +310,7 @@ footer {
   color: red;
   position: absolute;
   left: 640px;
-  top: 322px;
+  top: 310px;
 }
 
 .flash_wrong_pass {
@@ -321,7 +321,7 @@ footer {
   color: red;
   position: absolute;
   left: 640px;
-  top: 420px;
+  top: 400px;
 }
 
 .flash_register_sucess, .flash_sucess {

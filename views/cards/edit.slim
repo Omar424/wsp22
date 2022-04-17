@@ -8,8 +8,11 @@ h3.white Redigera kort:
             img#club src="/#{card["club"]}" alt=":/"
             img#face src="/#{card["image"]}" alt=":/"
             p#name #{card["name"]}
-            p#stat1.stat #{stat1[0]}
-            p#stat2.stat #{stat2[0]}
+
+            #information
+                p#two_best Två bästa attribut:
+                p#stat1.stat 1. #{stat1[0]}
+                p#stat2.stat 2. #{stat2[0]}
 
     .flex
         .edit-form

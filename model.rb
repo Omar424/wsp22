@@ -258,6 +258,7 @@ end
 def delete_card(card_id)
     db = connect_to_db('db/db.db')
     db.execute("DELETE FROM cards where id = ?", card_id)
+    db.execute("DELETE FROM card_stats_rel where card_id = ?", card_id)
     flash[:sucess] = "Kortet har tagits bort"
     redirect "/webshop"
 end

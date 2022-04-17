@@ -104,16 +104,14 @@ post('/create_card') do
         # p face_path = "public/uploaded_pictures/faces/#{params[:player_face][:filename]}"
         stat1 = params[:stat1]
         stat2 = params[:stat2]
-        stat1_num = ""
-        stat2_num = ""
         
-        stats = {1 => "Snabbhet", 2 => "Skott", 3 => "Passningar", 4 => "Styrka", 5 => "Skicklighet", 6 => "Dribbling",7 => "Uthållighet"}
+        stats = {1 => "Snabb", 2 => "Bra skott", 3 => "Bra passningar", 4 => "Stark", 5 => "Skicklig", 6 => "Bra dribbling",7 => "Bra uthållighet"}
         i = 0
         j = 0
 
         p "#{stat1} blev konverterad till"
         while i < (stats.length + 1)
-            if stats[i] == stat1
+            if  stat1 == stats[i]
                 stat1_num = i.to_i
             end
             i += 1

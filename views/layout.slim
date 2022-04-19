@@ -9,6 +9,11 @@ html lang="en"
         title = "FCW #{@title}"
     body
 
+        - if session[:role] != nil
+            h3.white Status: Är på hemsidan som #{session[:role]}
+        - else
+            h3.white Status: Är på hemsidan som gäst
+
         - if session[:logged_in] == true
             h1#sitename FCW - Football Cards Webshop 
             #menuToggle

@@ -11,7 +11,7 @@ enable :sessions
 
 #Första sidan
 get('/') do
-    if session["user_id"] != nil
+    if session["logged_in"] != nil
         redirect('/webshop')
     else
         slim(:index)
@@ -21,7 +21,6 @@ end
 #Registrering
 get('/register') do
     if session["user_id"] != nil
-        flash[:already_logged_in] = "Du är redan inloggad!"
         redirect "/webshop"
     else
         slim(:"user/register")
@@ -31,7 +30,6 @@ end
 #Logga in
 get('/login') do
     if session["logged_in"] == true
-        flash[:already_logged_in] = "Du är redan inloggad!"
         redirect "/webshop"
     else
         slim(:"user/login")

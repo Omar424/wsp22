@@ -13,11 +13,78 @@ div#all_cards
             p#stat1.stat 1. #{stat1[0]}
             p#stat2.stat 2. #{stat2[0]}
 
-- if card["owner"] == session[:username]
-    h3.white
-        | Du äger detta kort, vill du uppdatera kortet? 
-        a#create_today href="/cards/#{card["id"]}/edit" Tryck här!
-- else
-    h3.white
-        | Vill du köpa kortet? Besök 
-        a#create_today href="/webshop" webbshoppen
+        - if session[:role] == "admin"
+            - if card["owner"] == session[:user]
+                h3.white
+                | Du äger detta kort och är admin, vill du uppdatera kortet eller radera det?
+                a#update_card href="/cards/#{card["id"]}/edit" Uppdatera kort
+                form action="/cards/#{card["id"]}/delete" method="post"
+                    button#delete_card.submit type="submit" Radera kort!
+            - else
+                br
+                br
+                br
+                br
+                br
+                br
+                br
+                br
+                br
+                br
+                br
+                br
+                br
+                br
+                br
+                br
+                h3.white Du är inloggad som admin
+                h3.white Du kan hantera korten hur du vill
+                a#update_card href="/cards/#{card["id"]}/edit" Uppdatera kort
+                form action="/cards/#{card["id"]}/delete" method="post"
+                    button#delete_card.submit type="submit" Radera kort!
+
+        - elsif session[:role] == "user"
+            - if card["owner"] == session[:username]
+                h3.white
+                    | Du äger detta kort, vill du uppdatera kortet? 
+                    a#update_card href="/cards/#{card["id"]}/edit" Uppdatera kort
+                    form action="/cards/#{card["id"]}/delete" method="post"
+                        button#delete_card.submit type="submit" Radera kort!
+            - else
+                br
+                br
+                br
+                br
+                br
+                br
+                br
+                br
+                br
+                br
+                br
+                br
+                br
+                br
+                br
+                h3.white
+                    | Vill du köpa kortet? Besök 
+                    a#create_today href="/webshop" webbshoppen
+        - elsif session[:role] == nil
+            br
+            br
+            br
+            br
+            br
+            br
+            br
+            br
+            br
+            br
+            br
+            br
+            br
+            br
+            br
+            h3.white
+                | Tillbaks till 
+                a#create_today href="/webshop" webbshoppen

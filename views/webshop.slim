@@ -1,5 +1,5 @@
 - @title = "Webbshop"
-h1.white Välkommen till webshoppen!
+h2.white Välkommen till webshoppen!
 
 - if session[:role] != "user" && session[:role] != "admin"
     h3.white 
@@ -35,7 +35,7 @@ h1.white Välkommen till webshoppen!
         
     div#all_cards
         - cards.each_with_index do |card, i|
-            div#fifa_card
+            div.fifa_card#fifa_card_webshop
                 a#goto_card href="/card/#{card["id"]}"
                 p#rating #{card["rating"]}
                 p#position #{card["position"]}
@@ -53,7 +53,7 @@ h1.white Välkommen till webshoppen!
                     - else
                         p#ownership Ägare: #{card["owner"]}
                 
-                - if card["owner"] == session[:username]
+                - if card["owner"] == session[:username] || session[:role] == "admin"
                     form action="/cards/#{card["id"]}/delete" method="post"
                         button#delete_card.submit type="submit" Radera kort!
                     a#update_card href="/cards/#{card["id"]}/edit" Uppdatera kort

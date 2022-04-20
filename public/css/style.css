@@ -16,7 +16,6 @@ body {
 #sitename {
   color: white;
   text-align: center;
-  margin-top: 20px;
 }
 
 .white {
@@ -24,6 +23,26 @@ body {
   padding-top: 10px;
   padding-left: 10px;
   text-align: center;
+}
+
+.down {
+  position: relative;
+  bottom: -100%;
+  color: white;
+  text-align: center;
+}
+
+.status {
+  color: white;
+  text-align: center;
+  padding-top: 10px;
+}
+
+#card_id {
+  color: white;
+  text-align: center;
+  position: relative;
+  top: -25px;
 }
 
 footer {
@@ -45,11 +64,20 @@ footer {
 }
 
 /* kort styling */
-#fifa_card {
+.fifa_card {
   width: 250px;
-  height: 330px;
+  height: 450px;
   position: relative;
   background-image: url('/misc/fifa_card.png');
+  background-repeat: no-repeat;
+}
+
+#fifa_card_webshop {
+  height: 450px;
+}
+
+#fifa_card_show {
+  height: 350px;
 }
 
 .flex {
@@ -114,6 +142,15 @@ footer {
   top: -82px;
 }
 
+#information_trimmed {
+  display: flex;
+  justify-content: center;
+  height: 70px;
+  width: 100%;
+  position: absolute;
+  top: -60px;
+}
+
 .stat, #ownership, #two_best {
   color: white;
   position: absolute;
@@ -162,7 +199,7 @@ footer {
 #update_card {
   position: absolute;
   left: 72px;
-  bottom: 81px;
+  top: 220px;
   padding: 4px;
   border-radius: 5px;
   font-family: 'Comfortaa', cursive;
@@ -178,7 +215,7 @@ footer {
 
 #delete_card {
   position: absolute;
-  bottom: 45px;
+  top: 260px;
   right: 73px;
   padding: 4px;
   border-radius: 5px;
@@ -296,6 +333,13 @@ footer {
   justify-content: center;
   flex-wrap: wrap;
   margin-top: 100px;
+}
+
+#all_cards_trimmed {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 50px;
 }
 
 #flex_edit {

@@ -1,90 +1,52 @@
-h2.white Kort med id #{card["id"]}
+h2#card_id Kort med id #{card["id"]}
 
-div#all_cards
-    div#fifa_card
+div#all_cards_trimmed
+    div.fifa_card#fifa_card_show
         p#rating #{card["rating"]}
         p#name #{card["name"]}
         p#position #{card["position"]}
         img#club src="/#{card["club"]}" alt=":/"
         img#face src="/#{card["image"]}" alt=":/"
 
-        #information
+        #information_trimmed
             p#two_best Två bästa attribut:
             p#stat1.stat 1. #{stat1[0]}
             p#stat2.stat 2. #{stat2[0]}
 
         - if session[:role] == "admin"
-            - if card["owner"] == session[:user]
-                h3.white
-                | Du äger detta kort och är admin, vill du uppdatera kortet eller radera det?
+            - if card["owner"] == session[:username]
+                h3.down 
+                    | Du äger kortet och är admin 
+                    h4.down Dina behörigheter: Uppdatera och radera alla kort
                 a#update_card href="/cards/#{card["id"]}/edit" Uppdatera kort
                 form action="/cards/#{card["id"]}/delete" method="post"
                     button#delete_card.submit type="submit" Radera kort!
             - else
-                br
-                br
-                br
-                br
-                br
-                br
-                br
-                br
-                br
-                br
-                br
-                br
-                br
-                br
-                br
-                br
-                h3.white Du är inloggad som admin
-                h3.white Du kan hantera korten hur du vill
+                h3.down
+                    | Du är admin, dina behörigheter:
+                    h4.down Uppdatera och radera alla kort
                 a#update_card href="/cards/#{card["id"]}/edit" Uppdatera kort
                 form action="/cards/#{card["id"]}/delete" method="post"
                     button#delete_card.submit type="submit" Radera kort!
 
         - elsif session[:role] == "user"
             - if card["owner"] == session[:username]
-                h3.white
-                    | Du äger detta kort, vill du uppdatera kortet? 
-                    a#update_card href="/cards/#{card["id"]}/edit" Uppdatera kort
-                    form action="/cards/#{card["id"]}/delete" method="post"
-                        button#delete_card.submit type="submit" Radera kort!
+                h3.down
+                    | Du äger detta kort
+                h4.down Dina behörigheter: Uppdatera och radera ditt kort
+                a#update_card href="/cards/#{card["id"]}/edit" Uppdatera kort
+                form action="/cards/#{card["id"]}/delete" method="post"
+                    button#delete_card.submit type="submit" Radera kort!
             - else
-                br
-                br
-                br
-                br
-                br
-                br
-                br
-                br
-                br
-                br
-                br
-                br
-                br
-                br
-                br
-                h3.white
-                    | Vill du köpa kortet? Besök 
-                    a#create_today href="/webshop" webbshoppen
+                h3.down
+                    | Vill du köpa kortet? 
+                    h4.down
+                        | Besök 
+                        a#create_today href="/webshop" webbshoppen
         - elsif session[:role] == nil
-            br
-            br
-            br
-            br
-            br
-            br
-            br
-            br
-            br
-            br
-            br
-            br
-            br
-            br
-            br
-            h3.white
+            h3.down
+                | Du är inte inloggad 
+                h4.down Dina behörigheter: Inga behörigheter
+            h4.down
                 | Tillbaks till 
                 a#create_today href="/webshop" webbshoppen

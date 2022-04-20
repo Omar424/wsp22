@@ -6,7 +6,7 @@
         p.white Du har inga kort i din inventory
     div#all_cards
         - cards.each_with_index do |cards, i|
-                div#fifa_card
+                div.fifa_card
                     p#rating #{cards["rating"]}
                     p#position #{cards["position"]}
                     img#club src="/#{cards["club"]}" alt=":/"

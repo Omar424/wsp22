@@ -17,8 +17,8 @@ def register_user(username, password, password_conf)
     if user == nil
         if password == password_conf
           hashed_password = BCrypt::Password.create(password)
-          db.execute("INSERT INTO users (username, password) VALUES (?, ?)", [username, hashed_password])
-          flash[:register_sucess] = "Du är registrerad, logga in för att se webbshoppen"
+          db.execute("INSERT INTO users (username, password, role) VALUES (?, ?, ?)", [username, hashed_password, "user"])
+          flash[:register_sucess] = "Du är registrerad, logga in för att köpa kort och skapa egna kort"
           redirect "/login"
         elsif password != password_conf
             flash[:wrong_conf] = "Lösenorden matchar inte!"
@@ -41,8 +41,8 @@ def login_user(username, password)
         flash[:no_such_user] = "Användaren finns inte!"
         redirect "/login"
     elsif BCrypt::Password.new(user["password"]) == password
-        session[:username] = user["username"]
         session[:logged_in] = true
+        session[:username] = user["username"]
         session[:role] = user["role"]
         redirect "/webshop"
     else
@@ -253,6 +253,7 @@ def delete_card(card_id)
     flash[:sucess] = "Kortet har tagits bort"
     redirect "/webshop"
 end
+
 # __________________________________________________________________________________________________________
 def convert(statname)
     if statname == "Snabbhet"

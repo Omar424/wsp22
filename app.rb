@@ -11,7 +11,7 @@ enable :sessions
 
 #Första sidan
 get('/') do
-    if session["logged_in"] != nil
+    if session["logged_in"] == true
         redirect('/webshop')
     else
         slim(:index)
@@ -20,7 +20,7 @@ end
 
 #Registrering
 get('/register') do
-    if session["user_id"] != nil
+    if session["logged_in"] == true
         redirect "/webshop"
     else
         slim(:"user/register")
@@ -162,7 +162,3 @@ post('/logout') do
     session.destroy
     redirect('/')
 end
-
-# get('/uploaded_pictures/:type/:name') do
-#     File.read("uploaded_pictures/#{params[:type]}/#{params[:name]}")
-# end

@@ -10,9 +10,9 @@ html lang="en"
     body
 
         - if session[:role] != nil
-            h3.white Status: Är på hemsidan som #{session[:role]}
+            h3.status Browsing website as #{session[:role]}
         - else
-            h3.white Status: Är på hemsidan som gäst
+            h3.status Browsing website as guest
 
         - if session[:logged_in] == true
             h1#sitename FCW - Football Cards Webshop 

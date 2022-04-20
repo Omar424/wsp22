@@ -17,7 +17,7 @@ h3.white Redigera kort:
     .flex
         .edit-form
             form action="/cards/#{card["id"]}/update" method="POST"
-                input.input_styling type="text" name="name" minlength="3" maxlength="16" required="" value="#{card["name"]}"
+                input.input_styling type="text" name="name" minlength="3" maxlength="10" required="" value="#{card["name"]}"
                 br
                 input.input_styling#choose_rating type="number" name="rating" min="50" max="99" required="" value="#{card["rating"]}"
                 br

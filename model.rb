@@ -43,6 +43,7 @@ def login_user(username, password)
     elsif BCrypt::Password.new(user["password"]) == password
         session[:username] = user["username"]
         session[:logged_in] = true
+        session[:role] = user["role"]
         redirect "/webshop"
     else
         flash[:wrong_pass] = "Fel lösenord!"
@@ -74,26 +75,21 @@ end
 
 #Funktion för att visa ett specifikt kort
 def show_one_card(card_id)
-    if session["logged_in"] == true
-        db = connect_to_db("db/db.db")
-        card = db.execute("SELECT * FROM cards WHERE id = ?", card_id).first
-        card_stats = db.execute("SELECT stat1_id, stat2_id FROM card_stats_rel WHERE card_id = ?", card_id).first
-        
-        if card == nil
-            flash[:error] = "Kortet med id #{card_id} finns inte"
-            redirect "/webshop"
-        else
-            first_stats = []
-            second_stats = []
-            first_stats << card_stats["stat1_id"]
-            second_stats << card_stats["stat2_id"]
-            convert_to_statname(first_stats)
-            convert_to_statname(second_stats)
-            slim(:"/cards/show", locals:{card:card, stat1:first_stats, stat2:second_stats})
-        end
+    db = connect_to_db("db/db.db")
+    card = db.execute("SELECT * FROM cards WHERE id = ?", card_id).first
+    card_stats = db.execute("SELECT stat1_id, stat2_id FROM card_stats_rel WHERE card_id = ?", card_id).first
+    
+    if card == nil
+        flash[:error] = "Kortet med id #{card_id} finns inte"
+        redirect "/webshop"
     else
-        flash[:error] = "Logga in för att visa ett kort"
-        redirect "/"
+        first_stats = []
+        second_stats = []
+        first_stats << card_stats["stat1_id"]
+        second_stats << card_stats["stat2_id"]
+        convert_to_statname(first_stats)
+        convert_to_statname(second_stats)
+        slim(:"/cards/show", locals:{card:card, stat1:first_stats, stat2:second_stats})
     end
 end
 
@@ -173,35 +169,30 @@ end
 
 #Funktion för att få alla kort i databasen som ska visas i webshoppen
 def get_all_cards()
-    if session["logged_in"] == true
-        #Ansluter till databasen och hämtar alla kort
-        db = connect_to_db("db/db.db")
-        
-        #Hämtar stats och kort från databasen
-        cards = db.execute("SELECT * FROM cards")
-        stats = db.execute("SELECT stat1_id, stat2_id FROM card_stats_rel")
+    #Ansluter till databasen och hämtar alla kort
+    db = connect_to_db("db/db.db")
+    
+    #Hämtar stats och kort från databasen
+    p cards = db.execute("SELECT * FROM cards")
+    stats = db.execute("SELECT stat1_id, stat2_id FROM card_stats_rel")
 
-        #Initerar variabler
-        first_stats = []
-        second_stats = []
+    #Initerar variabler
+    first_stats = []
+    second_stats = []
 
-        stats.each_with_index do |stat|
-            first_stats << stat["stat1_id"]
-        end
-
-        stats.each_with_index do |stat|
-            second_stats << stat["stat2_id"]
-        end
-
-        #While loop för att få ut stats namn
-        convert_to_statname(first_stats)
-        convert_to_statname(second_stats)
-
-        return slim(:webshop, locals:{cards:cards, stat1:first_stats, stat2:second_stats})
-    else
-        flash["error"] = "Logga in för att se webshoppen"
-        redirect "/"
+    stats.each_with_index do |stat|
+        first_stats << stat["stat1_id"]
     end
+
+    stats.each_with_index do |stat|
+        second_stats << stat["stat2_id"]
+    end
+
+    #While loop för att få ut stats namn
+    convert_to_statname(first_stats)
+    convert_to_statname(second_stats)
+
+    slim(:webshop, locals:{cards:cards, stat1:first_stats, stat2:second_stats})
 end
 
 #Funktion för att köpa kort

@@ -333,11 +333,11 @@ footer {
   z-index: 2;
   font-size: 14px;
   font-family: 'Comfortaa', cursive;
-  font-weight: 500;
+  font-weight: bold;
   color: red;
   position: absolute;
-  left: 640px;
-  top: 400px;
+  left: 830px;
+  top: 410px;
 }
 
 .flash_register_sucess, .flash_sucess {
@@ -398,6 +398,7 @@ footer {
 #logga_in, #registrera_dig {
   text-align: left;
   font-size: 30px;
+  font-family: 'Comfortaa', cursive;
 }
 
 .form {

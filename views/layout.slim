@@ -9,12 +9,7 @@ html lang="en"
         title = "FCW #{@title}"
     body
 
-        - if session[:role] != nil
-            h3.status Browsing website as #{session[:role]}
-        - else
-            h3.status Browsing website as guest
-
-        - if session[:logged_in] == true
+    - if session[:logged_in] == true
             h1#sitename FCW - Football Cards Webshop 
             #menuToggle
                 input type="checkbox"
@@ -28,28 +23,28 @@ html lang="en"
                         li Skapa kort
                     a href="/inventory/#{session[:username]}"
                         li Inventory
-                    
+
             form#logout-form.submit action="/logout" method="post"
                 input#logout.submit type="submit" value="Logga ut"
-        - else
-            h1#sitename FCW - Football Cards Webshop
-            #menuToggle
-                input type="checkbox"
-                span
-                span
-                span
-                ul#menu
-                    a href="/"
-                        li Hemsida
-                    a href="/register"
-                        li Registrera dig
-                    a href="/login"
-                        li Logga in
-                    
+
+    - else
+        h1#sitename FCW - Football Cards Webshop
+        #menuToggle
+            input type="checkbox"
+            span
+            span
+            span
+            ul#menu
+                a href="/"
+                    li Hemsida
+                a href="/register"
+                    li Registrera dig
+                a href="/login"
+                    li Logga in
+
     .flash
         - flash.each do |key, value|
             div class="flash_#{key}"
                 | #{value}
+    
     ==yield
-
-    / script src="/js/script.js"

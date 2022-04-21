@@ -1,4 +1,4 @@
-h3.white Session id är #{session["user_id"]}
+h3.white Session namn är #{session["username"]}
 h2.white Skapa eget kort för att lägga till de i webbshoppen och din inventory
 br
 br
@@ -18,27 +18,30 @@ br
 
             h3 Hur ser din spelare ut?
             img src="/img/unknown face.png" alt="unknown face"
-            a download="" style="color: red; font-weight: 500; text-decoration: none; text-decoration: none;"  href="/misc/player_faces.zip" Ladda ner bilder på fotbollspelare
+            a download="" style="color: green; font-weight: 500; text-decoration: none; text-decoration: none;"  href="/misc/player_faces.zip" Ladda ner bilder på fotbollspelare
             input.input_styling type="file" name="player_face" accept='image/x-png' required=""
 
             h3 I vilken klubb spelar din spelare?
             img src="/img/unknown club.png" alt="unknown club"
             br
-            a download="" style="color: red; font-weight: 500; text-decoration: none; text-decoration: none;"  href="/misc/clubs.zip" Ladda ner bilder på fotbollslag
+            a download="" style="color: green; font-weight: 500; text-decoration: none; text-decoration: none;"  href="/misc/clubs.zip" Ladda ner bilder på fotbollslag
             input type="file" name="club" accept='image/x-png' required=""
 
-            input#choose_rating type="number" name="rating" placeholder="Betyg på spelaren (50-99)" min="50" max="99" required=""
+            input#choose_rating type="number" name="rating" placeholder="Spelarens betyg (70 - 99)" min="70" max="99" required=""
 
+            h3 Vad är spelarens två bästa attribut?
+            br
             select name="stat1" required="" type="text"
                 - stats.each_with_index do |stat, i|
                     option disabled="" hidden="" selected="" value="" Attribut 1
                     option #{stats[i]["stats"]}
             br
-            br
             select name="stat2" required="" type="text"
                 - stats.each_with_index do |stat, i|
                     option disabled="" hidden="" selected="" value="" Attribut 2
                     option #{stats[i]["stats"]}
+            
+            input#choose_rating type="number" name="price" placeholder="Spelarens pris (1-100)" min="1" max="100" required=""
             br
             br
             input#create_player type="submit" value="Skapa spelare!"

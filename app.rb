@@ -95,14 +95,15 @@ post('/create_card') do
         name = params[:name]
         position = params[:position]
         rating = params[:rating]
+        price = params[:price]
         club = "uploaded_pictures/clubs/#{params[:club][:filename]}"
         face = "uploaded_pictures/faces/#{params[:player_face][:filename]}"
         # file_path för ruby att veta vart den ska skriva in filen
         # p club_path = "public/uploaded_pictures/clubs/#{params[:club][:filename]}"
         # p face_path = "public/uploaded_pictures/faces/#{params[:player_face][:filename]}"
+        
         stat1 = params[:stat1]
         stat2 = params[:stat2]
-        
         stats = {1 => "Snabb", 2 => "Bra skott", 3 => "Bra passningar", 4 => "Stark", 5 => "Skicklig", 6 => "Bra dribbling",7 => "Bra uthållighet"}
         i = 0
         j = 0
@@ -125,7 +126,7 @@ post('/create_card') do
         end
         p "#{stat2_num}"
 
-        create_card(name, position, club, face, rating, stat1, stat2, stat1_num, stat2_num, owner)
+        create_card(name, position, club, face, rating, stat1, stat2, stat1_num, stat2_num, owner, price)
     else
         flash[:error] = "Logga in för att skapa ett kort"
         redirect "/"

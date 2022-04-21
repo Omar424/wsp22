@@ -44,6 +44,7 @@ def login_user(username, password)
         session[:logged_in] = true
         session[:username] = user["username"]
         session[:role] = user["role"]
+        session[:coins] = user["coins"]
         redirect "/webshop"
     else
         flash[:wrong_pass] = "Fel lösenord!"
@@ -141,12 +142,12 @@ def get_inventory(user)
 end
 
 #Funktion för att skapa kort
-def create_card(name, position, club, face, rating, stat1, stat2, stat1_num, stat2_num, owner)
+def create_card(name, position, club, face, rating, stat1, stat2, stat1_num, stat2_num, owner, price)
     #ansluter till databasen
     db = connect_to_db("db/db.db")
     
     #creating card
-    db.execute("INSERT INTO cards (owner, name, position, club, image, rating) VALUES (?,?,?,?,?,?)", [owner, name, position, club, face, rating])
+    db.execute("INSERT INTO cards (owner, name, position, club, image, rating, price) VALUES (?,?,?,?,?,?,?)", [owner, name, position, club, face, rating, price])
     p latest_card_id = db.execute("SELECT id from cards").last
     id = latest_card_id["id"].to_i
     
@@ -173,7 +174,8 @@ def get_all_cards()
     db = connect_to_db("db/db.db")
     
     #Hämtar stats och kort från databasen
-    p cards = db.execute("SELECT * FROM cards")
+    p coins = db.execute("SELECT coins FROM users WHERE username = ?", session[:username]).first
+    cards = db.execute("SELECT * FROM cards")
     stats = db.execute("SELECT stat1_id, stat2_id FROM card_stats_rel")
 
     #Initerar variabler
@@ -192,15 +194,34 @@ def get_all_cards()
     convert_to_statname(first_stats)
     convert_to_statname(second_stats)
 
-    slim(:webshop, locals:{cards:cards, stat1:first_stats, stat2:second_stats})
+    slim(:webshop, locals:{cards:cards, stat1:first_stats, stat2:second_stats, coins:coins})
 end
 
 #Funktion för att köpa kort
 def buy_card(card_id)
     db = connect_to_db('db/db.db')
-    db.execute("UPDATE cards SET owner = ? WHERE id = ?", session[:username], card_id)
-    flash[:sucess] = "Du har köpt kortet"
-    redirect "/webshop"
+    
+    p card = db.execute("SELECT * FROM cards WHERE id = ?", card_id).first
+    p card_price = card["price"].to_i
+    p seller = card["owner"]
+    
+    p client_info = db.execute("SELECT * FROM users WHERE username = ?", session["username"]).first
+    p client = client_info["username"]
+    p client_coins = client_info["coins"].to_i    
+
+    p seller_info = db.execute("SELECT * FROM users WHERE username = ?", seller).first
+    p seller_coins = seller_info["coins"]
+
+    if client_coins < card_price
+        flash[:error] = "Du har inte råd med kortet"
+        redirect "/webshop"
+    else
+        db.execute("UPDATE users SET coins = ? WHERE username = ?", [(client_coins - card_price), client])
+        db.execute("UPDATE users SET coins = ? WHERE username = ?", [(seller_coins + card_price), seller])
+        db.execute("UPDATE cards SET owner = ? WHERE id = ?", [client, card_id])
+        flash[:sucess] = "Du har köpt kortet"
+        redirect "/webshop"
+    end
 end
 
 def edit_card(card_id)

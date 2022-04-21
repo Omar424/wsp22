@@ -1,5 +1,10 @@
 - @title = "Homepage"
 
+- if session[:role] != nil
+    h3.status Hello #{session[:username]}, currently browsing website as #{session[:role]}
+- else
+    h3.status Browsing website as guest
+
 h3.white
   | För att se dina kort, vänligen 
   a#create_today href="/login"  logga in

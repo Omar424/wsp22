@@ -1,10 +1,11 @@
+require 'bcrypt'
 require 'sinatra'
+require 'sinatra/flash'
 require 'sinatra/reloader'
 require 'slim'
 require 'sqlite3'
-require 'bcrypt'
-require 'sinatra/flash'
 require_relative './model.rb'
+include Model
 enable :sessions
 
 #get routes

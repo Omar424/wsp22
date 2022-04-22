@@ -1,4 +1,3 @@
-h3.white Session namn är #{session["username"]}
 h2.white Skapa eget kort för att lägga till de i webbshoppen och din inventory
 br
 br
@@ -6,7 +5,7 @@ br
 .create_player
     .form
         form#create_card action="/create_card" method="post" enctype="multipart/form-data"
-            h2 Skapa ditt eget kort!
+            h2#nice Skapa ditt eget kort!
             br
             input.input_styling type="text" name="name" placeholder="Namn (3-10 bokstäver)" minlength="3" maxlength="10" required=""
 
@@ -18,7 +17,7 @@ br
 
             h3 Hur ser din spelare ut?
             img src="/img/unknown face.png" alt="unknown face"
-            a download="" style="color: green; font-weight: 500; text-decoration: none; text-decoration: none;"  href="/misc/player_faces.zip" Ladda ner bilder på fotbollspelare
+            a download="" style="color: green; font-weight: 500; text-decoration: none;"  href="/misc/player_faces.zip" Ladda ner bilder på fotbollspelare
             input.input_styling type="file" name="player_face" accept='image/x-png' required=""
 
             h3 I vilken klubb spelar din spelare?

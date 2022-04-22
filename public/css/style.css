@@ -33,6 +33,10 @@ body {
   text-align: center;
 }
 
+#nice {
+  font-family: 'Comfortaa', cursive;
+}
+
 .status {
   color: white;
   font-size: 20px;
@@ -354,8 +358,8 @@ footer {
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
-  margin-top: 100px;
-  max-width: 1700px;
+  margin-top: 200px;
+  max-width: 1300px;
 }
 
 #all_cards_trimmed {
@@ -552,7 +556,7 @@ footer {
 /* hamburger menu */
 
 #menuToggle {
-  /* display: block; */
+  display: inline;
   position: relative;
   top: -10px;
   left: 45px;

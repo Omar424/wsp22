@@ -201,16 +201,16 @@ end
 def buy_card(card_id)
     db = connect_to_db('db/db.db')
     
-    p card = db.execute("SELECT * FROM cards WHERE id = ?", card_id).first
-    p card_price = card["price"].to_i
-    p seller = card["owner"]
+    card = db.execute("SELECT * FROM cards WHERE id = ?", card_id).first
+    card_price = card["price"].to_i
+    seller = card["owner"]
     
-    p client_info = db.execute("SELECT * FROM users WHERE username = ?", session["username"]).first
-    p client = client_info["username"]
-    p client_coins = client_info["coins"].to_i    
+    client_info = db.execute("SELECT * FROM users WHERE username = ?", session["username"]).first
+    client = client_info["username"]
+    client_coins = client_info["coins"].to_i    
 
-    p seller_info = db.execute("SELECT * FROM users WHERE username = ?", seller).first
-    p seller_coins = seller_info["coins"]
+    seller_info = db.execute("SELECT * FROM users WHERE username = ?", seller).first
+    seller_coins = seller_info["coins"]
 
     if client_coins < card_price
         flash[:error] = "Du har inte råd med kortet"

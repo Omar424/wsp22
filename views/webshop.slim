@@ -1,10 +1,4 @@
 - @title = "Webbshop"
-h2.white Välkommen till webshoppen!
-
-- if session[:role] != nil
-    h3.status Hello #{session[:username]}, currently browsing website as #{session[:role]}
-- else
-    h3.status Browsing website as guest
 
 - if session[:role] != "user" && session[:role] != "admin"
     h3.white 
@@ -32,12 +26,11 @@ h2.white Välkommen till webshoppen!
                     p#stat2.stat 2. #{stat2[i]}
                     p#ownership Ägare: #{card["owner"]}
 - else
-    h3.white Här kan du både köpa och skapa kort
     h3.white Tryck på korten för att visa ett enskilt kort
     h3.white Köp kort i webshopen för att lägga till de i din inventory
     h3.white 
         | Eller vill du 
-        a#create_today href="/cards/new" skapa ett eget kort?
+        a#create_today href="/cards/new" skapa ett eget kort
         br
         br
         hr

@@ -7,16 +7,12 @@ html lang="en"
         link rel="stylesheet" href="/css/style.css"/
         link src="favicon.ico" rel="icon" type="image/x-icon" /
         title = "FCW #{@title}"
+        script src="js/script.js"
     body
 
     - if session[:logged_in] == true
         nav
-            - if session[:role] != nil
-                h3.status Hello #{session[:username]}, currently browsing website as #{session[:role]}
-            - else
-                h3.status Browsing website as guest
             #links_container
-                a.links href="/" Hemsidan
                 a.links href="/webshop" Webshop
                 a.links href="/cards/new" Skapa kort
                 a.links href="/inventory/#{session[:username]}" Inventory
@@ -24,16 +20,15 @@ html lang="en"
                 input#logout.submit type="submit" value="Logga ut"
     - else
         nav
-            - if session[:role] != nil
-                h3.status Hello #{session[:username]}, currently browsing website as #{session[:role]}
-            - else
-                h3.status Browsing website as guest
-            h1#sitename FCW - Football Cards Webshop
+            div#homepage
+                a#link_home href="/"
+                    img src="/img/favicon.png" alt="FCWS"
+            
             #links_container
                 a.links href="/webshop" Webshop
-                a.links href="/register" Registrera dig
+                a.links href="/register" Skapa konto
                 a.links href="/login" Logga in
-    
+
     .flash
         - flash.each do |key, value|
             div class="flash_#{key}"

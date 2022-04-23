@@ -15,7 +15,7 @@ body {
 
 nav {
   display: flex;
-  justify-content: space-between;
+  justify-content: space-around;
 }
 
 #sitename {
@@ -24,6 +24,10 @@ nav {
   position: relative;
   right: 2.5em;
   padding-top: 0.5rem;
+}
+
+#link_home img {
+  padding: 0.5rem 0rem 0rem 0.5rem;
 }
 
 .white {
@@ -35,17 +39,14 @@ nav {
 
 #links_container {
   display: flex;
-  flex-direction: row;
-  justify-content: space-around;
   gap: 1.5rem;
   padding-top: 0.5rem;
-  position: relative;
-  right: 2.5em;
 }
 
 .links {
   color: white;
   font-size: 1.2rem;
+  height: 35%;
 }
 
 .links:hover {
@@ -423,19 +424,19 @@ footer {
   font-weight: 500;
   color: red;
   position: absolute;
-  left: 640px;
-  top: 310px;
+  left: 46em;
+  top: 21em;
 }
 
 .flash_wrong_pass {
   z-index: 2;
   font-size: 14px;
   font-family: 'Comfortaa', cursive;
-  font-weight: bold;
+  font-weight: 500;
   color: red;
   position: absolute;
-  left: 830px;
-  top: 410px;
+  left: 46em;
+  top: 27em;
 }
 
 .flash_register_sucess, .flash_sucess {

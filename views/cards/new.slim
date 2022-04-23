@@ -4,7 +4,7 @@ br
 
 .create_player
     .form
-        form#create_card action="/create_card" method="post" enctype="multipart/form-data"
+        #create_card action="/create_card" method="post" enctype="multipart/form-data"
             h2#nice Skapa ditt eget kort!
             br
             input.input_styling type="text" name="name" placeholder="Namn (3-10 bokstäver)" minlength="3" maxlength="10" required=""
@@ -17,13 +17,14 @@ br
 
             h3 Hur ser din spelare ut?
             img src="/img/unknown face.png" alt="unknown face"
-            a download="" style="color: green; font-weight: 500; text-decoration: none;"  href="/misc/player_faces.zip" Ladda ner bilder på fotbollspelare
+            / a#button download="" style="color: green; font-weight: 500; text-decoration: none;" Använd dessa bilder
+            button#button type="button" Använd dessa bilder
             input.input_styling type="file" name="player_face" accept='image/x-png' required=""
 
             h3 I vilken klubb spelar din spelare?
             img src="/img/unknown club.png" alt="unknown club"
             br
-            a download="" style="color: green; font-weight: 500; text-decoration: none; text-decoration: none;"  href="/misc/clubs.zip" Ladda ner bilder på fotbollslag
+            a download="" style="color: green; font-weight: 500; text-decoration: none; text-decoration: none;"  href="#" Använd dessa bilder
             input type="file" name="club" accept='image/x-png' required=""
 
             input#choose_rating type="number" name="rating" placeholder="Spelarens betyg (70 - 99)" min="70" max="99" required=""

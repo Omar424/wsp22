@@ -1,4 +1,4 @@
-var urls = ['misc/barcelona.png','misc/madrid.png', 'misc/bayern.png'];
+var urls = ['misc/barcelona.png', 'misc/bayern.png','misc/madrid.png','misc/chelsea.png','misc/dortmund.png','misc/city.png','misc/tottenham.png','misc/liverpool.png','misc/psg.png','misc/united.png'];
 button = document.getElementById('button');
 
 button.onclick = function() {
@@ -9,6 +9,6 @@ button.onclick = function() {
     a.setAttribute('download', '');
     a.setAttribute('target', '_blank');
     a.click();
-    if (urls.length == 0) {clearInterval(interval);}
+    if (urls.length == 0) {clearInterval(interval); button.remove();}
     }, 400, urls);
 }

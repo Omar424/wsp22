@@ -7,7 +7,6 @@ html lang="en"
         link rel="stylesheet" href="/css/style.css"/
         link src="favicon.ico" rel="icon" type="image/x-icon" /
         title = "FCW #{@title}"
-        script src="js/script.js"
     body
 
     - if session[:logged_in] == true
@@ -33,5 +32,7 @@ html lang="en"
         - flash.each do |key, value|
             div class="flash_#{key}"
                 | #{value}
-
+    
     ==yield
+
+    script src="/js/script.js" type="text/javascript"

@@ -60,6 +60,7 @@ get('/cards/new') do
         db = connect_to_db("db/db.db")
         stats = db.execute("SELECT stats FROM stat")
         slim(:"cards/new", :locals => {stats: stats})
+        # slim(:"cards/new", :locals => {stats: stats})
     else
         flash[:error] = "Logga in för att skapa ett kort"
         redirect "/"

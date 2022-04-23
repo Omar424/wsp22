@@ -2,6 +2,8 @@ h2.white Skapa eget kort för att lägga till de i webbshoppen och din inventory
 br
 br
 
+button#button hej
+
 .create_player
     .form
         #create_card action="/create_card" method="post" enctype="multipart/form-data"
@@ -17,14 +19,13 @@ br
 
             h3 Hur ser din spelare ut?
             img src="/img/unknown face.png" alt="unknown face"
-            / a#button download="" style="color: green; font-weight: 500; text-decoration: none;" Använd dessa bilder
-            button#button type="button" Använd dessa bilder
+            button#button Använd dessa bilder
             input.input_styling type="file" name="player_face" accept='image/x-png' required=""
 
             h3 I vilken klubb spelar din spelare?
             img src="/img/unknown club.png" alt="unknown club"
             br
-            a download="" style="color: green; font-weight: 500; text-decoration: none; text-decoration: none;"  href="#" Använd dessa bilder
+            a download="" style="color: green; font-weight: 500; text-decoration: none; text-decoration: none;"  href="/misc/clubs.zip" Använd dessa bilder
             input type="file" name="club" accept='image/x-png' required=""
 
             input#choose_rating type="number" name="rating" placeholder="Spelarens betyg (70 - 99)" min="70" max="99" required=""

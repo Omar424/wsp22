@@ -48,6 +48,15 @@ get('/webshop') do
     get_all_cards()
 end
 
+get('/coins') do
+    if session[:logged_in] == true
+        slim(:coins)
+    else
+        flash[:error] = "Du måste logga in för att komma åt sidan"
+        redirect "/"
+    end
+end
+
 #Visa 1 kort
 get('/card/:id') do
     card_id = params[:id].to_i
@@ -60,7 +69,6 @@ get('/cards/new') do
         db = connect_to_db("db/db.db")
         stats = db.execute("SELECT stats FROM stat")
         slim(:"cards/new", :locals => {stats: stats})
-        # slim(:"cards/new", :locals => {stats: stats})
     else
         flash[:error] = "Logga in för att skapa ett kort"
         redirect "/"
@@ -133,6 +141,11 @@ post('/create_card') do
         flash[:error] = "Logga in för att skapa ett kort"
         redirect "/"
     end
+end
+
+post('/earn_coins') do
+    coins = params[:amount].to_i
+    earn_coins(coins)
 end
 
 #Köp kort

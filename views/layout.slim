@@ -15,6 +15,7 @@ html lang="en"
                 a.links href="/webshop" Webshop
                 a.links href="/cards/new" Skapa kort
                 a.links href="/inventory/#{session[:username]}" Inventory
+                a.links href="/coins" Tjäna mynt
             form#logout-form.submit action="/logout" method="post"
                 input#logout.submit type="submit" value="Logga ut"
     - else

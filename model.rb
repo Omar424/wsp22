@@ -16,10 +16,10 @@ module Model
         #Kollar om användarnamnet redan finns
         if user == nil
             if password == password_conf
-            hashed_password = BCrypt::Password.create(password)
-            db.execute("INSERT INTO users (username, password, role) VALUES (?, ?, ?)", [username, hashed_password, "user"])
-            flash[:register_sucess] = "Du är registrerad, logga in för att köpa kort och skapa egna kort"
-            redirect "/login"
+                hashed_password = BCrypt::Password.create(password)
+                db.execute("INSERT INTO users (username, password, role, coins) VALUES (?, ?, ?,?)", [username, hashed_password, "user", 0])
+                flash[:register_sucess] = "Du är registrerad, logga in för att köpa kort och skapa egna kort"
+                redirect "/login"
             elsif password != password_conf
                 flash[:wrong_conf] = "Lösenorden matchar inte!"
                 redirect "/"
@@ -195,6 +195,14 @@ module Model
         convert_to_statname(second_stats)
 
         slim(:webshop, locals:{cards:cards, stat1:first_stats, stat2:second_stats, coins:coins})
+    end
+
+    def earn_coins(coins)
+        db = connect_to_db("db/db.db")
+        user = db.execute("SELECT * FROM users WHERE username = ?", session[:username]).first
+        db.execute("UPDATE users SET coins = ? WHERE username = ?", [user["coins"] + coins, session[:username]])
+        flash[:sucess] = "Det har nu lagts till #{coins} mynt till ditt konto"
+        redirect "/webshop"
     end
 
     #Funktion för att köpa kort

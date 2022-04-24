@@ -2,11 +2,9 @@ h2.white Skapa eget kort för att lägga till de i webbshoppen och din inventory
 br
 br
 
-button#button hej
-
 .create_player
     .form
-        #create_card action="/create_card" method="post" enctype="multipart/form-data"
+        form#create_card action="/create_card" method="post" enctype="multipart/form-data"
             h2#nice Skapa ditt eget kort!
             br
             input.input_styling type="text" name="name" placeholder="Namn (3-10 bokstäver)" minlength="3" maxlength="10" required=""
@@ -19,14 +17,15 @@ button#button hej
 
             h3 Hur ser din spelare ut?
             img src="/img/unknown face.png" alt="unknown face"
-            button#button Använd dessa bilder
-            input.input_styling type="file" name="player_face" accept='image/x-png' required=""
+            br
+            a download="" style="color: green; font-weight: 500; text-decoration: none; text-decoration: none;"  href="/misc/faces.zip" Använd dessa bilder
+            input.input_styling type="file" name="player_face" accept='.png' required=""
 
             h3 I vilken klubb spelar din spelare?
             img src="/img/unknown club.png" alt="unknown club"
             br
             a download="" style="color: green; font-weight: 500; text-decoration: none; text-decoration: none;"  href="/misc/clubs.zip" Använd dessa bilder
-            input type="file" name="club" accept='image/x-png' required=""
+            input type="file" name="club" accept='image/png' required=""
 
             input#choose_rating type="number" name="rating" placeholder="Spelarens betyg (70 - 99)" min="70" max="99" required=""
 
@@ -42,7 +41,7 @@ button#button hej
                     option disabled="" hidden="" selected="" value="" Attribut 2
                     option #{stats[i]["stats"]}
             
-            input#choose_rating type="number" name="price" placeholder="Spelarens pris (1-100)" min="1" max="100" required=""
+            input#choose_rating type="number" name="price" placeholder="Spelarens pris (1-10)" min="1" max="10" required=""
             br
             br
             input#create_player type="submit" value="Skapa spelare!"

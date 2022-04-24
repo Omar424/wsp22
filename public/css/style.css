@@ -16,6 +16,8 @@ body {
 nav {
   display: flex;
   justify-content: space-around;
+  border-bottom: 2px solid #2f333c;
+  height: 4.3em;
 }
 
 #sitename {
@@ -27,7 +29,9 @@ nav {
 }
 
 #link_home img {
-  padding: 0.5rem 0rem 0rem 0.5rem;
+  width: 3.8em;
+  height: 3.8em;
+  margin-top: 0.3em;
 }
 
 .white {
@@ -38,15 +42,16 @@ nav {
 }
 
 #links_container {
+  height: 100%;
   display: flex;
   gap: 1.5rem;
-  padding-top: 0.5rem;
 }
 
 .links {
   color: white;
   font-size: 1.2rem;
-  height: 35%;
+  height: 1.5em;
+  padding-top: 1em;
 }
 
 .links:hover {
@@ -172,7 +177,7 @@ footer {
   position: absolute;
   top: 207px;
   left: 69px;
-  font-size: 20px;
+  font-size: 1.2em;
   font-weight: 500;
   font-family: 'Comfortaa', cursive;
 }
@@ -386,8 +391,8 @@ footer {
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
-  margin-top: 200px;
-  max-width: 1300px;
+  margin-top: 8em;
+  max-width: 81em;
 }
 
 #all_cards_trimmed {
@@ -540,19 +545,17 @@ footer {
   background: #dbdbdb;
 }
 
-#logout-form {
-  padding: 0px 10px 10px 0px;
-}
-
 #logout-form:hover {
   cursor: pointer;
 }
 
 #logout {
-  background-color:rgb(224, 90, 90);
+  background-color: rgb(224, 90, 90);
   padding: 12px;
-  margin-top: 10px;
+  margin-top: 0.5em;
   border-radius: 5px;
+  position: absolute;
+  right: 8em;
   color: #FFFFFF;
   font-size: 18px;
 }

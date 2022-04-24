@@ -6,9 +6,7 @@
         a#create_today href="/login" inloggad
         |, annars kan du endast visa korten.
     h3.white Tryck på korten för att visa ett enskilt kort
-    br
-    br
-    hr
+    
     div#all_cards
         - cards.each_with_index do |card, i|
             div.fifa_card
@@ -18,7 +16,7 @@
                 img#club src="#{card["club"]}" alt=":/"
                 img#face src="/#{card["image"]}" alt=":/"
                 p#name #{card["name"]}
-                p#price Pris: #{card["price"]} coin
+                p#price Pris: #{card["price"]} mynt
 
                 #information
                     p#two_best Två bästa attribut:
@@ -29,11 +27,8 @@
     h3.white Tryck på korten för att visa ett enskilt kort
     h3.white Köp kort i webshopen för att lägga till de i din inventory
     h3.white 
-        | Eller vill du 
+        | Eller 
         a#create_today href="/cards/new" skapa ett eget kort
-        br
-        br
-        hr
         
     p#coins Antal mynt: #{coins["coins"]}
 
@@ -63,6 +58,6 @@
                     a#update_card href="/cards/#{card["id"]}/edit" Uppdatera kort
 
                 - else
-                    p#price Pris: #{card["price"]} pengar
+                    p#price Pris: #{card["price"]} mynt
                     form action="/cards/#{card["id"]}/buy" method="post"
                         button#buy_card.submit type="submit" Köp kort!

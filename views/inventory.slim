@@ -24,12 +24,14 @@
         p.white #{user["username"]} har inga kort i sin inventory
     div#all_cards
         - cards.each_with_index do |cards, i|
-                div#fifa_card
+                div.fifa_card
                     p#rating #{cards["rating"]}
                     p#position #{cards["position"]}
                     img#club src="/#{cards["club"]}" alt=":/"
                     p#name #{cards["name"]}
                     a#goto_card href="/card/#{cards["id"]}"
                     img#face src="/#{cards["image"]}" alt=":/"
-                    p#stat1.stat #{stat1[i]}
-                    p#stat2.stat #{stat2[i]}
+                    #information
+                        p#two_best Två bästa attribut:
+                        p#stat1.stat 1. #{stat1[0]}
+                        p#stat2.stat 2. #{stat2[0]}

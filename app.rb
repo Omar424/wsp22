@@ -156,21 +156,39 @@ end
 
 #Uppdatera kort
 post('/cards/:id/update') do
-    card_id = params[:id].to_i
-    name = params[:name]
-    rating = params[:rating].to_i
-    position = params[:position]
-    if position == nil
-        update_card_without_position(card_id, name, rating)
+    if session[:logged_in] == true
+        card_id = params[:id].to_i
+        name = params[:name]
+        rating = params[:rating].to_i
+        position = params[:position]
+        if position == nil
+            update_card_without_position(card_id, name, rating)
+        else
+            update_card(card_id, name, rating, position)
+        end
     else
-        update_card(card_id, name, rating, position)
+        flash[:error] = "Logga in för att komma åt sidan"
+        redirect "/"
     end
 end
 
 #Radera kort
 post('/cards/:id/delete') do
-    card_id = params["id"].to_i
-    delete_card(card_id)
+    if session["logged_in"] == true
+        db = connect_to_db("db/db.db")
+        user = db.execute("SELECT * FROM users WHERE username = ?", session[:username]).first
+        owner = db.execute("SELECT owner FROM cards WHERE id = ?", params[:id]).first
+        if user["role"] == "admin" || session[:username] == owner["owner"]
+            card_id = params[:id].to_i
+            delete_card(card_id)
+        else
+            flash[:error] = "Du har inte tillräckligt med rättigheter för att göra detta"
+            redirect "/"
+        end
+    else
+        flash[:error] = "Du måste logga in för att komma åt sidan"
+        redirect "/"
+    end
 end
 
 #Logga ut

@@ -457,7 +457,7 @@ footer {
   top: 27em;
 }
 
-/* .flash_register_sucess, .flash_sucess {
+.flash_register_sucess {
   margin-top: 10px;
   animation: flash 2s ease-in;
   animation-iteration-count: infinite;
@@ -465,7 +465,7 @@ footer {
   font-size: 1.2rem;
   margin-left: 10px;
   font-weight: 500;
-} */
+}
 
 .flash_wrong_confirm {
   color: red;

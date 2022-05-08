@@ -49,12 +49,7 @@ get('/webshop') do
 end
 
 get('/coins') do
-    if session[:logged_in] == true
-        slim(:coins)
-    else
-        flash[:error] = "Du måste logga in för att komma åt sidan"
-        redirect "/"
-    end
+    make_coins()
 end
 
 #Visa 1 kort
@@ -65,14 +60,7 @@ end
 
 #Skapa kort
 get('/cards/new') do
-    if session["logged_in"] == true
-        db = connect_to_db("db/db.db")
-        stats = db.execute("SELECT stats FROM stat")
-        slim(:"cards/new", :locals => {stats: stats})
-    else
-        flash[:error] = "Logga in för att skapa ett kort"
-        redirect "/"
-    end
+    new_card()
 end
 
 #Uppdatera kort
@@ -108,9 +96,6 @@ post('/create_card') do
         price = params[:price]
         club = "uploaded_pictures/clubs/#{params[:club][:filename]}"
         face = "uploaded_pictures/faces/#{params[:player_face][:filename]}"
-        # file_path för ruby att veta vart den ska skriva in filen
-        # p club_path = "public/uploaded_pictures/clubs/#{params[:club][:filename]}"
-        # p face_path = "public/uploaded_pictures/faces/#{params[:player_face][:filename]}"
         
         stat1 = params[:stat1]
         stat2 = params[:stat2]
@@ -156,39 +141,17 @@ end
 
 #Uppdatera kort
 post('/cards/:id/update') do
-    if session[:logged_in] == true
-        card_id = params[:id].to_i
-        name = params[:name]
-        rating = params[:rating].to_i
-        position = params[:position]
-        if position == nil
-            update_card_without_position(card_id, name, rating)
-        else
-            update_card(card_id, name, rating, position)
-        end
-    else
-        flash[:error] = "Logga in för att komma åt sidan"
-        redirect "/"
-    end
+    card_id = params["id"].to_i
+    name = params[:name]
+    rating = params[:rating].to_i
+    position = params[:position]
+    update_card(card_id, name, rating, position)
 end
 
 #Radera kort
 post('/cards/:id/delete') do
-    if session["logged_in"] == true
-        db = connect_to_db("db/db.db")
-        user = db.execute("SELECT * FROM users WHERE username = ?", session[:username]).first
-        owner = db.execute("SELECT owner FROM cards WHERE id = ?", params[:id]).first
-        if user["role"] == "admin" || session[:username] == owner["owner"]
-            card_id = params[:id].to_i
-            delete_card(card_id)
-        else
-            flash[:error] = "Du har inte tillräckligt med rättigheter för att göra detta"
-            redirect "/"
-        end
-    else
-        flash[:error] = "Du måste logga in för att komma åt sidan"
-        redirect "/"
-    end
+    card_id = params[:id].to_i
+    delete_card(card_id)
 end
 
 #Logga ut

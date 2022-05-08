@@ -168,6 +168,17 @@ module Model
         redirect "/webshop"
     end
 
+    def new_card()
+        if session["logged_in"] == true
+            db = connect_to_db("db/db.db")
+            stats = db.execute("SELECT stats FROM stat")
+            slim(:"cards/new", :locals => {stats: stats})
+        else
+            flash[:error] = "Logga in för att skapa ett kort"
+            redirect "/"
+        end
+    end
+
     #Funktion för att få alla kort i databasen som ska visas i webshoppen
     def get_all_cards()
         #Ansluter till databasen och hämtar alla kort
@@ -197,6 +208,15 @@ module Model
         slim(:webshop, locals:{cards:cards, stat1:first_stats, stat2:second_stats, coins:coins})
     end
 
+    def make_coins()
+        if session[:logged_in] == true
+            slim(:coins)
+        else
+            flash[:error] = "Du måste logga in för att komma åt sidan"
+            redirect "/"
+        end
+    end
+
     def earn_coins(coins)
         db = connect_to_db("db/db.db")
         user = db.execute("SELECT * FROM users WHERE username = ?", session[:username]).first
@@ -214,37 +234,38 @@ module Model
         seller = card["owner"]
         
         client_info = db.execute("SELECT * FROM users WHERE username = ?", session["username"]).first
-        client = client_info["username"]
+        client_name = client_info["username"]
         client_coins = client_info["coins"].to_i    
 
         seller_info = db.execute("SELECT * FROM users WHERE username = ?", seller).first
         seller_coins = seller_info["coins"]
 
+        if client_name == seller
+            flash[:error] = "Du kan inte köpa ett kort som du säljer"
+            redirect "/webshop"
+        end
+
         if client_coins < card_price
             flash[:error] = "Du har inte råd med kortet"
             redirect "/webshop"
         else
-            db.execute("UPDATE users SET coins = ? WHERE username = ?", [(client_coins - card_price), client])
+            db.execute("UPDATE users SET coins = ? WHERE username = ?", [(client_coins - card_price), client_name])
             db.execute("UPDATE users SET coins = ? WHERE username = ?", [(seller_coins + card_price), seller])
-            db.execute("UPDATE cards SET owner = ? WHERE id = ?", [client, card_id])
+            db.execute("UPDATE cards SET owner = ? WHERE id = ?", [client_name, card_id])
             flash[:sucess] = "Du har köpt kortet"
             redirect "/webshop"
         end
     end
 
+    #Funktion för att updatera kort
     def edit_card(card_id)
         if session["logged_in"] == true
             db = connect_to_db('db/db.db')
+            user = db.execute("SELECT * FROM users WHERE username = ?", session["username"]).first
             card = db.execute("SELECT * FROM cards WHERE id = ?", card_id).first
             card_stats = db.execute("SELECT stat1_id, stat2_id FROM card_stats_rel WHERE card_id = ?", card_id).first
-            
-            if card == nil
-                flash[:error] = "Kortet med id #{card_id} finns inte"
-                redirect "/webshop"
-            elsif card["owner"] != session["username"]
-                flash[:error] = "Du kan inte redigera ett kort du inte äger"
-                redirect "/webshop"
-            else
+
+            if card["owner"] == session["username"] || user["role"] == "admin"
                 first_stats = []
                 second_stats = []
                 first_stats << card_stats["stat1_id"]
@@ -252,6 +273,12 @@ module Model
                 convert_to_statname(first_stats)
                 convert_to_statname(second_stats)
                 slim(:"/cards/edit", locals:{card:card, stat1:first_stats, stat2:second_stats})
+            elsif card == nil
+                flash[:error] = "Kortet med id #{card_id} finns inte"
+                redirect "/webshop"
+            elsif session["username"] != card["owner"]
+                flash[:error] = "Du kan inte redigera ett kort du inte äger"
+                redirect "/webshop"
             end
         else
             flash[:error] = "Logga in för att redigera ett kort"
@@ -261,26 +288,42 @@ module Model
 
     #Funktion för att uppdatera kort
     def update_card(card_id, name, rating, position)
-        db = connect_to_db("db/db.db")
-        db.execute("UPDATE cards SET name = ?, rating = ?, position = ? WHERE id = ?", name, rating, position, card_id)
-        flash[:sucess] = "Kortet har uppdaterats"
-        redirect "/webshop"
-    end
-
-    def update_card_without_position(card_id, name, rating)
-        db = connect_to_db("db/db.db")
-        db.execute("UPDATE cards SET name = ?, rating = ? WHERE id = ?", name, rating, card_id)
-        flash[:sucess] = "Kortet har uppdaterats"
-        redirect "/webshop"
+        if session[:logged_in] == true
+            db = connect_to_db("db/db.db")
+            if position == nil
+                db.execute("UPDATE cards SET name = ?, rating = ? WHERE id = ?", name, rating, card_id)
+                flash[:sucess] = "Kortet har uppdaterats"
+                redirect "/webshop"
+            else
+                db.execute("UPDATE cards SET name = ?, rating = ?, position = ? WHERE id = ?", name, rating, position, card_id)
+                flash[:sucess] = "Kortet har uppdaterats"
+                redirect "/webshop"
+            end
+        else
+            flash[:error] = "Logga in för att komma åt sidan"
+            redirect "/"
+        end
     end
 
     #Funktion för att ta bort kort
     def delete_card(card_id)
-        db = connect_to_db('db/db.db')
-        db.execute("DELETE FROM cards where id = ?", card_id)
-        db.execute("DELETE FROM card_stats_rel where card_id = ?", card_id)
-        flash[:sucess] = "Kortet har tagits bort"
-        redirect "/webshop"
+        if session["logged_in"] == true
+            db = connect_to_db("db/db.db")
+            user_info = db.execute("SELECT role, username FROM users WHERE username = ?", session[:username]).first
+            owner = db.execute("SELECT owner FROM cards WHERE id = ?", card_id).first
+            if user_info["role"] == "admin" || user_info["username"] == card_owner["owner"]
+                db.execute("DELETE FROM cards where id = ?", card_id)
+                db.execute("DELETE FROM card_stats_rel where card_id = ?", card_id)
+                flash[:sucess] = "Kortet har tagits bort"
+                redirect "/webshop"
+            else
+                flash[:error] = "Du har inte tillräckligt med rättigheter för att göra detta"
+                redirect "/"
+            end
+        else
+            flash[:error] = "Du måste logga in för att komma åt sidan"
+            redirect "/"
+        end
     end
 
 end

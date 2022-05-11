@@ -8,9 +8,7 @@ require_relative './model.rb'
 include Model
 enable :sessions
 
-#get routes
-
-#Första sidan
+# Displays homepage
 get('/') do
     if session["logged_in"] == true
         redirect('/webshop')
@@ -19,7 +17,7 @@ get('/') do
     end
 end
 
-#Registrering
+# Display reigster page
 get('/register') do
     if session["logged_in"] == true
         redirect "/webshop"
@@ -28,7 +26,7 @@ get('/register') do
     end
 end
 
-#Logga in
+# Display login page
 get('/login') do
     if session["logged_in"] == true
         redirect "/webshop"
@@ -37,41 +35,60 @@ get('/login') do
     end
 end
 
-#Route för att komma till användarens eller andras inventory
+# Shows users inventory
+# @param [String] :user, username
+#
+# @see Model.get_inventory
 get('/inventory/:user') do
     user = params[:user]
     get_inventory(user)
 end
 
-#Webshop
+# Displays the webshop
+#
+# @see Model.get_all_cards
 get('/webshop') do
     get_all_cards()
 end
 
+# Displays form for making coins
+#
+# @see Model.make_coins
 get('/coins') do
     make_coins()
 end
 
-#Visa 1 kort
+# Displays a specific card
+#
+# @param [Integer] :id, id of the card
+# @see Model.show_one_card
 get('/card/:id') do
     card_id = params[:id].to_i
     show_one_card(card_id)
 end
 
-#Skapa kort
+# Displays form for making a card
+#
+# @see Model.create_card
 get('/cards/new') do
     new_card()
 end
 
-#Uppdatera kort
+# Displays form for editing a card
+#
+# @param [Integer] :id, id of the card
 get('/cards/:id/edit') do
     card_id = params[:id].to_i
     edit_card(card_id)
 end
 
-#post-routes
-
-#Registrering
+# Attempts to register new user and redirect to login page
+#
+# @param [String] username, username
+# @param [String] password, password
+# @param [String] password_conf, password-conf, password confirmation
+#
+# @see Model.register_user
 post('/register') do
     username = params["username"]
     password = params["password"]
@@ -79,14 +96,21 @@ post('/register') do
     register_user(username, password, password_conf)
 end
 
-#Logga in
+# Attempts to login user and redirect to webshop
+#
+# @param [String] username, username
+# @param [String] password, password
+#
+# @see Model.login_user
 post('/login') do
     username = params["username"]
     password = params["password"]
     login_user(username, password)
 end
 
-#Skapa kort
+# Attempts to create a new card and redirect to webshop
+#
+# @see Model.create_card
 post('/create_card') do
     if session["logged_in"] == true
         owner = session[:username]
@@ -128,18 +152,29 @@ post('/create_card') do
     end
 end
 
+# Attempts to add coins to user account and redirect to webshop
+#
+# @see Model.earn_coins
 post('/earn_coins') do
     coins = params[:amount].to_i
     earn_coins(coins)
 end
 
-#Köp kort
+# Attempt to buy a card and redirect to webshop
+#
+# @param [Integer] :id, id of the card
+#
+# @see Model.buy_card
 post('/cards/:id/buy') do
     card_id = params["id"].to_i
     buy_card(card_id)
 end
 
-#Uppdatera kort
+# Attempt to edit a card and redirect to webshop
+#
+# @param [Integer] :id, id of the card
+#
+# @see Model.update_card
 post('/cards/:id/update') do
     card_id = params["id"].to_i
     name = params[:name]
@@ -148,13 +183,17 @@ post('/cards/:id/update') do
     update_card(card_id, name, rating, position)
 end
 
-#Radera kort
+# Attempt to delete a card and redirect to webshop
+#
+# @param [Integer] :id, id of the card
+#
+# @see Model.delete_card
 post('/cards/:id/delete') do
     card_id = params[:id].to_i
     delete_card(card_id)
 end
 
-#Logga ut
+# Attempts to logout user and redirect to homepage
 post('/logout') do
     session.destroy
     redirect('/')

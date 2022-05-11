@@ -1,13 +1,18 @@
 module Model
 
-    #Anslutning till databas
+    # Attempts to connect to database and return connection
     def connect_to_db(path)
         db = SQLite3::Database.new(path)
         db.results_as_hash = true
         return db
     end
 
-    #Registrering
+    # Attempts to create a new user
+    #
+    # @params [String] username The username
+    # @params [String] password The password
+    # @params [String] password_conf The password confirmation
+    #
     def register_user(username, password, password_conf)
         #Ansluter till databasen och hämtar användar-data
         db = connect_to_db("db/db.db")
@@ -30,7 +35,11 @@ module Model
         end
     end
 
-    #Logga in
+    # Attempts to login a user
+    #
+    # @params [String] username The username
+    # @params [String] password The password
+    #
     def login_user(username, password)
         #Ansluter till databasen och hämtar användar-data
         db = connect_to_db("db/db.db")
@@ -52,6 +61,10 @@ module Model
         end
     end
 
+    # Converts an integer to a stat string
+    #
+    # @params [Integer] stat The stat to convert
+    #
     def convert_to_statname(array)
         length = array.length
         array.each do |stat|
@@ -74,7 +87,10 @@ module Model
         array.shift(length)
     end
 
-    #Funktion för att visa ett specifikt kort
+    # Attempts to show one card
+    #
+    # @params [String] id The id of the card
+    #
     def show_one_card(card_id)
         db = connect_to_db("db/db.db")
         card = db.execute("SELECT * FROM cards WHERE id = ?", card_id).first
@@ -94,7 +110,10 @@ module Model
         end
     end
 
-    #Funktion för att få användarens kort, inventory
+    # Attempts to show the inventory of a user
+    #
+    # @params [String] username The username of the user
+    #
     def get_inventory(user)
         if session["logged_in"] == true
             
@@ -141,7 +160,18 @@ module Model
         end
     end
 
-    #Funktion för att skapa kort
+    # Attempts to create a card
+    #
+    # @param [String] owner, owner of the card
+    # @param [String] name, name of the card
+    # @param [String] position, position of the card
+    # @param [Integer] rating, rating of the card
+    # @param [Integer] price, price of the card
+    # @param [String] club, club of the card
+    # @param [String] image, image of the card
+    # @param [String] stat1, first stat of the card
+    # @param [String] stat2, second stat of the card
+    #
     def create_card(name, position, club, face, rating, stat1, stat2, stat1_num, stat2_num, owner, price)
         #ansluter till databasen
         db = connect_to_db("db/db.db")
@@ -168,6 +198,7 @@ module Model
         redirect "/webshop"
     end
 
+    # Attempts to display form to make a new card
     def new_card()
         if session["logged_in"] == true
             db = connect_to_db("db/db.db")
@@ -179,7 +210,7 @@ module Model
         end
     end
 
-    #Funktion för att få alla kort i databasen som ska visas i webshoppen
+    # Attempts to display all cards in the database
     def get_all_cards()
         #Ansluter till databasen och hämtar alla kort
         db = connect_to_db("db/db.db")
@@ -208,6 +239,7 @@ module Model
         slim(:webshop, locals:{cards:cards, stat1:first_stats, stat2:second_stats, coins:coins})
     end
 
+    # Attempts to display form to add coins to a user
     def make_coins()
         if session[:logged_in] == true
             slim(:coins)
@@ -217,6 +249,10 @@ module Model
         end
     end
 
+    # Attempts to add coins to a user
+    # @param [String] username, username of the user
+    # @param [Integer] coins, amount of coins to add
+    #
     def earn_coins(coins)
         db = connect_to_db("db/db.db")
         user = db.execute("SELECT * FROM users WHERE username = ?", session[:username]).first
@@ -225,7 +261,9 @@ module Model
         redirect "/webshop"
     end
 
-    #Funktion för att köpa kort
+    # Attempts to buy a specific card
+    # @param [String] card_id, id of the card to buy
+    #
     def buy_card(card_id)
         db = connect_to_db('db/db.db')
         
@@ -257,7 +295,7 @@ module Model
         end
     end
 
-    #Funktion för att updatera kort
+    # Attempts to display form to edit a card
     def edit_card(card_id)
         if session["logged_in"] == true
             db = connect_to_db('db/db.db')
@@ -286,7 +324,12 @@ module Model
         end
     end
 
-    #Funktion för att uppdatera kort
+    # Attempts to update a card
+    # @param [String] card_id, id of the card to update
+    # @param [String] name, name of the card to update
+    # @param [Integer] rating, rating of the card to update
+    # @param [String] position, position of the card to update
+    #
     def update_card(card_id, name, rating, position)
         if session[:logged_in] == true
             db = connect_to_db("db/db.db")
@@ -305,7 +348,9 @@ module Model
         end
     end
 
-    #Funktion för att ta bort kort
+    # Attempts to delete a card
+    # @param [String] card_id, id of the card to delete
+    #
     def delete_card(card_id)
         if session["logged_in"] == true
             db = connect_to_db("db/db.db")

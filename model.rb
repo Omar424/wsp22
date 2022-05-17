@@ -356,7 +356,7 @@ module Model
             db = connect_to_db("db/db.db")
             user_info = db.execute("SELECT role, username FROM users WHERE username = ?", session[:username]).first
             owner = db.execute("SELECT owner FROM cards WHERE id = ?", card_id).first
-            if user_info["role"] == "admin" || user_info["username"] == card_owner["owner"]
+            if user_info["role"] == "admin" || user_info["username"] == owner["owner"]
                 db.execute("DELETE FROM cards where id = ?", card_id)
                 db.execute("DELETE FROM card_stats_rel where card_id = ?", card_id)
                 flash[:sucess] = "Kortet har tagits bort"

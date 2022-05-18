@@ -115,48 +115,42 @@ module Model
     # @params [String] username The username of the user
     #
     def get_inventory(user)
-        if session["logged_in"] == true
-            
-            #Ansluter till databasen
-            db = connect_to_db("db/db.db")
-            
-            #Deklarerar variabler
-            card_ids = []
-            stats = []
-            first_stats = []
-            second_stats = []
-            
-            #Hämtar data om användarens
-            user_data = db.execute("SELECT * FROM users WHERE username = ?", user).first
-            #Hämtar data om korten
-            user_cards = db.execute("SELECT * FROM cards where owner = ?", user)
-            #Hämtar id'n för korten
-            card_ids = db.execute("SELECT id FROM cards where owner = ?", user)
-            
-            #Hämtar stats för korten
-            card_ids.each do |id|
-                stat = db.execute("SELECT stat1_id, stat2_id FROM card_stats_rel WHERE card_id = ?", id["id"])
-                stats << stat
-            end
-            
-            stats.each_with_index do |stat|
-                first_stats << stat[0]["stat1_id"]
-                second_stats << stat[0]["stat2_id"]
-            end
-            
-            convert_to_statname(first_stats)
-            convert_to_statname(second_stats)
+        #Ansluter till databasen
+        db = connect_to_db("db/db.db")
+        
+        #Deklarerar variabler
+        card_ids = []
+        stats = []
+        first_stats = []
+        second_stats = []
+        
+        #Hämtar data om användarens
+        user_data = db.execute("SELECT * FROM users WHERE username = ?", user).first
+        #Hämtar data om korten
+        user_cards = db.execute("SELECT * FROM cards where owner = ?", user)
+        #Hämtar id'n för korten
+        card_ids = db.execute("SELECT id FROM cards where owner = ?", user)
+        
+        #Hämtar stats för korten
+        card_ids.each do |id|
+            stat = db.execute("SELECT stat1_id, stat2_id FROM card_stats_rel WHERE card_id = ?", id["id"])
+            stats << stat
+        end
+        
+        stats.each_with_index do |stat|
+            first_stats << stat[0]["stat1_id"]
+            second_stats << stat[0]["stat2_id"]
+        end
+        
+        convert_to_statname(first_stats)
+        convert_to_statname(second_stats)
 
-            #Om användaren inte finns
-            if user_data == nil
-                flash[:error] = "Användaren #{user} finns inte"
-                redirect "/webshop"
-            else
-                slim(:"inventory", locals:{user:user_data, cards:user_cards, stat1:first_stats, stat2:second_stats})
-            end
+        #Om användaren inte finns
+        if user_data == nil
+            flash[:error] = "Användaren #{user} finns inte"
+            redirect "/webshop"
         else
-            flash[:error] = "Du måste vara inloggad för att se en inventory"
-            redirect "/"
+            slim(:"inventory", locals:{user:user_data, cards:user_cards, stat1:first_stats, stat2:second_stats})
         end
     end
 
@@ -172,7 +166,7 @@ module Model
     # @param [String] stat1, first stat of the card
     # @param [String] stat2, second stat of the card
     #
-    def create_card(name, position, club, face, rating, stat1, stat2, stat1_num, stat2_num, owner, price)
+    def create_card(name, position, club, club_path, face, face_path, rating, stat1, stat2, stat1_num, stat2_num, owner, price)
         #ansluter till databasen
         db = connect_to_db("db/db.db")
         
@@ -184,13 +178,14 @@ module Model
         #insertion of stats
         db.execute("INSERT INTO card_stats_rel (card_id, stat1_id, stat2_id) VALUES (?,?,?)", [id, stat1_num, stat2_num])
 
-        #Skriver in filerna för ansikte och klubb i respektive path
+        #Skriver in path för klubb-filen
         File.open(("public/" + club), "wb") do |f|
-            f.write(params[:club][:tempfile].read)
+            f.write(club_path.read)
         end
-
+        
+        #Skriver in path för ansikte-filen 
         File.open(("public/" + face), "wb") do |f|
-            f.write(params[:player_face][:tempfile].read)
+            f.write(face_path.read)
         end
         
         #Redirectar till webshop med det nya kortet
@@ -200,14 +195,9 @@ module Model
 
     # Attempts to display form to make a new card
     def new_card()
-        if session["logged_in"] == true
-            db = connect_to_db("db/db.db")
-            stats = db.execute("SELECT stats FROM stat")
-            slim(:"cards/new", :locals => {stats: stats})
-        else
-            flash[:error] = "Logga in för att skapa ett kort"
-            redirect "/"
-        end
+        db = connect_to_db("db/db.db")
+        stats = db.execute("SELECT stats FROM stat")
+        slim(:"cards/new", :locals => {stats: stats})
     end
 
     # Attempts to display all cards in the database
@@ -237,16 +227,6 @@ module Model
         convert_to_statname(second_stats)
 
         slim(:webshop, locals:{cards:cards, stat1:first_stats, stat2:second_stats, coins:coins})
-    end
-
-    # Attempts to display form to add coins to a user
-    def make_coins()
-        if session[:logged_in] == true
-            slim(:coins)
-        else
-            flash[:error] = "Du måste logga in för att komma åt sidan"
-            redirect "/"
-        end
     end
 
     # Attempts to add coins to a user
@@ -297,30 +277,25 @@ module Model
 
     # Attempts to display form to edit a card
     def edit_card(card_id)
-        if session["logged_in"] == true
-            db = connect_to_db('db/db.db')
-            user = db.execute("SELECT * FROM users WHERE username = ?", session["username"]).first
-            card = db.execute("SELECT * FROM cards WHERE id = ?", card_id).first
-            card_stats = db.execute("SELECT stat1_id, stat2_id FROM card_stats_rel WHERE card_id = ?", card_id).first
+        db = connect_to_db('db/db.db')
+        user = db.execute("SELECT * FROM users WHERE username = ?", session["username"]).first
+        card = db.execute("SELECT * FROM cards WHERE id = ?", card_id).first
+        card_stats = db.execute("SELECT stat1_id, stat2_id FROM card_stats_rel WHERE card_id = ?", card_id).first
 
-            if card["owner"] == session["username"] || user["role"] == "admin"
-                first_stats = []
-                second_stats = []
-                first_stats << card_stats["stat1_id"]
-                second_stats << card_stats["stat2_id"]
-                convert_to_statname(first_stats)
-                convert_to_statname(second_stats)
-                slim(:"/cards/edit", locals:{card:card, stat1:first_stats, stat2:second_stats})
-            elsif card == nil
-                flash[:error] = "Kortet med id #{card_id} finns inte"
-                redirect "/webshop"
-            elsif session["username"] != card["owner"]
-                flash[:error] = "Du kan inte redigera ett kort du inte äger"
-                redirect "/webshop"
-            end
-        else
-            flash[:error] = "Logga in för att redigera ett kort"
-            redirect "/"
+        if card["owner"] == session["username"] || user["role"] == "admin"
+            first_stats = []
+            second_stats = []
+            first_stats << card_stats["stat1_id"]
+            second_stats << card_stats["stat2_id"]
+            convert_to_statname(first_stats)
+            convert_to_statname(second_stats)
+            slim(:"/cards/edit", locals:{card:card, stat1:first_stats, stat2:second_stats})
+        elsif card == nil
+            flash[:error] = "Kortet med id #{card_id} finns inte"
+            redirect "/webshop"
+        elsif session["username"] != card["owner"]
+            flash[:error] = "Du kan inte redigera ett kort du inte äger"
+            redirect "/webshop"
         end
     end
 
@@ -331,20 +306,15 @@ module Model
     # @param [String] position, position of the card to update
     #
     def update_card(card_id, name, rating, position)
-        if session[:logged_in] == true
-            db = connect_to_db("db/db.db")
-            if position == nil
-                db.execute("UPDATE cards SET name = ?, rating = ? WHERE id = ?", name, rating, card_id)
-                flash[:sucess] = "Kortet har uppdaterats"
-                redirect "/webshop"
-            else
-                db.execute("UPDATE cards SET name = ?, rating = ?, position = ? WHERE id = ?", name, rating, position, card_id)
-                flash[:sucess] = "Kortet har uppdaterats"
-                redirect "/webshop"
-            end
+        db = connect_to_db("db/db.db")
+        if position == nil
+            db.execute("UPDATE cards SET name = ?, rating = ? WHERE id = ?", name, rating, card_id)
+            flash[:sucess] = "Kortet har uppdaterats"
+            redirect "/webshop"
         else
-            flash[:error] = "Logga in för att komma åt sidan"
-            redirect "/"
+            db.execute("UPDATE cards SET name = ?, rating = ?, position = ? WHERE id = ?", name, rating, position, card_id)
+            flash[:sucess] = "Kortet har uppdaterats"
+            redirect "/webshop"
         end
     end
 
@@ -352,21 +322,16 @@ module Model
     # @param [String] card_id, id of the card to delete
     #
     def delete_card(card_id)
-        if session["logged_in"] == true
-            db = connect_to_db("db/db.db")
-            user_info = db.execute("SELECT role, username FROM users WHERE username = ?", session[:username]).first
-            owner = db.execute("SELECT owner FROM cards WHERE id = ?", card_id).first
-            if user_info["role"] == "admin" || user_info["username"] == owner["owner"]
-                db.execute("DELETE FROM cards where id = ?", card_id)
-                db.execute("DELETE FROM card_stats_rel where card_id = ?", card_id)
-                flash[:sucess] = "Kortet har tagits bort"
-                redirect "/webshop"
-            else
-                flash[:error] = "Du har inte tillräckligt med rättigheter för att göra detta"
-                redirect "/"
-            end
+        db = connect_to_db("db/db.db")
+        user_info = db.execute("SELECT role, username FROM users WHERE username = ?", session[:username]).first
+        owner = db.execute("SELECT owner FROM cards WHERE id = ?", card_id).first
+        if user_info["role"] == "admin" || user_info["username"] == card_owner["owner"]
+            db.execute("DELETE FROM cards where id = ?", card_id)
+            db.execute("DELETE FROM card_stats_rel where card_id = ?", card_id)
+            flash[:sucess] = "Kortet har tagits bort"
+            redirect "/webshop"
         else
-            flash[:error] = "Du måste logga in för att komma åt sidan"
+            flash[:error] = "Du har inte tillräckligt med rättigheter för att göra detta"
             redirect "/"
         end
     end

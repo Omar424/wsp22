@@ -41,7 +41,12 @@ end
 # @see Model.get_inventory
 get('/inventory/:user') do
     user = params[:user]
-    get_inventory(user)
+    if session[:logged_in] == true
+        get_inventory(user)
+    else
+        flash :error, "You need to be logged in to view your inventory"
+        redirect '/login'
+    end
 end
 
 # Displays the webshop
@@ -51,11 +56,15 @@ get('/webshop') do
     get_all_cards()
 end
 
-# Displays form for making coins
+# Attempts to display form to add coins to a user
 #
-# @see Model.make_coins
 get('/coins') do
-    make_coins()
+    if session[:logged_in] = true
+        slim(:coins)
+    else
+        flash :error, "Du måste logga in för att komma åt sidan"
+        redirect "/"
+    end
 end
 
 # Displays a specific card
@@ -71,15 +80,25 @@ end
 #
 # @see Model.create_card
 get('/cards/new') do
-    new_card()
+    if session["logged_in"] == true
+        new_card()
+    else
+        flash :error, "You need to be logged in to create a card"
+        redirect "/"
+    end
 end
 
 # Displays form for editing a card
 #
 # @param [Integer] :id, id of the card
 get('/cards/:id/edit') do
-    card_id = params[:id].to_i
-    edit_card(card_id)
+    if session["logged_in"] == true
+        card_id = params[:id].to_i
+        edit_card(card_id)
+    else
+        flash :error, "Logga in för att redigera ett kort"
+        redirect "/"
+    end
 end
 
 # Attempts to register new user and redirect to login page
@@ -120,6 +139,8 @@ post('/create_card') do
         price = params[:price]
         club = "uploaded_pictures/clubs/#{params[:club][:filename]}"
         face = "uploaded_pictures/faces/#{params[:player_face][:filename]}"
+        club_path = params[:club][:tempfile]
+        face_path = params[:player_face][:tempfile]
         
         stat1 = params[:stat1]
         stat2 = params[:stat2]
@@ -145,7 +166,7 @@ post('/create_card') do
         end
         p "#{stat2_num}"
 
-        create_card(name, position, club, face, rating, stat1, stat2, stat1_num, stat2_num, owner, price)
+        create_card(name, position, club, club_path, face, face_path, rating, stat1, stat2, stat1_num, stat2_num, owner, price)
     else
         flash[:error] = "Logga in för att skapa ett kort"
         redirect "/"
@@ -176,11 +197,16 @@ end
 #
 # @see Model.update_card
 post('/cards/:id/update') do
-    card_id = params["id"].to_i
-    name = params[:name]
-    rating = params[:rating].to_i
-    position = params[:position]
-    update_card(card_id, name, rating, position)
+    if session[:logged_in] == true
+        card_id = params["id"].to_i
+        name = params[:name]
+        rating = params[:rating].to_i
+        position = params[:position]
+        update_card(card_id, name, rating, position)
+    else
+        flash[:error] = "Logga in för att komma åt sidan"
+        redirect "/"
+    end
 end
 
 # Attempt to delete a card and redirect to webshop
@@ -189,8 +215,13 @@ end
 #
 # @see Model.delete_card
 post('/cards/:id/delete') do
-    card_id = params[:id].to_i
-    delete_card(card_id)
+    if session["logged_in"] == true
+        card_id = params[:id].to_i
+        delete_card(card_id)
+    else
+        flash[:error] = "Du måste logga in för att komma åt sidan"
+        redirect "/"
+    end
 end
 
 # Attempts to logout user and redirect to homepage

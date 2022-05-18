@@ -7,60 +7,6 @@ module Model
         return db
     end
 
-    # Attempts to create a new user
-    #
-    # @params [String] username The username
-    # @params [String] password The password
-    # @params [String] password_conf The password confirmation
-    #
-    def register_user(username, password, password_conf)
-        #Ansluter till databasen och hämtar användar-data
-        db = connect_to_db("db/db.db")
-        user = db.execute("SELECT * FROM users WHERE username = ?", username).first
-        
-        #Kollar om användarnamnet redan finns
-        if user == nil
-            if password == password_conf
-                hashed_password = BCrypt::Password.create(password)
-                db.execute("INSERT INTO users (username, password, role, coins) VALUES (?, ?, ?,?)", [username, hashed_password, "user", 0])
-                flash[:register_sucess] = "Du är registrerad, logga in för att köpa kort och skapa egna kort"
-                redirect "/login"
-            elsif password != password_conf
-                flash[:wrong_conf] = "Lösenorden matchar inte!"
-                redirect "/"
-            end
-        else
-            flash[:username_exist] = "Användarnamnet är upptaget!"
-            redirect "/register"
-        end
-    end
-
-    # Attempts to login a user
-    #
-    # @params [String] username The username
-    # @params [String] password The password
-    #
-    def login_user(username, password)
-        #Ansluter till databasen och hämtar användar-data
-        db = connect_to_db("db/db.db")
-        user = db.execute("SELECT * FROM users WHERE username = ?", [username]).first
-
-        #Kollar om användaren finns
-        if user == nil
-            flash[:no_such_user] = "Användaren finns inte!"
-            redirect "/login"
-        elsif BCrypt::Password.new(user["password"]) == password
-            session[:logged_in] = true
-            session[:username] = user["username"]
-            session[:role] = user["role"]
-            session[:coins] = user["coins"]
-            redirect "/webshop"
-        else
-            flash[:wrong_pass] = "Fel lösenord!"
-            redirect "/login"
-        end
-    end
-
     # Converts an integer to a stat string
     #
     # @params [Integer] stat The stat to convert
@@ -201,12 +147,12 @@ module Model
     end
 
     # Attempts to display all cards in the database
-    def get_all_cards()
+    def get_all_cards(username)
         #Ansluter till databasen och hämtar alla kort
         db = connect_to_db("db/db.db")
         
         #Hämtar stats och kort från databasen
-        coins = db.execute("SELECT coins FROM users WHERE username = ?", session[:username]).first
+        coins = db.execute("SELECT coins FROM users WHERE username = ?", username).first
         cards = db.execute("SELECT * FROM cards")
         stats = db.execute("SELECT stat1_id, stat2_id FROM card_stats_rel")
 
@@ -233,10 +179,10 @@ module Model
     # @param [String] username, username of the user
     # @param [Integer] coins, amount of coins to add
     #
-    def earn_coins(coins)
+    def earn_coins(coins, username)
         db = connect_to_db("db/db.db")
-        user = db.execute("SELECT * FROM users WHERE username = ?", session[:username]).first
-        db.execute("UPDATE users SET coins = ? WHERE username = ?", [user["coins"] + coins, session[:username]])
+        user = db.execute("SELECT * FROM users WHERE username = ?", username).first
+        db.execute("UPDATE users SET coins = ? WHERE username = ?", [(user["coins"] + coins)], username)
         flash[:sucess] = "Det har nu lagts till #{coins} mynt till ditt konto"
         redirect "/webshop"
     end
@@ -244,14 +190,14 @@ module Model
     # Attempts to buy a specific card
     # @param [String] card_id, id of the card to buy
     #
-    def buy_card(card_id)
+    def buy_card(card_id, username)
         db = connect_to_db('db/db.db')
         
         card = db.execute("SELECT * FROM cards WHERE id = ?", card_id).first
         card_price = card["price"].to_i
         seller = card["owner"]
         
-        client_info = db.execute("SELECT * FROM users WHERE username = ?", session["username"]).first
+        client_info = db.execute("SELECT * FROM users WHERE username = ?", username).first
         client_name = client_info["username"]
         client_coins = client_info["coins"].to_i    
 
@@ -276,13 +222,13 @@ module Model
     end
 
     # Attempts to display form to edit a card
-    def edit_card(card_id)
+    def edit_card(card_id, username)
         db = connect_to_db('db/db.db')
-        user = db.execute("SELECT * FROM users WHERE username = ?", session["username"]).first
+        user = db.execute("SELECT * FROM users WHERE username = ?", username).first
         card = db.execute("SELECT * FROM cards WHERE id = ?", card_id).first
         card_stats = db.execute("SELECT stat1_id, stat2_id FROM card_stats_rel WHERE card_id = ?", card_id).first
 
-        if card["owner"] == session["username"] || user["role"] == "admin"
+        if card["owner"] == username || user["role"] == "admin"
             first_stats = []
             second_stats = []
             first_stats << card_stats["stat1_id"]
@@ -293,7 +239,7 @@ module Model
         elsif card == nil
             flash[:error] = "Kortet med id #{card_id} finns inte"
             redirect "/webshop"
-        elsif session["username"] != card["owner"]
+        elsif username != card["owner"]
             flash[:error] = "Du kan inte redigera ett kort du inte äger"
             redirect "/webshop"
         end
@@ -321,9 +267,9 @@ module Model
     # Attempts to delete a card
     # @param [String] card_id, id of the card to delete
     #
-    def delete_card(card_id)
+    def delete_card(card_id, username)
         db = connect_to_db("db/db.db")
-        user_info = db.execute("SELECT role, username FROM users WHERE username = ?", session[:username]).first
+        user_info = db.execute("SELECT role, username FROM users WHERE username = ?", username).first
         owner = db.execute("SELECT owner FROM cards WHERE id = ?", card_id).first
         if user_info["role"] == "admin" || user_info["username"] == card_owner["owner"]
             db.execute("DELETE FROM cards where id = ?", card_id)

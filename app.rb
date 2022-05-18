@@ -53,7 +53,8 @@ end
 #
 # @see Model.get_all_cards
 get('/webshop') do
-    get_all_cards()
+    username = session[:username]
+    get_all_cards(username)
 end
 
 # Attempts to display form to add coins to a user
@@ -94,6 +95,7 @@ end
 get('/cards/:id/edit') do
     if session["logged_in"] == true
         card_id = params[:id].to_i
+        username = session[:username]
         edit_card(card_id)
     else
         flash :error, "Logga in för att redigera ett kort"
@@ -178,7 +180,8 @@ end
 # @see Model.earn_coins
 post('/earn_coins') do
     coins = params[:amount].to_i
-    earn_coins(coins)
+    username = session[:username]
+    earn_coins(coins, username)
 end
 
 # Attempt to buy a card and redirect to webshop
@@ -188,7 +191,8 @@ end
 # @see Model.buy_card
 post('/cards/:id/buy') do
     card_id = params["id"].to_i
-    buy_card(card_id)
+    username = session[:username]
+    buy_card(card_id, username)
 end
 
 # Attempt to edit a card and redirect to webshop
@@ -217,10 +221,65 @@ end
 post('/cards/:id/delete') do
     if session["logged_in"] == true
         card_id = params[:id].to_i
-        delete_card(card_id)
+        username = session[:username]
+        delete_card(card_id, username)
     else
         flash[:error] = "Du måste logga in för att komma åt sidan"
         redirect "/"
+    end
+end
+
+# Attempts to create a new user
+#
+# @params [String] username The username
+# @params [String] password The password
+# @params [String] password_conf The password confirmation
+#
+def register_user(username, password, password_conf)
+    #Ansluter till databasen och hämtar användar-data
+    db = connect_to_db("db/db.db")
+    user = db.execute("SELECT * FROM users WHERE username = ?", username).first
+    
+    #Kollar om användarnamnet redan finns
+    if user == nil
+        if password == password_conf
+            hashed_password = BCrypt::Password.create(password)
+            db.execute("INSERT INTO users (username, password, role, coins) VALUES (?, ?, ?,?)", [username, hashed_password, "user", 0])
+            flash[:register_sucess] = "Du är registrerad, logga in för att köpa kort och skapa egna kort"
+            redirect "/login"
+        elsif password != password_conf
+            flash[:wrong_conf] = "Lösenorden matchar inte!"
+            redirect "/"
+        end
+    else
+        flash[:username_exist] = "Användarnamnet är upptaget!"
+        redirect "/register"
+    end
+end
+
+# Attempts to login a user
+#
+# @params [String] username The username
+# @params [String] password The password
+#
+def login_user(username, password)
+    #Ansluter till databasen och hämtar användar-data
+    db = connect_to_db("db/db.db")
+    user = db.execute("SELECT * FROM users WHERE username = ?", [username]).first
+
+    #Kollar om användaren finns
+    if user == nil
+        flash[:no_such_user] = "Användaren finns inte!"
+        redirect "/login"
+    elsif BCrypt::Password.new(user["password"]) == password
+        session[:logged_in] = true
+        session[:username] = user["username"]
+        session[:role] = user["role"]
+        session[:coins] = user["coins"]
+        redirect "/webshop"
+    else
+        flash[:wrong_pass] = "Fel lösenord!"
+        redirect "/login"
     end
 end
 

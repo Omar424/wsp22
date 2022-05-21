@@ -7,6 +7,55 @@ module Model
         return db
     end
 
+    # Attempts to create a new user
+    #
+    # @params [String] username The username
+    # @params [String] password The password
+    # @params [String] password_conf The password confirmation
+    #
+    def register_user(username, password, password_conf)
+        #Ansluter till databasen och hämtar användar-data
+        db = connect_to_db("db/db.db")
+        user = db.execute("SELECT * FROM users WHERE username = ?", username).first
+        
+        #Om användarnamnet inte är upptaget
+        if user == nil
+            #Kollar om lösenorden stämmer överens
+            if password == password_conf
+                data == 1
+            #Om lösenorden inte stämmer överens
+            elsif password != password_conf
+                data == 0.5
+            end
+        else
+            data == 0
+        end
+
+        register_help(data)
+    end
+
+    # Attempts to login a user
+    #
+    # @params [String] username The username
+    # @params [String] password The password
+    #
+    def login_user(username, password)
+        #Ansluter till databasen och hämtar användar-data
+        db = connect_to_db("db/db.db")
+        user = db.execute("SELECT * FROM users WHERE username = ?", [username]).first
+
+        #Kollar om användaren finns
+        if user == nil
+            data = 0
+        elsif BCrypt::Password.new(user["password"]) == password
+            data = 1
+        else
+            data = 0.5
+        end
+        
+        login_help(data)
+    end
+
     # Converts an integer to a stat string
     #
     # @params [Integer] stat The stat to convert
@@ -41,19 +90,12 @@ module Model
         db = connect_to_db("db/db.db")
         card = db.execute("SELECT * FROM cards WHERE id = ?", card_id).first
         card_stats = db.execute("SELECT stat1_id, stat2_id FROM card_stats_rel WHERE card_id = ?", card_id).first
-        
         if card == nil
-            flash[:error] = "Kortet med id #{card_id} finns inte"
-            redirect "/webshop"
+            data = false
         else
-            first_stats = []
-            second_stats = []
-            first_stats << card_stats["stat1_id"]
-            second_stats << card_stats["stat2_id"]
-            convert_to_statname(first_stats)
-            convert_to_statname(second_stats)
-            slim(:"/cards/show", locals:{card:card, stat1:first_stats, stat2:second_stats})
+            data = true
         end
+        show_help(data, card, card_id, card_stats)
     end
 
     # Attempts to show the inventory of a user
@@ -93,11 +135,12 @@ module Model
 
         #Om användaren inte finns
         if user_data == nil
-            flash[:error] = "Användaren #{user} finns inte"
-            redirect "/webshop"
+            data = false
         else
-            slim(:"inventory", locals:{user:user_data, cards:user_cards, stat1:first_stats, stat2:second_stats})
+            data = true
         end
+
+        inventory_help(data, user_data, user_cards, first_stats, second_stats)
     end
 
     # Attempts to create a card
@@ -143,7 +186,7 @@ module Model
     def new_card()
         db = connect_to_db("db/db.db")
         stats = db.execute("SELECT stats FROM stat")
-        slim(:"cards/new", :locals => {stats: stats})
+        new_card_help(stats)
     end
 
     # Attempts to display all cards in the database
@@ -172,7 +215,7 @@ module Model
         convert_to_statname(first_stats)
         convert_to_statname(second_stats)
 
-        slim(:webshop, locals:{cards:cards, stat1:first_stats, stat2:second_stats, coins:coins})
+        display_webshop(cards, first_stats, second_stats, coins)
     end
 
     # Attempts to add coins to a user
@@ -226,23 +269,26 @@ module Model
         db = connect_to_db('db/db.db')
         user = db.execute("SELECT * FROM users WHERE username = ?", username).first
         card = db.execute("SELECT * FROM cards WHERE id = ?", card_id).first
-        card_stats = db.execute("SELECT stat1_id, stat2_id FROM card_stats_rel WHERE card_id = ?", card_id).first
+        card_stats = db.execute("SELECT stat1_id, stat2_id FROM card_stats_rel WHERE card_id = ?", card_id).first        
+        user_owns, data, first_stats, second_stats = nil
 
-        if card["owner"] == username || user["role"] == "admin"
+        if card == nil
+            data = false
+            edit_help(card, first_stats, second_stats, card_id, data, user_owns)
+        elsif card["owner"] == username || user["role"] == "admin"
+            user_owns = true
             first_stats = []
             second_stats = []
             first_stats << card_stats["stat1_id"]
             second_stats << card_stats["stat2_id"]
             convert_to_statname(first_stats)
             convert_to_statname(second_stats)
-            slim(:"/cards/edit", locals:{card:card, stat1:first_stats, stat2:second_stats})
-        elsif card == nil
-            flash[:error] = "Kortet med id #{card_id} finns inte"
-            redirect "/webshop"
-        elsif username != card["owner"]
-            flash[:error] = "Du kan inte redigera ett kort du inte äger"
-            redirect "/webshop"
+            edit_help(card, first_stats, second_stats, card_id, data, user_owns)
+        elsif user_owns != card["owner"]
+            user_owns = false
+            edit_help(card, first_stats, second_stats, card_id, data, user_owns)
         end
+
     end
 
     # Attempts to update a card

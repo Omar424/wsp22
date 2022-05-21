@@ -26,12 +26,43 @@ get('/register') do
     end
 end
 
+def register_help(data)
+    if data == 0
+        flash[:username_exist] = "Användarnamnet är upptaget!"
+        redirect "/register"
+    elsif data == 0.5
+        flash[:wrong_conf] = "Lösenorden matchar inte!"
+        redirect "/"
+    elsif data == 1
+        hashed_password = BCrypt::Password.create(password)
+        db.execute("INSERT INTO users (username, password, role, coins) VALUES (?, ?, ?,?)", [username, hashed_password, "user", 0])
+        flash[:register_sucess] = "Du är registrerad, logga in för att köpa kort och skapa egna kort"
+        redirect "/login"
+    end
+end
+
 # Display login page
 get('/login') do
     if session["logged_in"] == true
         redirect "/webshop"
     else
         slim(:"user/login")
+    end
+end
+
+def login_help(data)
+    if data == 0
+        flash[:no_such_user] = "Användaren finns inte!"
+        redirect "/login"
+    elsif data == 0.5
+        flash[:wrong_pass] = "Fel lösenord!"
+        redirect "/login"
+    elsif data == 1
+        session[:logged_in] = true
+        session[:username] = user["username"]
+        session[:role] = user["role"]
+        session[:coins] = user["coins"]
+        redirect "/webshop"
     end
 end
 
@@ -44,8 +75,17 @@ get('/inventory/:user') do
     if session[:logged_in] == true
         get_inventory(user)
     else
-        flash :error, "You need to be logged in to view your inventory"
+        flash[:error] = "You need to be logged in to view inventory"
         redirect '/login'
+    end
+end
+
+def inventory_help(data, user_data, user_cards, first_stats, second_stats)
+    if data == true
+        slim(:"inventory", locals:{user:user_data, cards:user_cards, stat1:first_stats, stat2:second_stats})
+    else
+        flash[:error] = "Användaren #{user} finns inte"
+        redirect "/webshop"
     end
 end
 
@@ -57,13 +97,17 @@ get('/webshop') do
     get_all_cards(username)
 end
 
+def display_webshop(cards, first_stats, second_stats, coins)
+    slim(:webshop, locals:{cards:cards, stat1:first_stats, stat2:second_stats, coins:coins})
+end
+
 # Attempts to display form to add coins to a user
 #
 get('/coins') do
-    if session[:logged_in] = true
+    if session[:logged_in] == true
         slim(:coins)
     else
-        flash :error, "Du måste logga in för att komma åt sidan"
+        flash[:error] = "Du måste logga in för att komma åt sidan"
         redirect "/"
     end
 end
@@ -77,6 +121,21 @@ get('/card/:id') do
     show_one_card(card_id)
 end
 
+def show_help(data, card, card_id, card_stats)
+    if data == true
+        first_stats = []
+        second_stats = []
+        first_stats << card_stats["stat1_id"]
+        second_stats << card_stats["stat2_id"]
+        convert_to_statname(first_stats)
+        convert_to_statname(second_stats)
+        slim(:"/cards/show", locals:{card:card, stat1:first_stats, stat2:second_stats})
+    else
+        flash[:error] = "Kortet med id #{card_id} finns inte"
+        redirect "/webshop"
+    end
+end
+
 # Displays form for making a card
 #
 # @see Model.create_card
@@ -84,9 +143,13 @@ get('/cards/new') do
     if session["logged_in"] == true
         new_card()
     else
-        flash :error, "You need to be logged in to create a card"
+        flash[:error] = "You need to be logged in to create a card"
         redirect "/"
     end
+end
+
+def new_card_help(stats)
+    slim(:"cards/new", :locals => {stats: stats})
 end
 
 # Displays form for editing a card
@@ -96,10 +159,22 @@ get('/cards/:id/edit') do
     if session["logged_in"] == true
         card_id = params[:id].to_i
         username = session[:username]
-        edit_card(card_id)
+        edit_card(card_id, username)
     else
-        flash :error, "Logga in för att redigera ett kort"
+        flash[:error] = "Logga in för att redigera ett kort"
         redirect "/"
+    end
+end
+
+def edit_help(card, first_stats, second_stats, card_id, data, user_owns)
+    if user_owns == true
+        slim(:"/cards/edit", locals:{card:card, stat1:first_stats, stat2:second_stats})
+    elsif user_owns == false
+        flash[:error] = "Du kan inte redigera ett kort du inte äger"
+        redirect "/webshop"
+    elsif data == false
+        flash[:error] = "Kortet med id #{card_id} finns inte"
+        redirect "/webshop"
     end
 end
 
@@ -229,62 +304,12 @@ post('/cards/:id/delete') do
     end
 end
 
-# Attempts to create a new user
-#
-# @params [String] username The username
-# @params [String] password The password
-# @params [String] password_conf The password confirmation
-#
-def register_user(username, password, password_conf)
-    #Ansluter till databasen och hämtar användar-data
-    db = connect_to_db("db/db.db")
-    user = db.execute("SELECT * FROM users WHERE username = ?", username).first
-    
-    #Kollar om användarnamnet redan finns
-    if user == nil
-        if password == password_conf
-            hashed_password = BCrypt::Password.create(password)
-            db.execute("INSERT INTO users (username, password, role, coins) VALUES (?, ?, ?,?)", [username, hashed_password, "user", 0])
-            flash[:register_sucess] = "Du är registrerad, logga in för att köpa kort och skapa egna kort"
-            redirect "/login"
-        elsif password != password_conf
-            flash[:wrong_conf] = "Lösenorden matchar inte!"
-            redirect "/"
-        end
-    else
-        flash[:username_exist] = "Användarnamnet är upptaget!"
-        redirect "/register"
-    end
-end
-
-# Attempts to login a user
-#
-# @params [String] username The username
-# @params [String] password The password
-#
-def login_user(username, password)
-    #Ansluter till databasen och hämtar användar-data
-    db = connect_to_db("db/db.db")
-    user = db.execute("SELECT * FROM users WHERE username = ?", [username]).first
-
-    #Kollar om användaren finns
-    if user == nil
-        flash[:no_such_user] = "Användaren finns inte!"
-        redirect "/login"
-    elsif BCrypt::Password.new(user["password"]) == password
-        session[:logged_in] = true
-        session[:username] = user["username"]
-        session[:role] = user["role"]
-        session[:coins] = user["coins"]
-        redirect "/webshop"
-    else
-        flash[:wrong_pass] = "Fel lösenord!"
-        redirect "/login"
-    end
-end
-
 # Attempts to logout user and redirect to homepage
 post('/logout') do
     session.destroy
     redirect('/')
 end
+
+#Ser att det även finns slim-anrop i model.rb, de ska endast vara i app.rb (controllern).
+
+#Flash kan du ha kvar men jag tror att du ganska enkelt kan returnera strängen till controllern och sköta redirecten där.

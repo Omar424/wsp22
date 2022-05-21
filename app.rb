@@ -26,18 +26,16 @@ get('/register') do
     end
 end
 
-def register_help(data)
+def register_help(data, username, password)
     if data == 0
         flash[:username_exist] = "Användarnamnet är upptaget!"
         redirect "/register"
     elsif data == 0.5
-        flash[:wrong_conf] = "Lösenorden matchar inte!"
-        redirect "/"
+        flash[:wrong_confirm] = "Lösenorden matchar inte!"
+        redirect "/register"
     elsif data == 1
         hashed_password = BCrypt::Password.create(password)
-        db.execute("INSERT INTO users (username, password, role, coins) VALUES (?, ?, ?,?)", [username, hashed_password, "user", 0])
-        flash[:register_sucess] = "Du är registrerad, logga in för att köpa kort och skapa egna kort"
-        redirect "/login"
+        create_user(username, hashed_password)
     end
 end
 
@@ -50,7 +48,7 @@ get('/login') do
     end
 end
 
-def login_help(data)
+def login_help(data, user)
     if data == 0
         flash[:no_such_user] = "Användaren finns inte!"
         redirect "/login"
@@ -80,10 +78,10 @@ get('/inventory/:user') do
     end
 end
 
-def inventory_help(data, user_data, user_cards, first_stats, second_stats)
+def inventory_help(data, user, user_data, user_cards, first_stats, second_stats)
     if data == true
         slim(:"inventory", locals:{user:user_data, cards:user_cards, stat1:first_stats, stat2:second_stats})
-    else
+    elsif data == false
         flash[:error] = "Användaren #{user} finns inte"
         redirect "/webshop"
     end

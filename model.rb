@@ -17,21 +17,28 @@ module Model
         #Ansluter till databasen och hämtar användar-data
         db = connect_to_db("db/db.db")
         user = db.execute("SELECT * FROM users WHERE username = ?", username).first
-        
+
         #Om användarnamnet inte är upptaget
         if user == nil
             #Kollar om lösenorden stämmer överens
             if password == password_conf
-                data == 1
+                data = 1
             #Om lösenorden inte stämmer överens
             elsif password != password_conf
-                data == 0.5
+                data = 0.5
             end
         else
-            data == 0
+            data = 0
         end
 
-        register_help(data)
+        register_help(data, username, password)
+    end
+
+    def create_user(username, hashed_password)
+        db = connect_to_db("db/db.db")
+        db.execute("INSERT INTO users (username, password, role, coins) VALUES (?, ?, ?,?)", [username, hashed_password, "user", 0])
+        flash[:register_sucess] = "Du är registrerad, logga in för att köpa kort och skapa egna kort"
+        redirect "/login"
     end
 
     # Attempts to login a user
@@ -53,7 +60,7 @@ module Model
             data = 0.5
         end
         
-        login_help(data)
+        login_help(data, user)
     end
 
     # Converts an integer to a stat string
@@ -105,42 +112,40 @@ module Model
     def get_inventory(user)
         #Ansluter till databasen
         db = connect_to_db("db/db.db")
-        
-        #Deklarerar variabler
-        card_ids = []
-        stats = []
-        first_stats = []
-        second_stats = []
-        
         #Hämtar data om användarens
         user_data = db.execute("SELECT * FROM users WHERE username = ?", user).first
         #Hämtar data om korten
         user_cards = db.execute("SELECT * FROM cards where owner = ?", user)
         #Hämtar id'n för korten
         card_ids = db.execute("SELECT id FROM cards where owner = ?", user)
-        
-        #Hämtar stats för korten
-        card_ids.each do |id|
-            stat = db.execute("SELECT stat1_id, stat2_id FROM card_stats_rel WHERE card_id = ?", id["id"])
-            stats << stat
-        end
-        
-        stats.each_with_index do |stat|
-            first_stats << stat[0]["stat1_id"]
-            second_stats << stat[0]["stat2_id"]
-        end
-        
-        convert_to_statname(first_stats)
-        convert_to_statname(second_stats)
 
-        #Om användaren inte finns
         if user_data == nil
             data = false
+            user_data, user_cards, first_stats, second_stats = nil
         else
             data = true
-        end
 
-        inventory_help(data, user_data, user_cards, first_stats, second_stats)
+            #Deklarerar variabler
+            card_ids = []
+            stats = []
+            first_stats = []
+            second_stats = []
+            
+            #Hämtar stats för korten
+            card_ids.each do |id|
+                stat = db.execute("SELECT stat1_id, stat2_id FROM card_stats_rel WHERE card_id = ?", id["id"])
+                stats << stat
+            end
+            
+            stats.each_with_index do |stat|
+                first_stats << stat[0]["stat1_id"]
+                second_stats << stat[0]["stat2_id"]
+            end
+            
+            convert_to_statname(first_stats)
+            convert_to_statname(second_stats)
+        end
+        inventory_help(data, user, user_data, user_cards, first_stats, second_stats)
     end
 
     # Attempts to create a card
@@ -317,7 +322,7 @@ module Model
         db = connect_to_db("db/db.db")
         user_info = db.execute("SELECT role, username FROM users WHERE username = ?", username).first
         owner = db.execute("SELECT owner FROM cards WHERE id = ?", card_id).first
-        if user_info["role"] == "admin" || user_info["username"] == card_owner["owner"]
+        if user_info["role"] == "admin" || user_info["username"] == owner["owner"]
             db.execute("DELETE FROM cards where id = ?", card_id)
             db.execute("DELETE FROM card_stats_rel where card_id = ?", card_id)
             flash[:sucess] = "Kortet har tagits bort"

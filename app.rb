@@ -309,7 +309,3 @@ post('/logout') do
     session.destroy
     redirect('/')
 end
-
-#Ser att det även finns slim-anrop i model.rb, de ska endast vara i app.rb (controllern).
-
-#Flash kan du ha kvar men jag tror att du ganska enkelt kan returnera strängen till controllern och sköta redirecten där.

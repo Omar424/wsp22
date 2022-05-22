@@ -114,22 +114,23 @@ module Model
         db = connect_to_db("db/db.db")
         #Hämtar data om användarens
         user_data = db.execute("SELECT * FROM users WHERE username = ?", user).first
-        #Hämtar data om korten
-        user_cards = db.execute("SELECT * FROM cards where owner = ?", user)
-        #Hämtar id'n för korten
-        card_ids = db.execute("SELECT id FROM cards where owner = ?", user)
-
+        
         if user_data == nil
             data = false
             user_data, user_cards, first_stats, second_stats = nil
         else
             data = true
-
+            
             #Deklarerar variabler
             card_ids = []
             stats = []
             first_stats = []
             second_stats = []
+            
+            #Hämtar data om korten
+            user_cards = db.execute("SELECT * FROM cards where owner = ?", user)
+            #Hämtar id'n för korten
+            card_ids = db.execute("SELECT id FROM cards where owner = ?", user)
             
             #Hämtar stats för korten
             card_ids.each do |id|
@@ -141,9 +142,11 @@ module Model
                 first_stats << stat[0]["stat1_id"]
                 second_stats << stat[0]["stat2_id"]
             end
+            p first_stats, second_stats
             
             convert_to_statname(first_stats)
             convert_to_statname(second_stats)
+
         end
         inventory_help(data, user, user_data, user_cards, first_stats, second_stats)
     end
